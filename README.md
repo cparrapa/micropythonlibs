@@ -3,8 +3,7 @@ Set of micro Python libraries and example codes to use with HP Otto.
 
 In order for the examples to work, all the files in libs must be uploaded to the circuit board in advance. Then navigate by folder or component:
 
-accelerometer: examples with ADXL345 (TESTED)
-
+* accelerometer: examples with ADXL345 (TESTED)
 * biped: it is supposed to be a replica of the classic Otto (WIP).
 * bluetooth: everything related to the use of Bluetooth, including webcontrol and webcode BLE. (TESTED but can be improved)
 * botbit: 3rd party files need to be adapted to HP Otto pins. (WIP)
@@ -23,3 +22,7 @@ accelerometer: examples with ADXL345 (TESTED)
 New components and examples are always welcome!
 
 * blocks folder is for examples that work in webcode. This will help beginners to do transition. The idea is to have for every example both text and block versions.
+
+The best version of MicroPython to use the control is v1.19.
+
+The most recent version of MicroPython (v1.22) has problems handling Modes widget changes but has good update on the OLED library for using elipses.
