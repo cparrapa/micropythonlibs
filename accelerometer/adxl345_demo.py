@@ -13,4 +13,5 @@ while True:
     x, y, z = accel.readxyz()
     print("x = {}, y = {}, z = {}".format(x, y, z))
     roll,pitch = accel.rollpitch()
-    print("roll = {0:.2f}, pitch = {0:.2f}".format(roll,pitch))    time.sleep(0.5)
+    print("roll = {0:.2f}, pitch = {0:.2f}".format(roll,pitch))    
+    time.sleep(0.5)
