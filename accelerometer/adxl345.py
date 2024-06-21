@@ -29,6 +29,6 @@ class ADXL345:
           
     def rollpitch(self):
         x, y, z = self.readxyz()
-        roll = math.atan2(y , z) * 57.3  # (180/pi = ~57.3)
+        roll = math.atan2(y , z) * 57.3  # radians to degrees (180/pi = ~57.3)
         pitch = math.atan2((- x) , math.sqrt(y * y + z * z)) * 57.3
         return roll,pitch
