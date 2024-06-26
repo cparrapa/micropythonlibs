@@ -82,17 +82,17 @@ class ADXL345:
         # write these to the calibration registers
         #X-axis        
         self.i2c.start()
-        self.i2c.writeto(self.address, bytearray([_X_CAL, errX])) # power on
+        self.i2c.writeto(self.address, bytearray([_X_CAL, errX]))
         self.i2c.stop()
         sleep(0.1)
         #Y-axis        
         self.i2c.start()
-        self.i2c.writeto(self.address, bytearray([_Y_CAL, errY])) # power on
+        self.i2c.writeto(self.address, bytearray([_Y_CAL, errY]))
         self.i2c.stop()
         sleep(0.1)
         #Z-axis        
         self.i2c.start()
-        self.i2c.writeto(self.address, bytearray([_Z_CAL, errZ])) # power on
+        self.i2c.writeto(self.address, bytearray([_Z_CAL, errZ]))
         self.i2c.stop()
         sleep(0.1)
         
