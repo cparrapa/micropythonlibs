@@ -1,11 +1,10 @@
 from time import sleep
 from machine import Pin
 from neopixel import NeoPixel
-import machine
-import utime
+import machine, utime
 
-trigecho=19
-ultrasonicRGB = NeoPixel(Pin(18), 6)
+trigecho=19 # Conenctor 1
+ultrasonic = NeoPixel(Pin(18), 6)
 
 def measure_distance():
    io_pin = machine.Pin(trigecho, machine.Pin.OUT)
@@ -21,11 +20,11 @@ def measure_distance():
       distance = pulse_duration / 45.6;
    return distance
 
-ultrasonicRGB[0] = (0, 0, 255)
-ultrasonicRGB[1] = (0, 0, 255)
-ultrasonicRGB[2] = (0, 0, 255)
-ultrasonicRGB[3] = (255, 0, 0)
-ultrasonicRGB[4] = (255, 0, 0)
-ultrasonicRGB[5] = (255, 0, 0)
-ultrasonicRGB.write()
+ultrasonic[0] = (0, 0, 255)
+ultrasonic[1] = (0, 0, 255)
+ultrasonic[2] = (0, 0, 255)
+ultrasonic[3] = (255, 0, 0)
+ultrasonic[4] = (255, 0, 0)
+ultrasonic[5] = (255, 0, 0)
+ultrasonic.write()
 print(measure_distance())
