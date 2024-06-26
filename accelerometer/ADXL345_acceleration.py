@@ -11,9 +11,9 @@ ADXL345_DATA_FORMAT = 0x31
 ADXL345_DATAX0 = 0x32
  
 # Initialize I2C
-i2c = I2C(0, sda=Pin(17), scl=Pin(16), freq=400000)
+i2c = I2C(0, sda=Pin(17), scl=Pin(16), freq=400000) #Connector 2
 
-oled = OttoOled(21, 22)
+oled = OttoOled(21, 22) #Connector 3
  
 # Initialize ADXL345
 def init_adxl345():
