@@ -1,5 +1,4 @@
-import machine
-import utime
+import machine, utime
 from ssd1306 import SSD1306_I2C
 
 sda=machine.Pin(21)

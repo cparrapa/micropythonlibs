@@ -1,7 +1,5 @@
+import ssd1306, time, machine
 from machine import Pin, SPI, ADC
-import ssd1306
-import time
-import machine
 
 # Takes an input number value and a range between high-and-low and returns it scaled to the new range
 # This is similar to the Arduino map() function
@@ -30,7 +28,7 @@ oled.text('the screen', 0, 40, 1)
 oled.show()
 
 # Define the pin for the reset button
-resetButton = Pin(16, Pin.IN, Pin.PULL_DOWN)
+resetButton = Pin(26, Pin.IN, Pin.PULL_DOWN)
 
 # Wait unti the user hits the button to clear the screen and start drawing
 while resetButton.value() != 1:
@@ -40,7 +38,7 @@ oled.fill(0)
 oled.show()
 
 # Define the Horizontal and Vertical inputs from the Rheostats
-vert = ADC(26)
+vert = ADC(32)
 horiz = ADC(33)
 
 # Calculate where to start the line

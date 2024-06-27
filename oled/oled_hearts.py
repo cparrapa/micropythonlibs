@@ -1,15 +1,11 @@
+import urandom, machine, utime, ssd1306
 from machine import Pin, PWM, SPI
-import urandom
-import ssd1306
 from utime import sleep
 import random # random direction for new ball
-import machine
-import utime
 from ssd1306 import SSD1306_I2C
 
 WIDTH = 128
 HEIGHT = 64
-
 
 sda=machine.Pin(21)
 scl=machine.Pin(22)

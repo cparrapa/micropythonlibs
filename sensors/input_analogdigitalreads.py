@@ -3,7 +3,7 @@ from time import sleep                   #importing sleep class
 import machine
 
 led = Pin(2, Pin.OUT)
-button = Pin(16, Pin.IN)
+button = Pin(26, Pin.IN)
 analogL=ADC(Pin(32))           #Connector 6
 analogR=ADC(Pin(33))           #Connector 7
 digitalL = Pin(27, Pin.IN) #Connector 8

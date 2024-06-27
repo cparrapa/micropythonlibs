@@ -1,15 +1,14 @@
-from machine import Pin, I2C
-import machine
-from ssd1306 import SSD1306_I2C
 import ssd1306
 import utime
+import machine
+from machine import Pin, I2C
+from ssd1306 import SSD1306_I2C
 
 sda=machine.Pin(21)
 scl=machine.Pin(22)
 
 i2c=I2C(0,sda=sda, scl=scl, freq=400000)
 display = SSD1306_I2C(128, 64, i2c)
-
 
 display.fill(0) # clear to black
 display.text('Otto Rocks', 0, 0, 1) # at x=0, y=0, white on black
