@@ -1,7 +1,5 @@
 from machine import Pin, I2C
-import time
-import ustruct
-import math
+import time, ustruct, math
  
 # Constants
 ADXL345_ADDRESS = 0x53
@@ -10,7 +8,7 @@ ADXL345_DATA_FORMAT = 0x31
 ADXL345_DATAX0 = 0x32
  
 # Initialize I2C
-i2c = I2C(0, sda=Pin(21), scl=Pin(22), freq=400000)
+i2c = I2C(0, sda=Pin(21), scl=Pin(22), freq=400000) # Connector 3
  
 # Initialize ADXL345
 def init_adxl345():

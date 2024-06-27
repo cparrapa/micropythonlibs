@@ -1,4 +1,4 @@
-# ledmatrix default Import the base class 11.03.2024
+#ht16k33 default import the base class 11.03.2024
 class HT16K33:
 
     HT16K33_GENERIC_DISPLAY_ON = 0x81

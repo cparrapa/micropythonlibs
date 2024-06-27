@@ -1,6 +1,4 @@
-# uMail (MicroMail) for MicroPython
-# Copyright (c) 2018 Shawwwn <shawwwn1@gmail.com>
-# License: MIT
+# ottoiot v01 27.06.2024
 import usocket
 
 DEFAULT_TIMEOUT = 10 # sec

@@ -1,7 +1,7 @@
 import time
 from machine import Pin
 
-rotaryA = Pin(16, Pin.IN, Pin.PULL_DOWN)
+rotaryA = Pin(16, Pin.IN, Pin.PULL_DOWN) # Connector 2
 rotaryB = Pin(17, Pin.IN, Pin.PULL_DOWN)
 
 # we set the old value to zero for both bits being off

@@ -1,13 +1,8 @@
 #ssd1306 default 11.03.2024
+import time, math, framebuf
 from time import sleep
-from machine import Pin
-from machine import PWM
-from machine import I2C
-import time
-import math
+from machine import Pin, PWM, I2C
 from micropython import const
-import framebuf
-
 
 ########## OLED Library ##########
 

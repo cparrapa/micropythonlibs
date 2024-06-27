@@ -1,9 +1,6 @@
+# ottoble v01 27.06.2024
+import bluetooth, random, struct, time
 from math import fabs 
-import bluetooth
-import random
-import struct
-import time
-########
 
 # Advertising payloads are repeated packets of the following form:
 #   1 byte data length (N + 1)

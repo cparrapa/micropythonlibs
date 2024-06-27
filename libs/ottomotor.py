@@ -1,8 +1,7 @@
 # ottomotors v01 11.03.2024
-from machine import Pin
-from machine import PWM
-import machine
-import time
+import machine, time
+from machine import Pin, PWM
+
 try:    
     from esp32 import Servo as espServo
     useServo = True

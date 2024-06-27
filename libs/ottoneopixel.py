@@ -1,7 +1,5 @@
 # ottoneopixel v01 11.03.2024
-import neopixel
-import machine
-import utime
+import neopixel, machine, utime
 from machine import Pin
 
 class OttoNeoPixel:

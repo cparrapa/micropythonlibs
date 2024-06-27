@@ -16,7 +16,7 @@ sda = Pin(21)
 cs = Pin(2, Pin.OUT)
 cs.value(1)
 time.sleep(1)
-i2c = I2C(scl=Pin(22), sda=Pin(21), freq=10000)
+i2c = I2C(scl=Pin(22), sda=Pin(21), freq=10000) # Connector 3
 slv = i2c.scan()
 for s in slv:
     buf = i2c.readfrom_mem(s, 0, 1)

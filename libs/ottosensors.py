@@ -1,7 +1,6 @@
 # ottosensors v01 11.03.2024
 import machine
-from machine import Pin 
-from machine import ADC
+from machine import Pin, ADC
 
 class FollowLine:
         

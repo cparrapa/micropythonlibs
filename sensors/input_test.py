@@ -1,6 +1,6 @@
+import machine, time
 from time import sleep
 from machine import Pin, ADC ,PWM
-import machine, time
 
 pin_led = Pin(2, Pin.OUT)
 analog_pinL = ADC(Pin(32))
