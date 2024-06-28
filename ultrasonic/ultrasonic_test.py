@@ -27,6 +27,10 @@ def measure_distance():
       distance = pulse_duration / 58.00; #45.6? or 58.00 for mm, 147.32 for in
    return distance
 
+def map(value, in_min, in_max, out_min, out_max):
+   map = (value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
+   return map
+
 ultrasonic[0] = (0, 0, 255)
 ultrasonic[1] = (0, 0, 255)
 ultrasonic[2] = (0, 0, 255)
@@ -38,7 +42,7 @@ print(measure_distance())
 
 while True:
     distance=measure_distance()
-    print("Distance in cm: ", distance,)
+    print("Distance in cm: ", distance)
     time.sleep(0.3)
     #ring.setRGBLed(0, 255, 0, round(map(int(distance), 0, 100, 0, 12)))
     #ring.clearRGB()

@@ -1,7 +1,7 @@
 import machine
 import utime as time
-from machine import Pin
 import micropython
+from machine import Pin
 
 class Rotary:
 

@@ -1,6 +1,6 @@
+import time
 from machine import Pin, SoftI2C
 from adxl345 import ADXL345
-import time
 
 # Define I2C pins
 i2c = SoftI2C(scl=Pin(22), sda=Pin(21))

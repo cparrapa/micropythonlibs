@@ -27,5 +27,3 @@ while True:
     print(adc_32.read())
     time.sleep(0.05)
     servo_26.write(map(adc_32.read(), 0, 1023, 0, 180))
-
-
