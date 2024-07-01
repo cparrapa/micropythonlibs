@@ -1,7 +1,5 @@
+import time, ustruct
 from machine import Pin, I2C
-import time
-import ustruct
-
 from ottooled import OttoOled
 
 # Constants
@@ -10,7 +8,7 @@ ADXL345_POWER_CTL = 0x2D
 ADXL345_DATA_FORMAT = 0x31
 ADXL345_DATAX0 = 0x32
  
-# Initialize I2C
+# Initialize I2C for accelerometer
 i2c = I2C(0, sda=Pin(17), scl=Pin(16), freq=400000) #Connector 2
 
 oled = OttoOled(21, 22) #Connector 3

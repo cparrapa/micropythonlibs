@@ -1,7 +1,5 @@
-from machine import Pin
-from machine import I2C
-import time
-import ustruct
+import time, ustruct
+from machine import Pin, I2C
 
 DATA_FORMAT = 0x31
 BW_RATE  = 0x2c
@@ -11,13 +9,12 @@ OFSX = 0x1e
 OFSY =0x1f
 OFSZ =0x20
 
-scl = Pin(22)
-sda = Pin(21)
 cs = Pin(2, Pin.OUT)
 cs.value(1)
 time.sleep(1)
 i2c = I2C(scl=Pin(22), sda=Pin(21), freq=10000) # Connector 3
 slv = i2c.scan()
+
 for s in slv:
     buf = i2c.readfrom_mem(s, 0, 1)
     if buf[0] == 0xe5:

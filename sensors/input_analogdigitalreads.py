@@ -1,13 +1,12 @@
-from machine import Pin, ADC, PWM          #importing Pin, ADC and PWM classes
+from machine import Pin, ADC, PWM        #importing Pin, ADC and PWM classes
 from time import sleep                   #importing sleep class
-import machine
 
 led = Pin(2, Pin.OUT)
 button = Pin(26, Pin.IN)
-analogL=ADC(Pin(32))           #Connector 6
-analogR=ADC(Pin(33))           #Connector 7
-digitalL = Pin(27, Pin.IN) #Connector 8
-digitalR = Pin(15, Pin.IN) #Connector 9
+analogL=ADC(Pin(32))        # Connector 6
+analogR=ADC(Pin(33))        # Connector 7
+digitalL = Pin(27, Pin.IN)  # Connector 8
+digitalR = Pin(15, Pin.IN)  # Connector 9
 
 while True:
  analogL_value=analogL.read()           #reading analog pin

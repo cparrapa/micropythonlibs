@@ -17,6 +17,7 @@ In order for the examples to work, all the files in libs must be uploaded to the
 * ninja: Code for Walk and Transform as Ninja Remix (TESTED)
 * oled: 128x64 monochrome display, missing more faces (TESTED)
 * omni: From the Alex remix, it can be adapted to the current Otto. (WIP)
+* potentiometer: simple anaalog input (WIP)
 * sensors: general use of generic sensors digital or analog (TESTED)
 * temphumi: DHT 11 & 22 temperature and humidity sensor (TESTED)
 * ultrasonic: Distance sonar sensor needs more examples (WIP)
