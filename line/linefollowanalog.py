@@ -1,9 +1,7 @@
+import machine, utime
 from time import sleep                    #importing sleep class
 from neopixel import NeoPixel
-import machine
 from machine import Pin, ADC, PWM          #importing Pin, ADC and PWM classes
-import machine
-import utime
 
 brg = 0.75
 pixels = NeoPixel(Pin(4), 13)

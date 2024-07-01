@@ -32,7 +32,7 @@ if __name__ == "__main__":
         val = adc.read()
         pwm_value = map(x=val, in_min=0, in_max=4095, out_min=0,out_max=1023)
         pwm_led.duty(pwm_value)
-        sleep_ms(10)
+        time.sleep_ms(10)
         sleep(0.01)
         print(val)
         #potentiometer_value=int(adc.read()/4)           #reading analog pin

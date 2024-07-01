@@ -1,23 +1,24 @@
-import machine, time
 from time import sleep
 from machine import Pin, ADC, PWM          #importing Pin, ADC and PWM classes
 
-digitalL = Pin(27, Pin.IN)
-digitalR = Pin(15, Pin.IN)
-analogL=ADC(Pin(32))           #creating potentiometer object
-analogR=ADC(Pin(33))           #creating potentiometer object
+analogL=ADC(Pin(32))                  # Connector 6
+analogR=ADC(Pin(33))                  # Connector 7
+digitalL = Pin(27, Pin.IN)            # Connector 8
+digitalR = Pin(15, Pin.IN)            # Connector 9
+
 leftServo = PWM(Pin(14))
 leftServo.freq(50)
+
 rightServo = PWM(Pin(13))
 rightServo.freq(50)
 
 while True:
-    print("Left sensor:",digital_L.value(),"Right sensor:",digital_R.value())
-    print("Left analog sensor:",analog_L.read() ,"Right analog sensor:",analog_R.read())
-    if (analog_L.read() ) >= (900):
+    print("Left sensor:",digitalL.value(),"Right sensor:",digitalR.value())
+    print("Left analog sensor:",analogL.read() ,"Right analog sensor:",analogR.read())
+    if (analogL.read() ) >= (900):
         leftServo.duty(60)
         rightServo.duty(60)
-    elif (analog_R.read() ) >= (900):
+    elif (analogR.read() ) >= (900):
         leftServo.duty(100)
         rightServo.duty(100)
     else:

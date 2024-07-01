@@ -1,5 +1,5 @@
-from machine import Pin, I2C
 import time, ustruct, math
+from machine import Pin, I2C
  
 # Constants
 ADXL345_ADDRESS = 0x53
