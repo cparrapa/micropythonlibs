@@ -1,6 +1,6 @@
 # otto starter webcontrol v03 30.06.2024
-# v01, v02 Iván R
-# v03 Iván R, Alex Etchells
+# v01, v02 Iván R. Artiles Bretón
+# v03 Iván R. Artiles Bretón, Alex Etchells
 # reference to ottomotor.Motors replaced with ottomptor.OttoMotor
 # led control code updated for new ring configuration
 # Mode code moved to timer to be compaiblw with micropythom v1.20 on
