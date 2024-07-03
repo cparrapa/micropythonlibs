@@ -19,7 +19,7 @@ while True:
     print('Humidity: %3.1f %%' %hum)
     oled.clearDisplay()
     oled.writeTextDisplay('Temp: %3.1f C' %temp, 0, 0)
-    oled.writeTextDisplay('Humidity: %3.1f %%' %temp, 0, 20)
+    oled.writeTextDisplay('Humidity: %3.1f %%' %hum, 0, 20)
     oled.showDisplay()
   except OSError as e:
     print('Failed to read sensor.')

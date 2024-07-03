@@ -7,6 +7,7 @@ In order for the examples to work, all the files in libs must be uploaded to the
 * biped: it is supposed to be a replica of the classic Otto (WIP).
 * bluetooth: everything related to the use of Bluetooth, including webcontrol and webcode BLE. (TESTED but can be improved)
 * botbit: 3rd party files need to be adapted to HP Otto pins. (WIP)
+* buzzer: sounds for embedded piezo (TESTED)
 * color: sensor based on tcs34725 but chip is End Of Life (WIP)
 * encoder: The use of encoder needs to be converted into the ottoencoder.py library. (WIP)
 * lights: use of the LED RGB ring and also built-in LED. (TESTED)
