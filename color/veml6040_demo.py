@@ -12,7 +12,7 @@ while True:
     grn = data['green']
     blu = data['blue']
     
-    print(str(blu) + " Blue  " + str(grn) + " Green  " + str(red) + " Red") # Print the data. Printing as BGR so the Thonny plot-colours match nicely :)
+    print(str(blu) + " Blue  " + str(grn) + " Green  " + str(red) + " Red") # Print the data. Printing as BGR 
 
     ### Example 2: Classify the colour being shown 
     data = colourSensor.readHSV() # Read the sensor (Colour space: Hue Saturation Value)
