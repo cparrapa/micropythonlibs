@@ -1,7 +1,5 @@
-import machine
-import ssd1306
+import machine, ssd1306, utime
 from utime import sleep, time
-import utime
 from ssd1306 import SSD1306_I2C
 
 WIDTH = 128

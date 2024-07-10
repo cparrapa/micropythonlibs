@@ -1,4 +1,4 @@
-# ottooled v03 27.06.2024
+# ottooled v04 10.07.2024
 import math, framebuf
 from machine import I2C, Pin
 from ssd1306 import SSD1306_I2C
@@ -26,6 +26,9 @@ class OttoOled:
         
     def squareFillDisplay(self, xPos , yPos , width, height,value):
         self.display.fill_rect(xPos , yPos , width, height, value)
+
+    def drawCircle(self, x, y, r, color):
+        self.display.ellipse(x,y,r,r,color,1)
     
     def circleDisplay(self, x, y, r):
         self.drawCircle(x, y, r, 1)
@@ -33,50 +36,36 @@ class OttoOled:
     def circleBlackDisplay(self, x, y, r):
         self.drawCircle(x, y, r, 0)
         
-    def drawCircle(self, x, y, r, color):
-        for i in range(x-r, x+r+1):
-            a=int(math.sqrt(r*r-(x-i)*(x-i)))
-            self.display.vline(i, y-a, a*2, color)
-
-        for i in range(y-r, y+r+1):
-            a=int(math.sqrt(r*r-(y-i)*(y-i)))
-            self.display.hline(x-a, i, a*2, color)
-    
     def ringDisplay(self, x, y, r):
-        for i in range(x-r, x+r+1):
-            self.display.pixel(i, int(y-math.sqrt(r*r-(x-i)*(x-i))), 1)
-            self.display.pixel(i, int(y+math.sqrt(r*r-(x-i)*(x-i))), 1)
-        for i in range(y-r, y+r+1):
-            self.display.pixel(int(x-math.sqrt(r*r-(y-i)*(y-i))), i, 1)
-            self.display.pixel(int(x+math.sqrt(r*r-(y-i)*(y-i))), i, 1)
+        self.display.ellipse(x,y,r,r,1,0)
 
     def Draw2Eyes(self):
-        self.circleDisplay(30, 14, 14)
+        self.circleDisplay(30, 17, 17)
         self.circleBlackDisplay(30, 14, 10)
-        self.circleDisplay(98, 14, 14)
+        self.circleDisplay(98, 17, 17)
         self.circleBlackDisplay(98, 14, 10)
     
     def Eyes1Draw(self):
-        self.circleDisplay(30, 14, 14)
+        self.circleDisplay(30, 17, 17)
         self.circleBlackDisplay(30, 14, 10)
-        self.circleDisplay(98, 14, 14)
+        self.circleDisplay(98, 17, 17)
         self.circleBlackDisplay(98, 14, 10)
         
     def Eyes2Draw(self):
         self.Draw2Eyes()
-        self.display.fill_rect(0, 14, 128, 14, 0)
+        self.display.fill_rect(0, 17, 128, 17, 0)
     
     def Eyes3Draw(self):
         self.Draw2Eyes()
-        self.display.fill_rect(0, 0, 128, 14, 0)
+        self.display.fill_rect(0, 0, 128, 17, 0)
         
     def Eyes4Draw(self):
         self.Draw2Eyes()
-        self.display.fill_rect(0, 0, 64, 14, 0)
+        self.display.fill_rect(0, 0, 64, 17, 0)
         
     def Eyes5Draw(self):
         self.Draw2Eyes()
-        self.display.fill_rect(0, 0, 36, 14, 0)
+        self.display.fill_rect(0, 0, 36, 17, 0)
         self.display.fill_rect(92, 0, 36, 20, 0)
     
     def Eyes6Draw(self):

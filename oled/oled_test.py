@@ -1,7 +1,7 @@
 import machine, time                   #importing machine and time libraries
-from time import sleep                     #importing sleep class
+from time import sleep                 #importing sleep class
+from ssd1306 import SSD1306_I2C
 from ottooled import OttoOled
-from ssd1306 import SSD1306_I2C 
 from machine import Pin, I2C
 import array # Needed for polygons
 
@@ -12,7 +12,7 @@ oled = SSD1306_I2C(128, 64, i2c, addr=0x3C)
 oled.text('Hello Otto world', 0, 0)
 # #2. To display all the commands in queue:     
 oled.show()
-time.sleep(1)
+time.sleep(0.5)
 # #3. Now to clear the oled display:  
 oled.fill(0) 
 oled.show()
@@ -44,7 +44,7 @@ time.sleep(0.5)
 # #10. Or we may also print a filled rectangle:  
 oled.fill_rect(5,5,50,25,1) 
 oled.show()
-time.sleep(1)
+time.sleep(0.5)
 # oled.rect(x,y,w,h,c,[f])
 oled.fill(0) 
 oled.rect(0,10,50,20,1)       # Outine
@@ -75,12 +75,12 @@ oled.poly(0,0, hexagon, 1, 1) # Filled hexagon
 triangle = array.array('I', [64,22,74,39,54,39])
 oled.poly(0,0, triangle, 0, True) # Filled
 oled.show()
-time.sleep(2)
+time.sleep(0.5)
 oled.fill(0) 
 triangle = array.array('I', [37,18,100,30,45,44])
 oled.poly(0,0, triangle, 1, ) # Outline
 oled.show()
-time.sleep(1)
+time.sleep(0.5)
 
 oled = OttoOled(21, 22)
 oled.clearDisplay()

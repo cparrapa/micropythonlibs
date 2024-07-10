@@ -1,6 +1,4 @@
-import ssd1306
-import utime
-import machine
+import ssd1306, utime, machine
 from machine import Pin, I2C
 from ssd1306 import SSD1306_I2C
 
@@ -11,7 +9,7 @@ i2c=I2C(0,sda=sda, scl=scl, freq=400000)
 display = SSD1306_I2C(128, 64, i2c)
 
 display.fill(0) # clear to black
-display.text('Otto Rocks', 0, 0, 1) # at x=0, y=0, white on black
+display.text('HP Robots!', 0, 0, 1) # at x=0, y=0, white on black
 # line under title
 display.hline(0, 9, 127, 1)
 # bottom of display

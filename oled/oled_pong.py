@@ -27,8 +27,8 @@ width=128
 height=64
 oled = SSD1306_I2C(width, height, i2c)
 # connect the center tops of the potentiometers to ADC0 and ADC1
-pot_pin_1 = machine.ADC(33)
-pot_pin_2 = machine.ADC(26) # make them the same for testing
+pot_pin_1 = machine.ADC(32)
+pot_pin_2 = machine.ADC(33) # make them the same for testing
 
 # lower right corner with USB connector on top
 SPEAKER_PIN = 25

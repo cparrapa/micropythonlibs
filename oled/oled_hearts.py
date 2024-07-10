@@ -1,7 +1,7 @@
 import urandom, machine, utime, ssd1306
+import random # random direction for new ball
 from machine import Pin, PWM, SPI
 from utime import sleep
-import random # random direction for new ball
 from ssd1306 import SSD1306_I2C
 
 WIDTH = 128
