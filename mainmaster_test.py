@@ -22,6 +22,9 @@ button = Pin(26, Pin.IN)          # Connector 4
 pot=ADC(Pin(32))                  # Connector 6
 light=ADC(Pin(33))                # Connector 7
 
+pot.atten(ADC.ATTN_11DB)    
+light.atten(ADC.ATTN_0DB)
+
 output = Pin(27, Pin.OUT)         # Connector 8
 
 dht = dht.DHT11(Pin(15))          # Connector 9
@@ -58,7 +61,7 @@ while True:
     matrix[(int(map(light.read(), 0, 4095, 0, 63)))] = (30, 30, 0)
 
     matrix.write()
-    
+    """
     #for faster meassurements of analog inputs dht must be deleted
     dht.measure()
     temp = dht.temperature()
@@ -66,13 +69,14 @@ while True:
     print('Temperature: %3.1f C' %temp)
     print('Humidity: %3.1f %%' %hum)
     sleep(0.1)
+    """
     
     oled.fill(0)
     oled.text("Pot:{}".format(pot.read()), 0, 0)
     oled.text("* {}%".format(int(map(light.read(), 4095, 0, 0, 100))), 0, 12)
     oled.fill_rect(48,12,int(map(light.read(), 4095, 0, 0, 80)),8,1) 
-    oled.text('Temp: %3.1f C' %temp, 0, 24)
-    oled.text('Humidity: %3.1f %%' %hum, 0, 36)
+    #oled.text('Temp: %3.1f C' %temp, 0, 24)
+    #oled.text('Humidity: %3.1f %%' %hum, 0, 36)
     oled.show()
     
     matrix.fill((0,0,0))
