@@ -1,4 +1,4 @@
-# ottooled v04 10.07.2024
+# ottooled v2.0 10.07.2024
 import math, framebuf
 from machine import I2C, Pin
 from ssd1306 import SSD1306_I2C

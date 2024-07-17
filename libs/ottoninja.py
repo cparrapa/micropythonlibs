@@ -1,4 +1,4 @@
-# ottoninja v00 28.05.2024
+# ottoninja v0 28.05.2024
 import time
 from machine import Pin, PWM
 from ottomotor import Servo

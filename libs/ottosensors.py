@@ -1,4 +1,4 @@
-# ottosensors v01 11.03.2024
+# ottosensors v1.0 11.03.2024
 import machine
 from machine import Pin, ADC
 

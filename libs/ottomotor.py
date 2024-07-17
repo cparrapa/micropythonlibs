@@ -1,4 +1,4 @@
-# ottomotors v01 11.03.2024
+# ottomotors v2.0 17.07.2024
 import machine, time
 from machine import Pin, PWM
 

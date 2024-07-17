@@ -1,4 +1,4 @@
-# ottoledmatrix 16x8 for the ht16k33 driver v01 17.06.2024
+# ottoledmatrix 16x8 for the ht16k33 driver v1.0 17.06.2024
 import math
 from machine import Pin
 from machine import I2C

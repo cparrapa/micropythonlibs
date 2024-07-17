@@ -1,4 +1,4 @@
-# ottomp3 v01 27.06.2024
+# ottomp3 v1.0 27.06.2024
 import machine, time
 from machine import Pin, PWM, UART, Timer
 

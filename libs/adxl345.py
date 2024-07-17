@@ -1,11 +1,11 @@
 '''
-adxl345.py v01 28/06/24
+adxl345.py v1.0 28/06/24
 a library for the Analog Devices ADXL345 Digital Accelerometer
 Datasheet:
 https://www.analog.com/media/en/technical-documentation/data-sheets/adxl345.pdf
 based on information from
 https://howtomechatronics.com/tutorials/arduino/how-to-track-orientation-with-arduino-and-adxl345-accelerometer/
-v00, v01  Alex Etchells
+v0, v1.0  Alex Etchells
 '''
 
 from machine import Pin, SoftI2C

@@ -1,4 +1,4 @@
-# ottoble v01 27.06.2024
+# ottoble v2.0 17.07.2024
 import bluetooth, random, struct, time
 from math import fabs 
 

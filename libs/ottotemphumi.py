@@ -1,4 +1,4 @@
-# ottotemphumi v01 11.03.2024
+# ottotemphumi v0 11.03.2024
 import machine, time
 from machine import Pin
 import dht

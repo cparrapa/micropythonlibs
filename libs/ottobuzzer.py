@@ -1,4 +1,4 @@
-# ottobuzzer v02 27.06.2024
+# ottobuzzer v2.1 17.07.2024
 import machine, time
 from machine import Pin, PWM, Timer
 

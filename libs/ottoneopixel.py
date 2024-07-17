@@ -1,10 +1,10 @@
-# ottoneopixel v01 11.03.2024
-import neopixel, machine, utime
+# ottoneopixel v2.0 12.07.2024
+import neopixel, machine, utime, time
 from machine import Pin
 
 class OttoNeoPixel:
     
-    _brightness = 1
+    _brightness = 0.8
     
     def __init__(self, pin, ledcount):
         self._ledcount = ledcount
@@ -63,14 +63,63 @@ class OttoNeoPixel:
 
         return (int(red * self._brightness), int(green * self._brightness), int(blue * self._brightness))
 
+    def bounce(self, n, r, g, b, wait):
+        for i in range(2 * n):
+            for j in range(n):
+                self.pixels[j] = (r, g, b)
+            if (i / n) % 2 == 0:
+                self.pixels[i % n] = (0, 0, 0)
+            else: 
+                self.pixels[n - 1 - (i % n)] = (0, 0, 0)
+            self.pixels.write()
+            time.sleep_ms(wait)
+
+    def cycle(self, n, r, g, b, wait): 
+       for i in range(n): 
+           for j in range(n): 
+               self.pixels[j] = (0, 0, 0) 
+           self.pixels[i % n] = (r, g, b) 
+           self.pixels.write() 
+           time.sleep_ms(wait)
+
+    def wheel(self, pos):
+       if pos < 0 or pos > 255:
+          return (0, 0, 0)
+       if pos < 85:
+          return (255 - pos * 3, pos * 3, 0)
+       if pos < 170:
+           pos -= 85
+           return (0, 255 - pos * 3, pos * 3)
+       pos -= 170
+       return (pos * 3, 0, 255 - pos * 3)
+    
+    def rainbow_cycle(self, n, wait):
+       for j in range(255):
+           for i in range(n):
+               rc_index = (i * 256 // n) + j
+               self.pixels[i] = self.wheel(rc_index & 255)
+           self.pixels.write()
+           time.sleep_ms(wait)
+
+    def mazeCollect(self, colourValue):
+        self.fillAllRGBRing(colourValue)
+        time.sleep(2)
+        self.clearRGB()
+
 class OttoUltrasonic:
     
     _brightness = 1
-    
+    _io = 0
+    distance = 0
+
     def __init__(self, rgb, io):
         self.pixels = neopixel.NeoPixel(Pin(rgb), 6)
+        self._io = io
+    
+    def setBrightness(self, brightness):
+        self._brightness = brightness
         
-    def ultrasonicRGB(self, colourLeft, colourRight):
+    def ultrasonicRGB1(self, colourLeft, colourRight):
         self.pixels[0] = self.HexColorToRGB(colourLeft)
         self.pixels[1] = self.HexColorToRGB(colourLeft)
         self.pixels[2] = self.HexColorToRGB(colourLeft)
@@ -79,8 +128,32 @@ class OttoUltrasonic:
         self.pixels[5] = self.HexColorToRGB(colourRight)
         self.pixels.write()
     
-    def setultrasonicRGB(self, red, green, blue, lednumber):
-        self.pixels[lednumber] = (int( red * self._brightness), int(green * self._brightness), int(blue * self._brightness))
+    def ultrasonicRGB2(self, red, green, blue):
+        self.pixels[0] = (int(red * self._brightness), int(green * self._brightness), int(blue * self._brightness))
+        self.pixels[1] = (int(red * self._brightness), int(green * self._brightness), int(blue * self._brightness))
+        self.pixels[2] = (int(red * self._brightness), int(green * self._brightness), int(blue * self._brightness))
+        self.pixels[3] = (int(red * self._brightness), int(green * self._brightness), int(blue * self._brightness))
+        self.pixels[4] = (int(red * self._brightness), int(green * self._brightness), int(blue * self._brightness))
+        self.pixels[5] = (int(red * self._brightness), int(green * self._brightness), int(blue * self._brightness))
+        self.pixels.write()
+    
+    def setultrasonicRGBEye(self, red, green, blue, eyenumber):
+        if(eyenumber == 0):
+            self.pixels[0] = (int(red * self._brightness), int(green * self._brightness), int(blue * self._brightness))
+            self.pixels[1] = (int(red * self._brightness), int(green * self._brightness), int(blue * self._brightness))
+            self.pixels[2] = (int(red * self._brightness), int(green * self._brightness), int(blue * self._brightness))
+        else:
+            self.pixels[3] = (int(red * self._brightness), int(green * self._brightness), int(blue * self._brightness))
+            self.pixels[4] = (int(red * self._brightness), int(green * self._brightness), int(blue * self._brightness))
+            self.pixels[5] = (int(red * self._brightness), int(green * self._brightness), int(blue * self._brightness))
+        self.pixels.write()
+                
+    def setultrasonicRGBLed1(self, colour, lednumber):
+        self.pixels[lednumber] = self.HexColorToRGB(colour)
+        self.pixels.write()
+        
+    def setultrasonicRGBLed2(self, red, green, blue, lednumber):
+        self.pixels[lednumber] = (int(red * self._brightness), int(green * self._brightness), int(blue * self._brightness))
         self.pixels.write()
         
     def clearultrasonicRGB(self):
@@ -100,20 +173,20 @@ class OttoUltrasonic:
         return (int(red * self._brightness), int(green * self._brightness), int(blue * self._brightness))
             
     def readultrasonicRGB(self, unit):
-        io=19
-        io_pin = Pin(io, Pin.OUT)
+        io_pin = Pin(self._io, Pin.OUT)
         io_pin.off()
         utime.sleep_us(2)
         io_pin.on()
         utime.sleep_us(20)
         io_pin.off()
-        io_pin = Pin(io, Pin.IN)
+        io_pin = Pin(self._io, Pin.IN)
         pulse_duration = machine.time_pulse_us(io_pin, 1)
-        distance = 0
+        
         if ((pulse_duration < 60000) and (pulse_duration > 1)):
             if (unit == 0):
-                distance = pulse_duration / 147.32
+                self.distance = pulse_duration / 147.32
             else:
-                distance = pulse_duration / 58.00
-          
-        return distance
+                self.distance = pulse_duration / 58.00
+        print("D#" + str(self.distance) + "$")
+        return self.distance
+
