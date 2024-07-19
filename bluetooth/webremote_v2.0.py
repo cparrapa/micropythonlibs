@@ -1,4 +1,4 @@
-# otto starter webcontrol v02 17.06.2024
+# otto starter webcontrol v2.0 17.06.2024
 import random, ubluetooth, ottosensors
 from machine import Pin, Timer, PWM, ADC
 from time import sleep_ms
@@ -339,3 +339,4 @@ class BLE():
     def advertiser(self):
         name = bytes(self.name, 'UTF-8')
         self.ble.gap_advertise(100, bytes([0x02, 0x01, 0x02]) + bytes([len(name) + 1, 0x09]) + name)
+ble = BLE("Ottov2")

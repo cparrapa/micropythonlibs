@@ -1,4 +1,4 @@
-# otto starter webcontrol v03 30.06.2024
+# otto starter webcontrol v3.0 30.06.2024
 # v01, v02 Iván R. Artiles Bretón
 # v03 Iván R. Artiles Bretón, Alex Etchells
 # reference to ottomotor.Motors replaced with ottomptor.OttoMotor
@@ -399,3 +399,4 @@ class BLE():
         name = bytes(self.name, 'UTF-8')
         self.ble.gap_advertise(100, bytes([0x02, 0x01, 0x02]) + 
             bytes([len(name) + 1, 0x09]) + name)      
+ble = BLE("Ottov3")
