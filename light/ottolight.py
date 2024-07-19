@@ -15,9 +15,9 @@ class LightSensor:
     
     #return a value from 0 to 100
     def Read(self):
-        # 0 to 4095 where 4095 is dark
-        adcValue=self.adc.read()
         try:
+            # 0 to 4095 where 4095 is dark
+            adcValue=self.adc.read()
             return int((4095-adcValue)/40.95)
         except:
             return -1
