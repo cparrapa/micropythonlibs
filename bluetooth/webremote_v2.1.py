@@ -1,4 +1,4 @@
-# otto starter webcontrol v2.1 19.07.2024
+# otto starter webcontrol v2.1 23.07.2024 works with libraries 2.0
 import random, ubluetooth, ottosensors
 from machine import Pin, Timer, PWM, ADC
 from time import sleep_ms
@@ -8,7 +8,7 @@ from ottoneopixel import OttoUltrasonic
 from ottomotor import Motors
 led = Pin(2, Pin.OUT)                   # Built in LED
 buzzer = OttoBuzzer(25)                 # Built in Buzzer
-ultrasonic = OttoUltrasonic(18, 19)      # Connector 1
+ultrasonic = OttoUltrasonic(18, 19)     # Connector 1
 analog = Pin(26, Pin.IN)                # Connector 4
 n = 13                                  # Number of LEDs in ring
 ring = OttoNeoPixel(4, n)               # Connector 5
@@ -289,7 +289,7 @@ class BLE():
             elif 'U' in message:
                 ultrasonic.ultrasonicRGB1(message[7:],message[1:7])
             elif 'N' in message:
-                color1 = decodeColor(message[1:2])
+                color1 = decodeColor(message[13:14])
                 color2 = decodeColor(message[2:3])
                 color3 = decodeColor(message[3:4])
                 color4 = decodeColor(message[4:5])
@@ -301,7 +301,7 @@ class BLE():
                 color10 = decodeColor(message[10:11])
                 color11 = decodeColor(message[11:12])
                 color12 = decodeColor(message[12:13])
-                color13 = decodeColor(message[13:14])
+                color13 = decodeColor(message[1:2])
                 ring.fillRGBRing(color1, color2, color3, color4, color5, color6, color7, color8, color9, color10, color11, color12, color13)
             elif 'led-' in message:
                 print('LED Screen: ')
@@ -339,4 +339,5 @@ class BLE():
     def advertiser(self):
         name = bytes(self.name, 'UTF-8')
         self.ble.gap_advertise(100, bytes([0x02, 0x01, 0x02]) + bytes([len(name) + 1, 0x09]) + name)
+
 ble = BLE("Ottov2")

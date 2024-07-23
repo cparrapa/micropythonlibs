@@ -16,11 +16,11 @@ matrix = NeoPixel(Pin(16), 64)    # Connector 2
 i2c=machine.I2C(0,sda=Pin(21), scl=Pin(22), freq=400000) # Connector 3
 oled = SSD1306_I2C(128, 64, i2c)
 
-button = Pin(26, Pin.IN)          # Connector 4
-# Connector 5 tilt?
+button = Pin(26, Pin.IN)          # Connector 4 digital
+tilt = Pin(4, Pin.IN)             # Connector 5 digital
 
-pot=ADC(Pin(32))                  # Connector 6
-light=ADC(Pin(33))                # Connector 7
+pot=ADC(Pin(32))                  # Connector 6 analog
+light=ADC(Pin(33))                # Connector 7 analog
 
 pot.atten(ADC.ATTN_11DB)    
 light.atten(ADC.ATTN_0DB)
@@ -91,6 +91,19 @@ while True:
         buzzer.playNote(293, 125)
         buzzer.playNote(329, 125)
         buzzer.playNote(349, 125)
+    elif (tilt.value()) == (1):
+        draw("1111111111111111111111111111111111111111111111111111111111111111",0,0,30)
+        led.on()
+        oled.text('tilted!', 0, 48)
+        oled.show()
+        buzzer.playNote(261, 75)
+        buzzer.playNote(293, 75)
+        buzzer.playNote(329, 75)
+        buzzer.playNote(349, 75)
+        buzzer.playNote(392, 75)
+        buzzer.playNote(440, 75)
+        buzzer.playNote(493, 75)
+        buzzer.playNote(523, 75)
     else:
         output.value(0)
         led.off()
