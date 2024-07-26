@@ -1,0 +1,1 @@
+<xml xmlns="http://www.w3.org/1999/xhtml"><variables></variables><block type="event_whenplayclicked" id="}^Xg:jW-h7O?ksLFb:ke" deletable="false" x="510" y="170"><next><block type="playBuzzer" id="@[5f[J:4h0{OXpzpbhM."><value name="NOTE"><shadow type="note_input" id=".2F_4a~/R]Y/YAQ58sQ)"><field name="NOTE">392</field></shadow></value></block></next></block></xml>
