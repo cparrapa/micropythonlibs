@@ -1,4 +1,8 @@
-# ottoneopixel v2.0 12.07.2024
+# ottoneopixel v3.0 07.08.2024
+
+# v3.0 addition of colorHSV, set_pixel_line_gradient,  rotate_left, rotate_right
+
+
 import neopixel, machine, utime, time
 from machine import Pin
 
@@ -9,6 +13,7 @@ class OttoNeoPixel:
     def __init__(self, pin, ledcount):
         self._ledcount = ledcount
         self.pixels = neopixel.NeoPixel(Pin(pin), ledcount)
+        self.pixValues = [(0, 0, 0),(0, 0, 0),(0, 0, 0),(0, 0, 0),(0, 0, 0),(0, 0, 0),(0, 0, 0),(0, 0, 0),(0, 0, 0),(0, 0, 0),(0, 0, 0),(0, 0, 0),(0, 0, 0)]
         
     def setBrightness(self, brightness):
         self._brightness = brightness
@@ -105,6 +110,134 @@ class OttoNeoPixel:
         self.fillAllRGBRing(colourValue)
         time.sleep(2)
         self.clearRGB()
+
+    def colorHSV(self, hue, sat, val):
+        """
+        Converts HSV color to rgb tuple and returns it.
+        The logic is almost the same as in Adafruit NeoPixel library:
+        https://github.com/adafruit/Adafruit_NeoPixel so all the credits for that
+        go directly to them (license: https://github.com/adafruit/Adafruit_NeoPixel/blob/master/COPYING)
+
+        :param hue: Hue component. Should be on interval 0..65535
+        :param sat: Saturation component. Should be on interval 0..255
+        :param val: Value component. Should be on interval 0..255
+        :return: (r, g, b) tuple
+        """
+        if hue >= 65536:
+            hue %= 65536
+
+        hue = (hue * 1530 + 32768) // 65536
+        if hue < 510:
+            b = 0
+            if hue < 255:
+                r = 255
+                g = hue
+            else:
+                r = 510 - hue
+                g = 255
+        elif hue < 1020:
+            r = 0
+            if hue < 765:
+                g = 255
+                b = hue - 510
+            else:
+                g = 1020 - hue
+                b = 255
+        elif hue < 1530:
+            g = 0
+            if hue < 1275:
+                r = hue - 1020
+                b = 255
+            else:
+                r = 255
+                b = 1530 - hue
+        else:
+            r = 255
+            g = 0
+            b = 0
+
+        v1 = 1 + val
+        s1 = 1 + sat
+        s2 = 255 - sat
+
+        r = ((((r * s1) >> 8) + s2) * v1) >> 8
+        g = ((((g * s1) >> 8) + s2) * v1) >> 8
+        b = ((((b * s1) >> 8) + s2) * v1) >> 8
+
+        return r, g, b
+
+    def set_pixel_line_gradient(self, pixel1, pixel2, left_rgb, right_rgb):
+        """
+        Create a gradient with two RGB colors between "pixel1" and "pixel2" (inclusive)
+
+        :param pixel1: Index of starting pixel (inclusive)
+        :param pixel2: Index of ending pixel (inclusive)
+        :param left_rgb: Tuple of form (r, g, b) representing starting color
+        :param right_rgb: Tuple of form (r, g, b)  ending color        
+        :return: None
+        """
+        if pixel2 - pixel1 == 0:
+            return
+        right_pixel = max(pixel1, pixel2)
+        left_pixel = min(pixel1, pixel2)
+
+        r_diff = right_rgb[0] - left_rgb[0]
+        g_diff = right_rgb[1] - left_rgb[1]
+        b_diff = right_rgb[2] - left_rgb[2]
+        for i in range(right_pixel - left_pixel + 1):
+            fraction = i / (right_pixel - left_pixel)
+            red = round(r_diff * fraction + left_rgb[0])
+            green = round(g_diff * fraction + left_rgb[1])
+            blue = round(b_diff * fraction + left_rgb[2])
+            self.setRGBLed(red, green, blue, left_pixel + i)
+
+    def rotate_left(self, num_of_pixels=None):
+        """
+        Rotate <num_of_pixels> pixels to the left
+
+        :param num_of_pixels: Number of pixels to be shifted to the left. If None, it shifts for 1.
+        :return: None
+        """
+        n = self._ledcount
+        if num_of_pixels is None:
+            num_of_pixels = 1
+        if num_of_pixels < 1:
+            num_of_pixels = 1
+        if num_of_pixels > n-1:
+            num_of_pixels = n-1
+        for i in range(n):
+            self.pixValues[i] = self.pixels[i]
+        for i in range(n):
+            newIndex = i - num_of_pixels
+            if newIndex < 0:
+                newIndex += n
+            self.pixels[newIndex] = self.pixValues[i]
+        self.pixels.write()
+
+    def rotate_right(self, num_of_pixels=None):
+        """
+        Rotate <num_of_pixels> pixels to the right
+
+        :param num_of_pixels: Number of pixels to be shifted to the right. If None, it shifts for 1.
+        :return: None
+        """
+        n = self._ledcount
+        if num_of_pixels is None:
+            num_of_pixels = 1
+        if num_of_pixels < 1:
+            num_of_pixels = 1
+        if num_of_pixels > n-1:
+            num_of_pixels = n-1
+        for i in range(n):
+            self.pixValues[i] = self.pixels[i]
+        for i in range(n):
+            newIndex = i + num_of_pixels
+            if newIndex >= n:
+                newIndex -= n
+            self.pixels[newIndex] = self.pixValues[i]
+        self.pixels.write()
+
+
 
 class OttoUltrasonic:
     
