@@ -14,7 +14,7 @@ if __name__ == "__main__":
     #led=PWM(Pin(2), 5000)
 
     # Create an ADC object linked to pin 36
-    adc = ADC(Pin(26, mode=Pin.IN)) #Connector 4
+    adc = ADC(Pin(32, mode=Pin.IN)) #Connector 4
     #pot = ADC(Pin(26))             #creating potentiometer object
     adc.atten(ADC.ATTN_11DB)    
     #ADC.ATTN_0DB — the full range voltage: 1.2V

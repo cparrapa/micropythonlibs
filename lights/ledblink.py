@@ -1,10 +1,16 @@
+import time
 from time import sleep
 from machine import Pin
 
-led = Pin(2, Pin.OUT) # Built in LED
+print("Hello World")
+led = Pin(2, Pin.OUT)  # Built in LED
 
 while True:
- led.on()
- sleep(1)
- led.off()
- sleep(1)
+    led.on()
+    #led.value(1)
+    time.sleep_ms(1000)
+    #sleep(1)
+    led.off()
+    #led.value(0)
+    time.sleep_ms(1000)
+    #sleep(1)
