@@ -248,6 +248,9 @@ class OttoNeoPixel:
     def setMatrixPixel(self,x,y,r,g,b):
         if x>7 or x<0 or y>7 or y<0:
             return
+        r = int(r  * self._brightness)
+        g = int(g  * self._brightness)
+        b = int(b  * self._brightness)      
         pixelPos = x + (y*8)
         self.pixels[pixelPos] = (r,g,b)
         self.pixels.write()
