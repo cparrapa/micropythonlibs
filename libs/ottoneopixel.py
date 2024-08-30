@@ -1,6 +1,9 @@
-# ottoneopixel v3.0 07.08.2024
+# ottoneopixel v4.0 30.08.2024
 
-# v3.0 addition of colorHSV, set_pixel_line_gradient,  rotate_left, rotate_right
+# v3.0 07.08.2024 Alex Etchells: addition of colorHSV, set_pixel_line_gradient,  rotate_left, rotate_right
+#
+# v4.0 30.08.2024 Alex Etchells: Additon of 4x4 Matrix Functions
+# setMatrixPixel, drawLine, drawTriangle, drawRectangle, drawRectangleFill, drawCircle
 
 
 import neopixel, machine, utime, time
@@ -166,6 +169,7 @@ class OttoNeoPixel:
 
         return r, g, b
 
+
     def set_pixel_line_gradient(self, pixel1, pixel2, left_rgb, right_rgb):
         """
         Create a gradient with two RGB colors between "pixel1" and "pixel2" (inclusive)
@@ -214,6 +218,8 @@ class OttoNeoPixel:
             self.pixels[newIndex] = self.pixValues[i]
         self.pixels.write()
 
+
+
     def rotate_right(self, num_of_pixels=None):
         """
         Rotate <num_of_pixels> pixels to the right
@@ -236,6 +242,145 @@ class OttoNeoPixel:
                 newIndex -= n
             self.pixels[newIndex] = self.pixValues[i]
         self.pixels.write()
+        
+    """  8x8 RGB matrix functions   """    
+        
+    def setMatrixPixel(self,x,y,r,g,b):
+        if x>7 or x<0 or y>7 or y<0:
+            return
+        pixelPos = x + (y*8)
+        self.pixels[pixelPos] = (r,g,b)
+        self.pixels.write()
+
+    def drawLine(self, x0: int, y0: int, x1: int, y1: int, r: int,g: int,b: int):
+        """
+        draws a line from x0,y0 to x1,y1 of colour r,g,b
+        """
+        steep = abs(y1-y0) > abs(x1-x0)
+        
+        if steep:
+            # Swap x/y
+            tmp = x0
+            x0 = y0
+            y0 = tmp
+            
+            tmp = y1
+            y1 = x1
+            x1 = tmp
+        
+        if x0 > x1:
+            # Swap start/end
+            tmp = x0
+            x0 = x1
+            x1 = tmp
+            tmp = y0
+            y0 = y1
+            y1 = tmp
+        
+        dx = x1 - x0;
+        dy = int(abs(y1-y0))
+        
+        err = dx >> 1 # Divide by 2
+        
+        if(y0 < y1):
+            ystep = 1
+        else:
+            ystep = -1
+            
+        while x0 <= x1:
+            if steep:
+                self.setMatrixPixel(y0, x0, r,g,b)
+            else:
+                self.setMatrixPixel(x0, y0, r,g,b)
+            err -= dy
+            if err < 0:
+                y0 += ystep
+                err += dx
+            x0 += 1
+
+
+    def drawTriangle(self, x0,y0, x1, y1, x2, y2, r,g,b):
+        """
+        Draws a triangle with corners at (x0,y0), (x1, y1), and (x2,y2). All lines are drawn with the specified r,g,b
+        :param x0 The x coordinate of the first vertex
+        :param y0 The y coordinate of the first vertex
+        :param x1 The x coordinate of the second vertex
+        :param y1 The y coordinate of the second vertex
+        :param x2 The x coordinate of the third vertex
+        :param y2 The y coordinate of the third vertex
+        :params r,g,b  rgb values
+        """
+        self.drawLine(x0, y0, x1, y1, r,g,b)
+        self.drawLine(x1, y1, x2, y2, r,g,b)
+        self.drawLine(x2, y2, x0, y0, r,g,b)
+     
+    def drawRectangle(self, x0, y0, x1, y1, r,g,b):
+        """
+        Draws a rectangle with upper-left corner (x0,y0) and lower right corner (x1, y1). All edge lines are drawn with the specified r,g,b.
+        Pixels inside the rectangle are left unmodified.
+
+        :param x0 The x coordinate of the upper left corner
+        :param y0 The y coordinate of the upper left corner
+        :param x1 The x coordinate of the lower right corner
+        :param y1 The y coordinate of the lower right corner
+        :params r,g,b  rgb values
+        """
+        self.drawLine(x0, y0, x1, y0, r,g,b)
+        self.drawLine(x1, y0, x1, y1, r,g,b)
+        self.drawLine(x1, y1, x0, y1, r,g,b)
+        self.drawLine(x0, y1, x0, y0, r,g,b)
+        
+
+
+    def drawRectangleFill(self, x0: int, y0: int, x1: int, y1: int, r,g,b):
+        """
+        Draws a rectangle with upper-left corner (x0,y0) and lower right corner (x1, y1). The rectangle is then filled to form a solid block of the specified r,g,b.
+        
+        :param x0 The x coordinate of the upper left corner
+        :param y0 The y coordinate of the upper left corner
+        :param x1 The x coordinate of the lower right corner
+        :param y1 The y coordinate of the lower right corner
+        :params r,g,b  rgb values
+        """
+        for x in range(x0, x1+1):
+            for y in range(y0, y1+1):
+                self.setMatrixPixel(x,y,r,g,b)
+
+
+    def drawCircle(self, x0, y0, rad, r,g,b):
+        """
+        Draws a circle with center (self, x0,y0) and radius rad. The circle outline is drawn in the specified r,g,b. Pixels inside the circle are not modified.
+         
+        :param x0 The x coordinate of the circle center
+        :param y0 The y coordinate of the circle center
+        :params r,g,b  rgb values
+        """
+        f = 1-rad
+        ddf_x = 1
+        ddf_y = -2*rad
+        x = 0
+        y = rad
+        self.setMatrixPixel(x0, y0 + rad, r,g,b)
+        self.setMatrixPixel(x0, y0 - rad, r,g,b)
+        self.setMatrixPixel(x0 + rad, y0, r,g,b)
+        self.setMatrixPixel(x0 - rad, y0, r,g,b)
+        
+        while x < y:
+            if f >= 0: 
+                y -= 1
+                ddf_y += 2
+                f += ddf_y
+            x += 1
+            ddf_x += 2
+            f += ddf_x
+            self.setMatrixPixel(x0 + x, y0 + y, r,g,b)
+            self.setMatrixPixel(x0 - x, y0 + y, r,g,b)
+            self.setMatrixPixel(x0 + x, y0 - y, r,g,b)
+            self.setMatrixPixel(x0 - x, y0 - y, r,g,b)
+            self.setMatrixPixel(x0 + y, y0 + x, r,g,b)
+            self.setMatrixPixel(x0 - y, y0 + x, r,g,b)
+            self.setMatrixPixel(x0 + y, y0 - x, r,g,b)
+            self.setMatrixPixel(x0 - y, y0 - x, r,g,b)
 
 
 
