@@ -1,10 +1,11 @@
-# ottoneopixel v4.0 30.08.2024
+# ottoneopixel v4.1 01.09.2024
 
 # v3.0 07.08.2024 Alex Etchells: addition of colorHSV, set_pixel_line_gradient,  rotate_left, rotate_right
 #
 # v4.0 30.08.2024 Alex Etchells: Additon of 4x4 Matrix Functions
 # setMatrixPixel, setMatrixRow, setMatrixCol, drawLine, drawTriangle, drawRectangle, drawRectangleFill, drawCircle
-
+# v4.1 01.09.2024 Alex Etchells: Additon of 4x4 Matrix Functions
+# Created OttoRGBMatrix subclass
 
 import neopixel, machine, utime, time
 from machine import Pin
@@ -243,7 +244,11 @@ class OttoNeoPixel:
             self.pixels[newIndex] = self.pixValues[i]
         self.pixels.write()
         
-    """  8x8 RGB matrix functions   """    
+    """  8x8 RGB matrix functions   """
+class OttoRGBMatrix(OttoNeoPixel):
+    
+    def __init__(self, pin, ledcount):
+        super().__init__(pin, ledcount)       
         
     def setMatrixPixel(self,x,y,r,g,b):
         if x>7 or x<0 or y>7 or y<0:
