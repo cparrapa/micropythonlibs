@@ -3,7 +3,7 @@
 # v3.0 07.08.2024 Alex Etchells: addition of colorHSV, set_pixel_line_gradient,  rotate_left, rotate_right
 #
 # v4.0 30.08.2024 Alex Etchells: Additon of 4x4 Matrix Functions
-# setMatrixPixel, drawLine, drawTriangle, drawRectangle, drawRectangleFill, drawCircle
+# setMatrixPixel, setMatrixRow, setMatrixCol, drawLine, drawTriangle, drawRectangle, drawRectangleFill, drawCircle
 
 
 import neopixel, machine, utime, time
@@ -247,13 +247,34 @@ class OttoNeoPixel:
         
     def setMatrixPixel(self,x,y,r,g,b):
         if x>7 or x<0 or y>7 or y<0:
-            return
+            return        
         r = int(r  * self._brightness)
         g = int(g  * self._brightness)
-        b = int(b  * self._brightness)      
+        b = int(b  * self._brightness)        
         pixelPos = x + (y*8)
         self.pixels[pixelPos] = (r,g,b)
         self.pixels.write()
+
+    def setMatrixRow(self, row, rgb = [(0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0)], drawNow = False):
+        for i in range(8):
+            r = int(rgb[i][0]  * self._brightness)
+            g = int(rgb[i][1]  * self._brightness)
+            b = int(rgb[i][2]  * self._brightness)         
+            pixelPos = i + (row*8)
+            self.pixels[pixelPos] = (r,g,b) 
+        if drawNow:
+            self.pixels.write()
+
+    def setMatrixCol(self, col, rgb = [(0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0)], drawNow = False):
+        for i in range(8):
+            r = int(rgb[i][0]  * self._brightness)
+            g = int(rgb[i][1]  * self._brightness)
+            b = int(rgb[i][2]  * self._brightness)         
+            pixelPos = col + (i*8)
+            self.pixels[pixelPos] = (r,g,b) 
+        if drawNow:
+            self.pixels.write()
+
 
     def drawLine(self, x0: int, y0: int, x1: int, y1: int, r: int,g: int,b: int):
         """
