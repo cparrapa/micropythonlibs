@@ -50,3 +50,5 @@ Battery pin:    GPIO 39
 The best version of MicroPython to use the remote control is v1.19.
 
 The most recent version of MicroPython (v1.22) has problems handling Modes widget changes but has good update on the OLED library for using elipses.
+
+Jin
