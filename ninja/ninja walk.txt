@@ -1,0 +1,55 @@
+import machine, time                       #importing machine and time libraries
+from time import sleep                     #importing sleep class
+from machine import Pin, ADC, PWM          #importing Pin, ADC and PWM classes
+from neopixel import NeoPixel
+from ottoneopixel import OttoNeoPixel
+from ottobuzzer import OttoBuzzer
+from ottomotor import OttoMotor
+from ottomotor import Servo
+import time
+
+led = Pin(2, Pin.OUT)                 # Built in LED
+buzzer = OttoBuzzer(25)               # Built in Buzzer
+ultrasonic = NeoPixel(Pin(18), 6)     # Connector 1
+io = 19                               # echo input and trigger out signal
+bright = 0.8                          # brightness variable for lights
+n = 13                                # Number of LEDs in ring
+ring = OttoNeoPixel(4, n)             # Connector 5
+analogL=ADC(Pin(32))                  # Connector 6
+analogR=ADC(Pin(33))                  # Connector 7
+digitalL = Pin(27, Pin.IN)            # Connector 8
+digitalR = Pin(15, Pin.IN)            # Connector 9
+motor = OttoMotor(13, 14)             # Connectors 10 & 11
+offsetL = 0                           # Calibration for left servo motor
+offsetR = 0                           # Calibration for right servo motor
+servo_15=Servo()
+servo_15.attach(15)
+servo_14=Servo()
+servo_14.attach(14)
+servo_13=Servo()
+servo_13.attach(13)
+servo_27=Servo()
+servo_27.attach(27)
+
+delay = 0.5
+while True:
+    servo_15.write(90)
+    servo_14.write(90)
+    time.sleep(delay)
+    servo_15.write(107)
+    servo_14.write(125)
+    time.sleep(delay)
+    servo_13.write(125)
+    time.sleep(delay)
+    servo_13.write(90)
+    time.sleep(delay)
+    servo_15.write(90)
+    servo_14.write(90)
+    time.sleep(delay)
+    servo_15.write(46)
+    servo_14.write(54)
+    time.sleep(delay)
+    servo_27.write(55)
+    time.sleep(delay)
+    servo_27.write(90)
+    time.sleep(delay)
