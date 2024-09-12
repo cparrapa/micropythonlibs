@@ -1,5 +1,5 @@
-# ottoninja v0 28.05.2024
-import time
+# ottoninja v1 12.09.2024
+from time import sleep               #importing sleep class
 from machine import Pin, PWM
 from ottomotor import Servo
 
@@ -15,38 +15,30 @@ class Ninja:
         self.rightfootServo.attach(RF)
         
     def Rollset(self):
-        self.leftlegServo.write(0)
-        self.rightlegServo.write(180)
+        self.leftlegServo.write(180)
+        self.rightlegServo.write(0)
         
     def Roll(self, direction, speed):
         if(direction == -1): #backward
-            if(speed == 1):
-                leftSpeed = 80
-            elif(speed == 2):
+            if(speed == 1): #slow
+                leftSpeed = 60
+                rightSpeed = 110
+            elif(speed == 2): #normal
                 leftSpeed = 40
-            elif(speed == 3):
-                leftSpeed = 0
-
-            if(speed == 1):
-                rightSpeed = 100
-            elif(speed == 2):
                 rightSpeed = 140
-            elif(speed == 3):
+            elif(speed == 3): #fast
+                leftSpeed = 0
                 rightSpeed = 180
                 
         else: #(direction == 1) forward
             if(speed == 1):
-                leftSpeed = 100
+                leftSpeed = 115
+                rightSpeed = 70
             elif(speed == 2):
                 leftSpeed = 140
-            elif(speed == 3):
-                leftSpeed = 180
-            
-            if(speed == 1):
-                rightSpeed = 80
-            elif(speed == 2):
                 rightSpeed = 40
             elif(speed == 3):
+                leftSpeed = 180
                 rightSpeed = 0
                 
         self.leftfootServo.write(leftSpeed)
@@ -63,7 +55,7 @@ class Ninja:
             
         self.leftfootServo.write(leftSpeed)
         self.rightfootServo.write(rightSpeed)
-        time.sleep(1)
+        sleep(1)
         self.leftfootServo.write(90)
         self.rightfootServo.write(90)
         
@@ -78,54 +70,52 @@ class Ninja:
     def Walk(self, direction, speed):
         if(direction == -1): #backward
             if(speed == 1):
-                leftSpeed = 80
+                leftSpeed = 70
+                rightSpeed = 120
+                delay = 1
             elif(speed == 2):
-                leftSpeed = 40
-            elif(speed == 3):
-                leftSpeed = 0
-
-            if(speed == 1):
-                rightSpeed = 100
-            elif(speed == 2):
+                leftSpeed = 50
                 rightSpeed = 140
+                delay = 0.5
             elif(speed == 3):
-                rightSpeed = 180
+                leftSpeed = 30
+                rightSpeed = 160
+                delay = 0.3
                 
         else: #(direction == 1) forward
             if(speed == 1):
-                leftSpeed = 100
+                leftSpeed = 120
+                rightSpeed = 70
+                delay = 1
             elif(speed == 2):
                 leftSpeed = 140
+                rightSpeed = 50
+                delay = 0.5
             elif(speed == 3):
-                leftSpeed = 180
-            
-            if(speed == 1):
-                rightSpeed = 80
-            elif(speed == 2):
-                rightSpeed = 40
-            elif(speed == 3):
-                rightSpeed = 0
+                leftSpeed = 160
+                rightSpeed = 30
+                delay = 0.3
                 
         self.leftlegServo.write(90)
         self.rightlegServo.write(90)
-        time.sleep(1)
-        self.rightlegServo.write(107)
-        self.leftlegServo.write(125)
-        time.sleep(1)
-        self.rightfootServo.write(125)
-        time.sleep(1)
-        self.rightfootServo.write(90)
-        time.sleep(1)
+        sleep(delay)
+        self.rightlegServo.write(150)
+        self.leftlegServo.write(120)
+        sleep(delay)
+        self.leftfootServo.write(leftSpeed)
+        sleep(0.6)
+        self.leftfootServo.write(90)
+        sleep(delay)
         self.leftlegServo.write(90)
         self.rightlegServo.write(90)
-        time.sleep(1)
-        self.rightlegServo.write(46)
-        self.leftlegServo.write(54)
-        time.sleep(1)
-        self.leftfootServo.write(55)
-        time.sleep(1)
-        self.leftfootServo.write(90)
-        time.sleep(1)
+        sleep(delay)
+        self.rightlegServo.write(60)
+        self.leftlegServo.write(30)
+        sleep(delay)
+        self.rightfootServo.write(rightSpeed)
+        sleep(0.6)
+        self.rightfootServo.write(90)
+        sleep(delay)
         self.leftlegServo.write(90)
         self.rightlegServo.write(90)
         
@@ -134,5 +124,3 @@ class Ninja:
         self.rightfootServo.write(90)
         self.leftlegServo.write(60)
         self.rightlegServo.write(120)
-
-
