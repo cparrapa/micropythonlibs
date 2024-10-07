@@ -2,13 +2,14 @@
 Set of micro Python libraries and example codes to use with HP Robots Otto starter with all expansions and more.
 [version of MicroPython (v1.22)](https://micropython.org/download/ESP32_GENERIC/)
 
-## blocks folder 
-Examples that work in webcode. This will help beginners to do transition. The idea is to have for every example both text and block versions.
-
 ## libraries
-In order for the examples to work, FIRST save all the [**files in libs must be uploaded**](https://github.com/cparrapa/micropythonlibs/tree/main/libs) to the circuit board in advance. 
+In order for the examples to work, FIRST [**all files in libraries must be uploaded**](https://github.com/cparrapa/micropythonlibs/tree/main/libraries) to the circuit board in advance. Some are WIP (work in progress) not even functional.
 
-Then navigate by folder or component to try examples:
+## blocks examples 
+Examples that work in [webcode icons, words or AI](https://hprobots.com/otto-code/webcode/webcode.html). This will help beginners to do the transition to text code. The idea is to have for every example both block and text version.
+
+## code examples
+The actual micropython text code demos, navigate by folder/component:
 
 * accelerometer: examples with ADXL345 sensor. (TESTED)
 * biped: it is supposed to be a replica of the classic Otto (WIP).
@@ -17,7 +18,7 @@ Then navigate by folder or component to try examples:
 * button: simple digital input (TESTED)
 * buzzer: sounds for embedded PCB piezo (TESTED)
 * color: sensor based on tcs34725 but chip is End Of Life (WIP)
-* encoder: The use of encoder needs to be converted into the ottoencoder.py library. (WIP)
+* encoder: The use of encoder needs to be converted into the ottoencoder.py library. we have not decide on which library is best (WIP)
 * light: simple LDR sensor (WIP)
 * line: infrared sensors for line tracking but could be adapted for other applications (TESTED)
 * matrix: multiple LED matrix, RGB 8x8 will be the main; missing mouths and emojis and ottomatrix.py library. (WIP)
@@ -37,7 +38,7 @@ Then navigate by folder or component to try examples:
 
 New components and examples are always welcome!
 
-## wirings folder 
+## wirings 
 includes some of the default connections and circuit diagrams that are mostly used in the examples, as well as the GPIO pin numbers for the main circuit board, but always double check GPIO pins with their respective connector #:
 
 * Built in LED:  GPIO 2
@@ -53,3 +54,11 @@ includes some of the default connections and circuit diagrams that are mostly us
 * Connector #9:  GPIO 15
 * Connector #10: GPIO 13
 * Connector #11: GPIO 33
+
+## 3d print stl
+You will find all 3D printable files in this folder sorted by type of modularity, with some exception prebuilds.
+* top:  head part commonly use for LED ring or sensors, it could allocate anything that fits or make it taller if required.
+* middle: the band that initially fits only the main circuit board and battery but also for spacers.
+* face: this modifies greatly the appearance of the robot you could fit multiple displays and even sensors.
+* bottom: any propulsion system you want is going to be likely here.
+* bumper: more on the accessory side but it has great potential for multiple extra devices and attachments. 
