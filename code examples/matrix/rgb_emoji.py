@@ -4,7 +4,7 @@ from neopixel import NeoPixel
 
 brightm = 0.3 # brightness variable for lights
 nm = 64       # total number of pixels in the matrix
-matrix = NeoPixel(Pin(16), nm) # control gpio pin, connector 2
+matrix = NeoPixel(Pin(22), nm) # Connector 3
 
 matrix.fill((255,255,0))
 matrix.write()

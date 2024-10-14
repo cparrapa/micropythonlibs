@@ -4,7 +4,7 @@ import dht
 import time
 
 # Initialize I2C for OLED
-i2c = SoftI2C(scl=Pin(22), sda=Pin(21))
+i2c = SoftI2C(scl=Pin(18), sda=Pin(19)) # Connector 1
 
 # Scan for I2C devices
 devices = i2c.scan()

@@ -4,7 +4,7 @@ from neopixel import NeoPixel
 
 brightm = 0.5  # brightness
 nm = 64        # total number of pixels in the matrix
-matrix = NeoPixel(Pin(16), nm) # Connector 2
+matrix = NeoPixel(Pin(22), nm) # Connector 3
 tempo= 0.01
 
 matrix.fill((0,255,255))

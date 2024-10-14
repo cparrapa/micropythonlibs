@@ -13,7 +13,7 @@ buzzer = OttoBuzzer(25)               # Built in Buzzer
 motor = OttoMotor(13, 14)             # Connectors 10 & 11
 
 #OLED setup
-i2c = I2C(scl=Pin(22), sda=Pin(21), freq=400000) 
+i2c = I2C(scl=Pin(18), sda=Pin(19), freq=400000) # Connector 1
 oled = SSD1306_I2C(128, 64, i2c, addr=0x3C)
 
 n = 13
@@ -266,7 +266,7 @@ while True:
     buzzer.playEmoji("S_surprise")
     time.sleep(3)
     oled.fill(0)
-    oled = OttoOled(21, 22)
+    oled = OttoOled(19, 18) # Connector 1
     oled.Eyes1Draw()
     oled.Mouth1Draw()
     oled.showDisplay()

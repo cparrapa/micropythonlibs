@@ -2,7 +2,7 @@ from machine import Pin, I2C, RTC
 from time import sleep_ms 
 from ssd1306 import SSD1306_I2C
 
-i2c = I2C(scl=Pin(22), sda=Pin(21), freq=400000) 
+i2c = I2C(scl=Pin(18), sda=Pin(19), freq=400000) # Connector 1
 oled = SSD1306_I2C(128, 64, i2c, addr=0x3C)
 
 rtc = RTC() 

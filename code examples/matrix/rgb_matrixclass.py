@@ -1,5 +1,4 @@
 import time, machine, neopixel
-from time import sleep, sleep_ms
 from machine import Pin, reset
 from neopixel import NeoPixel
 
@@ -26,7 +25,7 @@ class RGB_Matrix:
         self.neopixel.fill((0,0,0))
         self.neopixel.write()
 
-matrix = RGB_Matrix(16, 8, 8) # Connector 2, 8x8 =64
+matrix = RGB_Matrix(22, 8, 8) # Connector 3, 8x8 =64
 
 matrix.pixel_set(0,0,255,0,0) # draw a red pixel at the top left corner
 matrix.pixel_set(7,0,0,255,0) # draw a green pixel at the lower left corner

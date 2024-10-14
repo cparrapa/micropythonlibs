@@ -3,7 +3,7 @@ from machine import Pin
 from neopixel import NeoPixel
 
 class LedDisplay:
-    def __init__(self, pin=16, num_pixels=128, brg=0.1):
+    def __init__(self, pin=22, num_pixels=128, brg=0.1): # Connector 3
         self.brg = brg
         self.pixels = NeoPixel(Pin(pin), num_pixels)
         self.default_color = (int(102 * self.brg), int(0 * self.brg), int(204 * self.brg))

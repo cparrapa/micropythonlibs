@@ -3,7 +3,7 @@ from machine import Pin
 from neopixel import NeoPixel
 
 nm = 64 # total number of pixels in the matrix
-matrix = NeoPixel(Pin(16), nm) # Connector 2
+matrix = NeoPixel(Pin(22), nm) # Connector 3
 
 def wheel(pos):
     # Input a value 0 to 255 to get a color value.

@@ -5,7 +5,7 @@ from ottooled import OttoOled
 from machine import Pin, I2C
 import array # Needed for polygons
 
-i2c = I2C(scl=Pin(22), sda=Pin(21), freq=400000) 
+i2c = I2C(scl=Pin(18), sda=Pin(19), freq=400000) # Connector 1
 oled = SSD1306_I2C(128, 64, i2c, addr=0x3C)
 
 # #1. To print a string:  
@@ -82,7 +82,7 @@ oled.poly(0,0, triangle, 1, ) # Outline
 oled.show()
 time.sleep(0.5)
 
-oled = OttoOled(21, 22)
+oled = OttoOled(19, 18) # Connector 1
 oled.clearDisplay()
 oled.writeTextDisplay("1234567890", 0, 20)
 oled.showDisplay()

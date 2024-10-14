@@ -33,27 +33,31 @@ The actual micropython text code demos, navigate by folder/component:
 * ring: use of the LED RGB ring and also built-in LED. (TESTED)
 * temphumi: DHT 11 & 22 temperature and humidity sensor (TESTED)
 * tilt: simple digital input (TESTED)
+* showcase: set of selected codes for demostrations (TESTED)
 * ultrasonic: Distance sonar sensor needs more examples (WIP)
 * wifi: everything related to the use of WiFi web servers, IoT applications, etc. (WIP)
 
 New components and examples are always welcome!
 
 ## wirings 
-includes some of the default connections and circuit diagrams that are mostly used in the examples, as well as the GPIO pin numbers for the main circuit board, but always double check GPIO pins with their respective connector #:
+Includes some of the default connections and circuit diagrams that are mostly used in the examples, as well as the GPIO pin numbers for the main circuit board, but always double check GPIO pins defined in the code with their respective connector #:
 
-* Built in LED:  GPIO 2
-* Buzzer pin:    GPIO 25
-* Battery pin:   GPIO 39 
-* Connector #1:  GPIO 18 & 19
-* Connector #2:  GPIO 16 & 17 
-* Connector #3:  GPIO 22 & 21 (I2C SCL & SDA) 
-* Connector #5:  GPIO 4 
-* Connector #6:  GPIO 32 (ADC good for analog inputs) 
-* Connector #7:  GPIO 33 (ADC good for analog inputs) 
-* Connector #8:  GPIO 27
-* Connector #9:  GPIO 15
-* Connector #10: GPIO 13
-* Connector #11: GPIO 33
+* Built in LED:    GPIO 2
+* Built in Buzzer: GPIO 25
+* Battery voltage: GPIO 39 
+* Connector #1:  GPIO 18 & 19 (ultrasonic or OLED)
+* Connector #2:  GPIO 16 & 17 (mp3 or encoder)
+* Connector #3:  GPIO 22 & 21 I2C SCL & SDA (matrix or accelerometer)
+* Connector #4:  GPIO 26 (tilt or button)
+* Connector #5:  GPIO 4  (LED ring or temperature sensor)
+* Connector #6:  GPIO 32 ADC good for analog inputs (line sensor left or microphone) 
+* Connector #7:  GPIO 33 ADC good for analog inputs (line sensor right or potentiometer or light sensor) 
+* Connector #8:  GPIO 27 (servo angle right)
+* Connector #9:  GPIO 15 (servo angle right)
+* Connector #10: GPIO 13 (servo wheel left)
+* Connector #11: GPIO 33 (servo wheel right)
+
+Take into account the components assigment to the GPIO are default connections, you can rearrange depending on your application. 
 
 ## 3d print stl
 You will find all 3D printable files in this folder sorted by type of modularity, with some exception prebuilds.

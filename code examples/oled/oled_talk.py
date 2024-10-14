@@ -9,7 +9,7 @@ import random
 offset = 0
 
 microphone = Pin(33, Pin.IN, Pin.OUT)
-oled = OttoOled(21, 22)
+oled = OttoOled(19, 18) # Connector 1
 
 n = 0
 last = 0

@@ -2,8 +2,8 @@ import ssd1306, utime, machine
 from machine import Pin, I2C
 from ssd1306 import SSD1306_I2C
 
-sda=machine.Pin(21)
-scl=machine.Pin(22)
+scl=machine.Pin(18) # Connector 1
+sda=machine.Pin(19)
 
 i2c=I2C(0,sda=sda, scl=scl, freq=400000)
 display = SSD1306_I2C(128, 64, i2c)

@@ -7,8 +7,8 @@ from ssd1306 import SSD1306_I2C
 WIDTH = 128
 HEIGHT = 64
 
-sda=machine.Pin(21)
-scl=machine.Pin(22)
+scl=machine.Pin(18) # Connector 13
+sda=machine.Pin(19)
 i2c=machine.I2C(0,sda=sda, scl=scl)
 # Screen size
 width=128

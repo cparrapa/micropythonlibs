@@ -8,11 +8,10 @@ from ssd1306 import SSD1306_I2C  # Make sure you have this library
 led = Pin(2, Pin.OUT)                 # Built in LED
 buzzer = OttoBuzzer(25)               # Built in Buzzer
 #OLED setup
-i2c = I2C(scl=Pin(22), sda=Pin(21), freq=400000) 
+i2c = I2C(scl=Pin(18), sda=Pin(19), freq=400000)  # Connector 1
 oled = SSD1306_I2C(128, 64, i2c, addr=0x3C)
- 
+
 alarmtime = [0, 0, 0, 12, 0, 0, 0, 0]
- 
 lastbuttonpress = 0
 delay = 60000
 diff = 0

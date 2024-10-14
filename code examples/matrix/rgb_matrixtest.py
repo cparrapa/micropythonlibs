@@ -4,7 +4,7 @@ from ottoneopixel import OttoNeoPixel
 
 brightm = 0.1 # brightness variable for lights
 nm = 64       # total number of pixels in the matrix
-matrix = OttoNeoPixel(16, nm)        # Connector 2
+matrix = OttoNeoPixel(22, nm) # Connector 3
 
 def wheel(pos):
    if pos < 0 or pos > 255:

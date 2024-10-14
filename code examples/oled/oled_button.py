@@ -1,8 +1,8 @@
 from ottooled import OttoOled
 from machine import Pin, ADC, PWM          #importing Pin, ADC and PWM classes
 
-button = Pin(26, Pin.IN)
-oled = OttoOled(21, 22)
+oled = OttoOled(19, 18)  # Connector 1
+button = Pin(26, Pin.IN) # Connector 4
 
 i = 1
 while True:

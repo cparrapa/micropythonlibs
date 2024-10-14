@@ -7,7 +7,7 @@ from neopixel import NeoPixel
 ROWS = 8
 COLS = 32
 NUMBER_PIXELS = ROWS * COLS
-matrix = NeoPixel(Pin(16), NUMBER_PIXELS)
+matrix = NeoPixel(Pin(22), NUMBER_PIXELS) # Connector 3
 
 def fill(val):
     for i in range(0, NUMBER_PIXELS):
