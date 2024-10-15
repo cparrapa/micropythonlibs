@@ -173,7 +173,7 @@ while True:
         rightServo.duty(0)
         leftServo.duty(0)
     else:
-        print("Distance is greater than or equal to 10, setting to OttoNeo.")
+        print("Distance is greater than or equal to 10, setting to green.")
         OttoNeo(color_index)
         color_index += 1
         if color_index >= 12:

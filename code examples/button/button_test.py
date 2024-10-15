@@ -8,6 +8,8 @@ buzzer = OttoBuzzer(25)             # Built in Buzzer
 digital_pin_26 = Pin(26, Pin.IN)	# Connector 4
 
 while True:
+    print(button.value())
+    sleep(.01)
     if (digital_pin_26.value()) == (1):
         led.on()
         buzzer.playEmoji("S_happy")

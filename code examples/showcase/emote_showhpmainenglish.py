@@ -5,13 +5,19 @@ from ssd1306 import SSD1306_I2C
 from neopixel import NeoPixel
 from ottoneopixel import OttoNeoPixel
 from ottooled import OttoOled
+from ottobuzzer import OttoBuzzer
+from ottomotor import OttoMotor
+
+led = Pin(2, Pin.OUT)                 # Built in LED
+buzzer = OttoBuzzer(25)               # Built in Buzzer
+motor = OttoMotor(13, 14)             # Connectors 10 & 11
 
 #OLED setup
-i2c = I2C(scl=Pin(22), sda=Pin(21), freq=400000) 
+i2c = I2C(scl=Pin(22), sda=Pin(21), freq=400000) # Connector 3
 oled = SSD1306_I2C(128, 64, i2c, addr=0x3C)
 
 n = 13
-ring = OttoNeoPixel(4, n)                  # Connector 5
+ring = OttoNeoPixel(4, n)             # Connector 5
 numberleds = 13
 
 pixel_matrix = bytearray([
@@ -152,20 +158,29 @@ hprobots = bytearray ([
 if len(pixel_matrix) != 1024:
     raise ValueError("pixel_matrix size is incorrect. Expected 1024 bytes.")
 
-introdelay = 2
+buzzer.playEmoji("S_connection")
 
 while True:
     ring.clearRGB()
     oled = SSD1306_I2C(128, 64, i2c, addr=0x3C)
     oled.fill(0)  # Clear the display
     oled.text("Hey, nice to", 16, 20)
-    oled.text("meet you.", 28, 30)
+    oled.text("meet you!", 16, 35)
     oled.show()
-    time.sleep(introdelay)
+    buzzer.playEmoji("S_happy")
+    motor.rightServo.duty(45)
+    motor.leftServo.duty(45)
+    time.sleep(0.1)
+    motor.rightServo.duty(115)
+    motor.leftServo.duty(115)
+    time.sleep(0.1)
+    motor.rightServo.duty(0)
+    motor.leftServo.duty(0)
+    time.sleep(3)
     oled.fill(0)
-    oled.text("I am...", 36, 28)
+    oled.text("I am...", 24, 30)
     oled.show()
-    time.sleep(introdelay)
+    time.sleep(1)
     # Drawing the image
     oled.fill(0)
     
@@ -177,12 +192,20 @@ while True:
                 oled.pixel(x, y * 8 + bit, pixel)  # Map this bit to the correct pixel position
                 
     oled.show()
-    time.sleep(introdelay)
+    buzzer.playNote(261, 125)
+    buzzer.playNote(293, 125)
+    buzzer.playNote(329, 125)
+    buzzer.playNote(349, 125)
+    buzzer.playNote(392, 125)
+    buzzer.playNote(440, 125)
+    buzzer.playNote(493, 125)
+    buzzer.playNote(523, 125)
+    time.sleep(2)
     
     oled.fill(0)
-    oled.text("By...", 24, 28)
+    oled.text("By...", 24, 30)
     oled.show()
-    time.sleep(introdelay)
+    time.sleep(1)
     
     oled.fill(0)
     for y in range(8):  # 8 blocks of 8 rows (since 64/8 = 8)
@@ -193,11 +216,12 @@ while True:
                 oled.pixel(x, y * 8 + bit, pixel)  # Map this bit to the correct pixel position
                 
     oled.show()
-    time.sleep(introdelay)
+    buzzer.playEmoji("S_cuddly")
+    time.sleep(2)
     
     oled.fill(0)
-    oled.text("Check out my", 16, 20)
-    oled.text("RGB LED ring!", 16, 30)
+    oled.text("Check out my", 0, 20)
+    oled.text("RGB LED ring!", 0, 35)
     oled.show()
     
     for g in range(3):
@@ -208,6 +232,7 @@ while True:
     
     ring.clearRGB()
     ring.setRGBring(0, "00a2ff")
+    buzzer.playEmoji("S_OhOoh2")
     time.sleep(2)
     ring.clearRGB()
     print(n)
@@ -216,55 +241,74 @@ while True:
         ring.rainbow_cycle(n, 5)
     
     oled.fill(0)
-    oled.text("Cool, right?", 16, 30)
+    oled.text("Cool, right?", 0, 30)
     oled.show()
-    time.sleep(introdelay)
+    motor.rightServo.duty(115)
+    motor.leftServo.duty(115)
+    time.sleep(0.2)
+    motor.rightServo.duty(45)
+    motor.leftServo.duty(45)
+    time.sleep(0.2)
+    motor.rightServo.duty(0)
+    motor.leftServo.duty(0)
+    time.sleep(2)
     ring.clearRGB()
     oled.fill(0)
-    oled.text("Welcome to the", 8, 17)
-    oled.text("world of", 32, 27)
-    oled.text("robotics", 32, 37)
+    oled.text("Welcome to the", 10, 10)
+    oled.text("world of", 10, 25)
+    oled.text("robotics", 10, 40)
     oled.show()
-    time.sleep(introdelay)
+    time.sleep(3)
     oled.fill(0)
-    oled.text("See you at", 24, 22)
-    oled.text("hprobots.com", 16, 32)
+    oled.text("See you at", 10, 25)
+    oled.text("hprobots.com", 10, 40)
     oled.show()
-    time.sleep(introdelay)
+    buzzer.playEmoji("S_surprise")
+    time.sleep(3)
     oled.fill(0)
-    
-    facedelay = 2
-    
-    oled = OttoOled(21, 22)
+    oled = OttoOled(21, 22) # Connector 3
     oled.Eyes1Draw()
     oled.Mouth1Draw()
     oled.showDisplay()
-    time.sleep(facedelay)
+    ring.fillAllRGBRing("33ff33")
+    buzzer.playEmoji("S_JUMP")
+    time.sleep(1)
     oled.clearDisplay()
     oled.Eyes1Draw()
     oled.Mouth2Draw()
     oled.showDisplay()
-    time.sleep(facedelay)
+    ring.fillAllRGBRing("cc33cc")
+    buzzer.playEmoji("S_OhOoh")
+    time.sleep(1)
     oled.clearDisplay()
     oled.Eyes3Draw()
     oled.Mouth3Draw()
     oled.showDisplay()
-    time.sleep(facedelay)
+    ring.fillAllRGBRing("3366ff")
+    buzzer.playEmoji("S_sad")
+    time.sleep(1)
     oled.clearDisplay()
     oled.Eyes4Draw()
     oled.Mouth4Draw()
     oled.showDisplay()
-    time.sleep(facedelay)
+    ring.fillAllRGBRing("ffff33")
+    buzzer.playEmoji("S_happy")
+    time.sleep(1)
     oled.clearDisplay()
     oled.Eyes5Draw()
     oled.Mouth5Draw()
     oled.showDisplay()
-    time.sleep(facedelay)
+    ring.fillAllRGBRing("ff6600")
+    buzzer.playEmoji("S_confused")
+    time.sleep(1)
     oled.clearDisplay()
     oled.Eyes6Draw()
     oled.Mouth6Draw()
-    oled.showDisplay()
-    time.sleep(facedelay)
+    oled.showDisplay()        
+    ring.fillAllRGBRing("fe0000")
+    buzzer.playEmoji("S_surprise")
+    time.sleep(1)
     
-    oled.clearDisplay()
-    time.sleep(5)
+
+    
+

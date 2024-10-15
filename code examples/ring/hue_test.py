@@ -1,11 +1,9 @@
-
 import machine, time                       #importing machine and time libraries
 from time import sleep                     #importing sleep class
 from neopixel import NeoPixel
 from ottoneopixel import OttoNeoPixel
 
-ring = OttoNeoPixel(4, 13)             
-
+ring = OttoNeoPixel(4, 13) # Conenctor 5
 
 def setHSV(hue, sat, val, lednumber):
         """

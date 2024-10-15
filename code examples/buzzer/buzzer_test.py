@@ -1,6 +1,6 @@
 from ottobuzzer import OttoBuzzer
 
-buzzer = OttoBuzzer(25)               # Built in Buzzer
+buzzer = OttoBuzzer(25)      # Built in Buzzer
 
 buzzer.playEmoji("S_happy")
 
@@ -36,7 +36,7 @@ buzzer.playNote(523, 125)
 #buzzer.execute_RTTTL('SMBunderground')
 #buzzer.execute_RTTTL('Picaxe')
 #buzzer.execute_RTTTL('Xfiles')
-#buzzer.execute_RTTTL('Frosty')
+#buzzer.execute_RTTTL('TopGun')
 #buzzer.execute_RTTTL('MASH')
 #buzzer.execute_RTTTL('tetris')
 #buzzer.execute_RTTTL('Wii_Fit_Ob')

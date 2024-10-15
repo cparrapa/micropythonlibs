@@ -1,3 +1,6 @@
+# This code requires MP3, microphone and OLED display
+# It makes Otto move his eyes randomly and react to sound by opening his mouth
+
 import machine, time                       #importing machine and time libraries
 from time import sleep                     #importing sleep class
 from machine import Pin, ADC, PWM          #importing Pin, ADC and PWM classes
