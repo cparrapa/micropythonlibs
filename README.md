@@ -2,13 +2,15 @@
 Set of micro Python libraries and example codes to use with HP Robots Otto starter with all expansions and more.
 [version of MicroPython (v1.22)](https://micropython.org/download/ESP32_GENERIC/)
 
-## libraries
+## libraries v2.0 
 In order for the examples to work, FIRST [**all files in libraries must be uploaded**](https://github.com/cparrapa/micropythonlibs/tree/main/libraries) to the circuit board in advance. Some are WIP (work in progress) not even functional.
 
-## blocks examples 
-Examples that work in [webcode icons, words or AI](https://hprobots.com/otto-code/webcode/webcode.html). This will help beginners to do the transition to text code. The idea is to have for every example both block and text version.
+[## blocks examples](https://github.com/cparrapa/micropythonlibs/tree/main/blocks%20examples)
+Examples that work in [webcode icons, words or AI](https://hprobots.com/otto-code/webcode/webcode.html). 
+The best [guide to get started in blocks is here](https://hprobots.com/otto-robot/code/#flipbook-hp-robots-otto-starter-coding-intro/1/)
+This will help beginners to do the transition to text code. The idea is to have for every example both block and text version.
 
-## code examples
+[## code examples](https://github.com/cparrapa/micropythonlibs/tree/main/code%20examples)
 The actual micropython text code demos, navigate by folder/component:
 
 * accelerometer: examples with ADXL345 sensor. (TESTED)
@@ -39,8 +41,11 @@ The actual micropython text code demos, navigate by folder/component:
 
 New components and examples are always welcome!
 
-## wirings 
-Includes some of the default connections and circuit diagrams that are mostly used in the examples, as well as the GPIO pin numbers for the main circuit board, but always double check GPIO pins defined in the code with their respective connector #:
+[## wirings](https://github.com/cparrapa/micropythonlibs/tree/main/wirings)
+Includes the default connections and circuit diagrams that are mostly used in the examples, as well as the GPIO pin numbers for the main circuit board,
+![Main circuit board](https://github.com/cparrapa/micropythonlibs/blob/main/wirings/Otto%20circuitboardpinout.png)
+
+In any case always double check GPIO pins defined within the code and their respective connector #:
 
 * Built in LED:    GPIO 2
 * Built in Buzzer: GPIO 25
@@ -57,9 +62,9 @@ Includes some of the default connections and circuit diagrams that are mostly us
 * Connector #10: GPIO 13 (servo wheel left)
 * Connector #11: GPIO 33 (servo wheel right)
 
-Take into account the components assigment to the GPIO are default connections, you can rearrange depending on your application. 
+The components assigment to the GPIO are only default connections, you can rearrange depending on your application.
 
-## 3d print stl
+[## 3d print stl](https://github.com/cparrapa/micropythonlibs/tree/main/3d%20print%20stl)
 You will find all 3D printable files in this folder sorted by type of modularity, with some exception prebuilds.
 * top:  head part commonly use for LED ring or sensors, it could allocate anything that fits or make it taller if required.
 * middle: the band that initially fits only the main circuit board and battery but also for spacers.
