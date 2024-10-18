@@ -1,13 +1,11 @@
 from machine import Pin, ADC
 from time import sleep_ms
 
-LDR = ADC(Pin(33, Pin.IN))
+LDR = ADC(Pin(33, Pin.IN)) # Connector 7
 LDR.atten(ADC.ATTN_11DB)
 
 led = Pin(2, Pin.OUT)
-
 isAlert = False
-
 
 while True:
     

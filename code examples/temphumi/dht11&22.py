@@ -2,8 +2,8 @@ import dht
 from machine import Pin
 from time import sleep
 
-sensor = dht.DHT11(Pin(26)) #blue one
-#sensor = dht.DHT22(Pin(26)) #white one
+sensor = dht.DHT11(Pin(4)) #"blue" Connector 5
+#sensor = dht.DHT22(Pin(26)) #"white"
 
 while True:
   try:

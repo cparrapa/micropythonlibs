@@ -5,7 +5,6 @@ v00 Alex Etchells
 '''
 from machine import Pin,ADC
 
-
 class LightSensor:
     def __init__(self, connector=5):
         connectorPin = [None,None,None,None,26,4,32,33,27,15,14,13] #GPIO pin for the 3pin connectors (4 to 11)

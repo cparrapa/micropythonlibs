@@ -7,7 +7,7 @@ NUM_LEDS = 13
 
 # Define GPIO pins
 BUTTON_PIN = 26 # Connector 4
-LED_PIN = 4 	# Connector5
+LED_PIN = 4     # Connector5
 
 # Initialize button and LED ring
 button = Pin(BUTTON_PIN, Pin.IN, Pin.PULL_UP)

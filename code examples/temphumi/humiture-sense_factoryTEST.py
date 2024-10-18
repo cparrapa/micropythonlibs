@@ -2,12 +2,12 @@ import dht
 import machine
 import time
 
-# Initialize the DHT11 sensor PORT 11
-dht_pin = machine.Pin(13, machine.Pin.IN)
+# Initialize the DHT11 sensor PORT 5
+dht_pin = machine.Pin(4, machine.Pin.IN)
 dht_sensor = dht.DHT11(dht_pin)
 
 # Initialize the LED (DON)
-led_pin = machine.Pin(13, machine.Pin.OUT)
+led_pin = machine.Pin(2, machine.Pin.OUT)
 
 # Function to read from the DHT11 sensor and control the LED
 def read_dht11_and_control_led():

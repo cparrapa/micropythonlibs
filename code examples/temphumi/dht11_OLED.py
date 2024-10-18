@@ -1,11 +1,10 @@
 import dht
 from machine import Pin
 from time import sleep
-
-sensor = dht.DHT11(Pin(26)) #blue one
-
 from ottooled import OttoOled
-oled = OttoOled(21, 22)
+
+sensor = dht.DHT11(Pin(4)) # Connector 5
+oled = OttoOled(19, 18) # Connector 1
 
 while True:
   try:

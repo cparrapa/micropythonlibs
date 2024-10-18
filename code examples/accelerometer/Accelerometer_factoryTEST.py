@@ -3,8 +3,8 @@ import ssd1306
 import time
 
 # Initialize I2C interfaces
-accel_i2c = I2C(1, scl=Pin(18), sda=Pin(19)) #PORT 1
-oled_i2c = SoftI2C(scl=Pin(22), sda=Pin(21)) #PORT 3
+oled_i2c = SoftI2C(scl=Pin(18), sda=Pin(19)) #Connector 1
+accel_i2c = I2C(1, scl=Pin(22), sda=Pin(21)) #Connector 3
 
 # Define device address
 ADXL345_ADDR = 0x53  # Alternatively, try 0x1D

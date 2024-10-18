@@ -6,8 +6,8 @@ from machine import Pin
 # https://www.coderdojotc.org/micropython/basics/03-button/
 
 # these are the pins in the lower-left corner (USB on top)
-BUTTON_PIN_A = 26
-BUTTON_PIN_B = 32
+BUTTON_PIN_A = 26 # Connector 4
+BUTTON_PIN_B = 32 # Connector 6
 
 button_presses = 0 # the count of times the button has been pressed.  A is +1, B is -1
 last_time = 0 # the last time we pressed the button

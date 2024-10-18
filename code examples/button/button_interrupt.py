@@ -11,7 +11,7 @@ def button1_pressed(change):
     global button_pressed_count
     button_pressed_count += 1
 
-button1 = Pin(26, Pin.IN, Pin.PULL_DOWN)
+button1 = Pin(26, Pin.IN, Pin.PULL_DOWN) # Connector 4
 button1.irq(handler=button1_pressed, trigger=Pin.IRQ_FALLING)
 
 button_pressed_count_old = 0

@@ -9,9 +9,8 @@ ADXL345_DATA_FORMAT = 0x31
 ADXL345_DATAX0 = 0x32
  
 # Initialize I2C for accelerometer
-i2c = I2C(0, sda=Pin(17), scl=Pin(16), freq=400000) #Connector 2
-
-oled = OttoOled(21, 22) #Connector 3
+oled = OttoOled(19, 18) #Connector 1
+i2c = I2C(0, sda=Pin(21), scl=Pin(22), freq=400000) #Connector 3
  
 # Initialize ADXL345
 def init_adxl345():

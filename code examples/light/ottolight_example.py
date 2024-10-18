@@ -1,7 +1,7 @@
 import time
 from ottolight import LightSensor
 
-lightsensor = LightSensor(5) # connector 5
+lightsensor = LightSensor(7) # connector 5
 
 while True:
     lightPercent = lightsensor.Read()

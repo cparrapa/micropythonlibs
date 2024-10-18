@@ -1,4 +1,4 @@
-# Testing multiple components at once, becareful many connections have changed from default pins
+# Testing multiple components at once, becareful many connections have changed from the default GPIO pins
 import machine, time, math, utime, dht
 from ssd1306 import SSD1306_I2C
 from time import sleep                     #importing sleep class
@@ -10,25 +10,19 @@ from ottomotor import OttoMotor
 
 led = Pin(2, Pin.OUT)             # Built in LED
 buzzer = OttoBuzzer(25)           # Built in Buzzer
-
-# Connector 1 pending add mp3
-matrix = NeoPixel(Pin(16), 64)    # Connector 2
-i2c=machine.I2C(0,sda=Pin(21), scl=Pin(22), freq=400000) # Connector 3
+i2c=machine.I2C(0,sda=Pin(19), scl=Pin(18), freq=400000) # Connector 1
 oled = SSD1306_I2C(128, 64, i2c)
-
+# Connector 2 pending add mp3
+matrix = NeoPixel(Pin(2), 64)     # Connector 3
 button = Pin(26, Pin.IN)          # Connector 4 digital
 tilt = Pin(4, Pin.IN)             # Connector 5 digital
-
 pot=ADC(Pin(32))                  # Connector 6 analog
+pot.atten(ADC.ATTN_11DB)
 light=ADC(Pin(33))                # Connector 7 analog
-
-pot.atten(ADC.ATTN_11DB)    
 light.atten(ADC.ATTN_0DB)
 
 output = Pin(27, Pin.OUT)         # Connector 8
-
 dht = dht.DHT11(Pin(15))          # Connector 9
-
 motor = OttoMotor(13, 14)         # Connectors 10 & 11
 
 def draw(bits,r=0, g=0, b=0):

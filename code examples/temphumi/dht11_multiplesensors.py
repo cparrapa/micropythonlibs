@@ -2,10 +2,10 @@ from machine import Pin
 from time import sleep
 import dht
 
-sensor1 = dht.DHT11(Pin(16))
-sensor2 = dht.DHT11(Pin(26))
-sensor3 = dht.DHT11(Pin(15))
-sensor4 = dht.DHT11(Pin(27))
+sensor1 = dht.DHT11(Pin(26)) # Connector 4
+sensor2 = dht.DHT11(Pin(16)) # Connector 5
+sensor3 = dht.DHT11(Pin(27)) # Connector 8
+sensor4 = dht.DHT11(Pin(15)) # Connector 9
 
 while True:
     sleep(1)

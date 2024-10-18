@@ -8,7 +8,7 @@ last_time = 0 # the last time we pressed the button
 
 builtin_led = Pin(2, Pin.OUT)
 # The lower left corner of the Pico has a wire that goes through the buttons upper left and the lower right goes to the 3.3 rail
-button_pin = Pin(26, Pin.IN, Pin.PULL_DOWN)
+button_pin = Pin(26, Pin.IN, Pin.PULL_DOWN) # Connector 4
 
 # This function gets called every time the button is pressed.  The parameter "pin" is not used.
 def button_pressed_handler(pin):
