@@ -9,7 +9,7 @@ NUM_LEDS = 13
 LED_PIN = 4 #PORT 5
 DT_PIN = 17 #PORT 2
 CLK_PIN = 16 #PORT 2
-BTN_PIN = 32 #PORT 6
+BTN_PIN = 26 #PORT 4
 
 # Initialize the LED ring
 np = neopixel.NeoPixel(Pin(LED_PIN), NUM_LEDS)
