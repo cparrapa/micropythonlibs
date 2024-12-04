@@ -1,11 +1,9 @@
-# Pong game on Raspberry Pi Pico with a OLED and two Potentimeters
-from machine import Pin, PWM
-import ssd1306
-from utime import sleep
+# Pong game on Micropython with a OLED and two Potentimeters
 import random, machine # random direction for new ball
-from ssd1306 import SSD1306_I2C
 import machine, time                       #importing machine and time libraries
 from time import sleep                     #importing sleep class
+from machine import Pin, PWM, I2C
+from ssd1306 import SSD1306_I2C
 from neopixel import NeoPixel
 from ottoneopixel import OttoNeoPixel
 
@@ -13,23 +11,17 @@ led = Pin(2, Pin.OUT)                 # Built in LED                          # 
 bright = 0.8                          # brightness variable for lights
 n = 13                                # Number of LEDs in ring
 ring = OttoNeoPixel(4, n)             # Connector 5
-
 ring.fillRGBRing("ff0101", "ff8000", "ffff00", "80ff00", "00ff00", "00ff80", "00ffff", "0080ff", "0000ff", "7f00ff", "ff00ff", "ff007f", "ffffff")
 led.on()
 
 WIDTH = 128
 HEIGHT = 64
+i2c=I2C(0,sda=Pin(19), scl=Pin(18)) # Connector 1
+oled = SSD1306_I2C(WIDTH, HEIGHT, i2c)
 
-scl=machine.Pin(18) # Connector 1
-sda=machine.Pin(19)
-i2c=machine.I2C(0,sda=sda, scl=scl)
-# Screen size
-width=128
-height=64
-oled = SSD1306_I2C(width, height, i2c)
 # connect the center tops of the potentiometers to ADC0 and ADC1
-pot_pin_1 = machine.ADC(32)
-pot_pin_2 = machine.ADC(33) # make them the same for testing
+pot_pin_1 = machine.ADC(32) # Connector 6
+pot_pin_2 = machine.ADC(33) # Connector 7 make them the same for testing
 
 # lower right corner with USB connector on top
 SPEAKER_PIN = 25
@@ -38,9 +30,7 @@ speaker = PWM(Pin(SPEAKER_PIN))
 
 # globals variables
 # static variables are constants are uppercase variable names
-WIDTH = 128
 HALF_WIDTH = int(WIDTH / 2)
-HEIGHT = 64
 HALF_HEIGHT = HEIGHT
 BALL_SIZE = 3 # 2X2 pixels
 PAD_WIDTH = 2

@@ -1,20 +1,17 @@
-import ssd1306, time, machine
-from machine import Pin, SPI, ADC
+import time
+from machine import Pin, SoftI2C, ADC
+from ssd1306 import SSD1306_I2C
+
+i2c = SoftI2C(sda=Pin(19), scl=Pin(18)) # Connector 1
+oled = SSD1306_I2C(128, 64, i2c) # width, height using default address 0x3C
+
+# Define the pin for the reset button
+resetButton = Pin(26, Pin.IN, Pin.PULL_DOWN)
 
 # Takes an input number value and a range between high-and-low and returns it scaled to the new range
 # This is similar to the Arduino map() function
 def scaled(value, istart, istop, ostart, ostop):
   return int(ostart + (ostop - ostart) * ((int(value) - istart) / (istop - istart)))
-
-from ssd1306 import SSD1306_I2C
-
-scl=machine.Pin(18) # Connector 1
-sda=machine.Pin(19)
-i2c=machine.I2C(0,sda=sda, scl=scl)
-# Screen size
-width=128
-height=64
-oled = SSD1306_I2C(width, height, i2c)
 
 # Turn all pixels off
 oled.fill(0)
@@ -26,9 +23,6 @@ oled.text('Hit the reset', 0, 20, 1)
 oled.text('button to clear', 0, 30, 1)
 oled.text('the screen', 0, 40, 1)
 oled.show()
-
-# Define the pin for the reset button
-resetButton = Pin(26, Pin.IN, Pin.PULL_DOWN)
 
 # Wait unti the user hits the button to clear the screen and start drawing
 while resetButton.value() != 1:

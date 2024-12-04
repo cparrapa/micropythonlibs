@@ -1,18 +1,11 @@
-import machine, ssd1306, utime
 from utime import sleep, time
 from ssd1306 import SSD1306_I2C
+from machine import Pin, SoftI2C
 
-WIDTH = 128
-HEIGHT = 64
-
-scl=machine.Pin(18) # Connector 1
-sda=machine.Pin(19)
-
-i2c=machine.I2C(0,sda=sda, scl=scl)
-# Screen size
+i2c = SoftI2C(sda=Pin(19), scl=Pin(18)) # Connector 1
+oled = SSD1306_I2C(128, 64, i2c) # width, height using default address 0x3C
 width=128
 height=64
-oled = SSD1306_I2C(width, height, i2c)
 
 equations = ['(x * y) & 24', '(x * y) & 47', '(x * y) & 64', 'x & y', 'x % y', '(x % y) % 4', '40 % (x % y+1)']
 
@@ -23,8 +16,8 @@ for eqn in range(0, len(equations)):
     oled.text('calculating', 0, 0, 1)
     oled.text(equations[eqn], 0, 10, 1)
     oled.show()
-    for x in range(WIDTH):
-        for y in range(1, HEIGHT):
+    for x in range(width):
+        for y in range(1, height):
             if eval(equations[eqn]):
                oled.pixel(x,y,0)
             else:

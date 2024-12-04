@@ -1,19 +1,9 @@
-import urandom, machine, utime, ssd1306
-import random # random direction for new ball
-from machine import Pin, PWM, SPI
-from utime import sleep
+import urandom
 from ssd1306 import SSD1306_I2C
+from machine import Pin, SoftI2C
 
-WIDTH = 128
-HEIGHT = 64
-
-scl=machine.Pin(18) # Connector 13
-sda=machine.Pin(19)
-i2c=machine.I2C(0,sda=sda, scl=scl)
-# Screen size
-width=128
-height=64
-oled = SSD1306_I2C(width, height, i2c)
+i2c = SoftI2C(sda=Pin(19), scl=Pin(18)) # Connector 1
+oled = SSD1306_I2C(128, 64, i2c) # width, height using default address 0x3C
 
 HEART = [
     [ 0, 0, 0, 0, 0, 0, 0, 0, 0],

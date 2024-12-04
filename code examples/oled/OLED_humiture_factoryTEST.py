@@ -22,7 +22,7 @@ oled_height = 64
 oled = ssd1306.SSD1306_I2C(oled_width, oled_height, i2c, addr=oled_address)
 
 # Initialize DHT sensor (Assuming DHT11 or DHT22)
-sensor = dht.DHT11(Pin(13))
+sensor = dht.DHT11(Pin(27))
 
 def read_sensor():
     """Read temperature and humidity from the sensor."""

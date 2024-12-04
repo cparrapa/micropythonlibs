@@ -1,13 +1,10 @@
-import machine, utime
 from ssd1306 import SSD1306_I2C
+from machine import Pin, SoftI2C
 
-scl=machine.Pin(18) # Connector 1
-sda=machine.Pin(19)
-i2c=machine.I2C(0,sda=sda, scl=scl)
-# Screen size
+i2c = SoftI2C(sda=Pin(19), scl=Pin(18)) # Connector 1
+oled = SSD1306_I2C(128, 64, i2c) # width, height using default address 0x3C
 width=128
 height=64
-oled = SSD1306_I2C(width, height, i2c)
 
 oled.fill(0) # clear to black
 

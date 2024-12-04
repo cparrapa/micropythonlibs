@@ -1,56 +1,93 @@
-import machine, time                   #importing machine and time libraries
 from time import sleep                 #importing sleep class
 from ssd1306 import SSD1306_I2C
-from ottooled import OttoOled
-from machine import Pin, I2C
+from machine import Pin, SoftI2C
 import array # Needed for polygons
+from ottooled import OttoOled
 
-i2c = I2C(scl=Pin(18), sda=Pin(19), freq=400000) # Connector 1
-oled = SSD1306_I2C(128, 64, i2c, addr=0x3C)
+i2c = SoftI2C(sda=Pin(19), scl=Pin(18)) # Connector 1
+oled = SSD1306_I2C(128, 64, i2c) # width, height using default address 0x3C
+
+# draw another FrameBuffer on top of the current one at the given coordinates
+import framebuf
+fbuf = framebuf.FrameBuffer(bytearray(8 * 8 * 1), 8, 8, framebuf.MONO_VLSB)
+fbuf.line(0, 0, 7, 7, 1)
+oled.blit(fbuf, 10, 10, 0)           # draw on top at x=10, y=10, key=0
+oled.show()
+
+oled.fill(0)
+oled.fill_rect(0, 0, 32, 32, 1)
+oled.fill_rect(2, 2, 28, 28, 0)
+oled.vline(9, 8, 22, 1)
+oled.vline(16, 2, 22, 1)
+oled.vline(23, 8, 22, 1)
+oled.fill_rect(26, 24, 2, 4, 1)
+oled.text('MicroPython', 40, 0, 1)
+oled.text('SSD1306', 40, 12, 1)
+oled.text('OLED 128x64', 40, 24, 1)
+oled.show()
+sleep(1)
+oled.fill(0)        # fill entire screen with colour=0
+oled.poweroff()     # power off the oled, pixels persist in memory
+oled.poweron()      # power on the oled, pixels redrawn
+oled.contrast(0)    # dim
+oled.contrast(255)  # bright
+oled.invert(1)      # oled inverted
+oled.invert(0)      # oled normal
+#oled.rotate(True)  # rotate 180 degrees
+#oled.rotate(False) # rotate 0 degrees
 
 # #1. To print a string:  
-oled.text('Hello Otto world', 0, 0)
+oled.text('Hello Otto ', 0, 0)
+oled.text('World', 0, 20, 1)    # draw some text at x=0, y=20, colour=1
 # #2. To display all the commands in queue:     
-oled.show()
-time.sleep(0.5)
+oled.show()         # write the contents of the FrameBuffer to oled memory
+oled.scroll(20, 0)  # scroll 20 pixels to the right
+sleep(0.5)
 # #3. Now to clear the oled display:  
-oled.fill(0) 
+oled.fill(0)        # fill entire screen with colour=0
 oled.show()
-time.sleep(0.5)
+sleep(0.5)
 # #4. You may also use the invert function to invert the display.  
 oled.invert(1)
-time.sleep(0.5)
+sleep(0.5)
 oled.invert(0)
 # #5.To display a single pixel.
 oled.pixel(5,5,1)
+oled.pixel(0, 10)    # get pixel at x=0, y=10
+oled.pixel(0, 10, 1) # set pixel at x=0, y=10 to colour=1
 oled.show()
-time.sleep(0.5)
+sleep(0.5)
 # #6. To display a horizontal line  
-oled.hline(5,5,50,1) 
+oled.hline(5,5,50,1)
+oled.hline(0, 8, 4, 1) # draw horizontal line x=0, y=8, width=4, colour=1
 oled.show()
-time.sleep(0.5)
+sleep(0.5)
 # #7. To display a vertical line  
-oled.vline(5,5,50,1) 
+oled.vline(5,5,50,1)
+oled.vline(0, 8, 4, 1) # draw vertical line x=0, y=8, height=4, colour=1
 oled.show()
-time.sleep(0.5)
+sleep(0.5)
 # #8. While hline and vline is quite useful, there is another function that is more flexible to use which is the line function.  
-oled.line(5,5,50,50,1) 
+oled.line(5,5,50,50,1)
+oled.line(0, 0, 127, 63, 1)          # draw a line from 0,0 to 127,63
 oled.show()
-time.sleep(0.5)
+sleep(0.5)
 # #9.We may also be able to print a rectangle.  
-oled.rect(5,5,50,50,1) 
+oled.rect(5,5,50,50,1)
+oled.rect(10, 10, 107, 43, 1)        # draw a rectangle outline 10,10 to 117,53, colour=1
 oled.show()
-time.sleep(0.5)
+sleep(0.5)
 # #10. Or we may also print a filled rectangle:  
-oled.fill_rect(5,5,50,25,1) 
+oled.fill_rect(5,5,50,25,1)
+oled.fill_rect(10, 10, 107, 43, 1)   # draw a solid rectangle 10,10 to 117,53, colour=1
 oled.show()
-time.sleep(0.5)
+sleep(0.5)
 # oled.rect(x,y,w,h,c,[f])
 oled.fill(0) 
 oled.rect(0,10,50,20,1)       # Outine
 #oled.rect(30,35,50,20,1,True) # Filled: True = 1 and False = 0
 oled.show()
-time.sleep(0.5)
+sleep(0.5)
 # oled.ellipse(x,y,rx,ry,c,[f])
 oled.fill(0) 
 oled.ellipse(80,15,15,10,1)      # Outline
@@ -58,14 +95,14 @@ oled.ellipse(83,45,35,10,1,1)    # Filled
 oled.ellipse(20,30,15,15,1,True) # Filled circle (rx = ry)
 oled.ellipse(20,30,10,10,0)      # Outline circle (rx = ry)
 oled.show()
-time.sleep(0.5)
+sleep(0.5)
 oled.fill(0) 
 oled.ellipse(32,32,17,17,1,True) # Filled circle (rx = ry)
 oled.ellipse(32,32,12,12,0,True) 
 oled.ellipse(96,32,17,17,1,True) # Filled circle (rx = ry)
 oled.ellipse(96,32,12,12,0,True)
 oled.show()
-time.sleep(0.5)
+sleep(0.5)
 oled.fill(0) 
 # oled.poly((x, y, coords, c,[f])
 # First create an integer array of the coordinates
@@ -75,86 +112,81 @@ oled.poly(0,0, hexagon, 1, 1) # Filled hexagon
 triangle = array.array('I', [64,22,74,39,54,39])
 oled.poly(0,0, triangle, 0, True) # Filled
 oled.show()
-time.sleep(0.5)
+sleep(0.5)
 oled.fill(0) 
 triangle = array.array('I', [37,18,100,30,45,44])
 oled.poly(0,0, triangle, 1, ) # Outline
 oled.show()
-time.sleep(0.5)
-
+sleep(0.5)
+oled.fill(0) 
+oled.text('1234567890', 0, 20)
+oled.text("|@$&¡!¿?()[]{}", 0, 30)
+oled.text("¬°#_+-*/=~<>^%", 0, 40)
+oled.show()
+sleep(3)
 oled = OttoOled(19, 18) # Connector 1
-oled.clearDisplay()
-oled.writeTextDisplay("1234567890", 0, 20)
-oled.showDisplay()
-time.sleep(1)
-oled.writeTextDisplay("|@$&¡!¿?()[]{}", 0, 30)
-oled.showDisplay()
-time.sleep(1)
-oled.writeTextDisplay("¬°#_+-*/=~<>^%", 0, 40)
-oled.showDisplay()
-time.sleep(1)
 oled.clearDisplay()
 oled.pixelDisplay(1, 0, 1)
 oled.showDisplay()
-time.sleep(0.5)
+sleep(0.5)
 oled.clearDisplay()
 oled.lineDisplay(0, 0, 128, 64)
 oled.showDisplay()
-time.sleep(0.5)
+sleep(0.5)
 oled.clearDisplay()
 oled.squareDisplay(0, 0, 128, 64)
 oled.showDisplay()
-time.sleep(0.5)
+sleep(0.5)
 oled.squareFillDisplay(0, 0, 128, 64,1)
 oled.showDisplay()
-time.sleep(0.5)
+sleep(0.5)
 oled.clearDisplay()
 oled.ringDisplay(64, 32, 32)
 oled.showDisplay()
-time.sleep(0.5)
+sleep(0.5)
 oled.clearDisplay()
 oled.circleDisplay(64, 32, 32)
 oled.showDisplay()
-time.sleep(0.5)
+sleep(0.5)
 
 oled.clearDisplay()
 oled.Eyes1Draw()
 oled.Mouth1Draw()
 oled.showDisplay()
-time.sleep(1)
+sleep(1)
 
 oled.clearDisplay()
 oled.Eyes1Draw()
 oled.Mouth1Draw()
 oled.showDisplay()
-time.sleep(1)
+sleep(1)
 
 oled.clearDisplay()
 oled.Eyes2Draw()
 oled.Mouth2Draw()
 oled.showDisplay()
-time.sleep(1)
+sleep(1)
 
 oled.clearDisplay()
 oled.Eyes3Draw()
 oled.Mouth3Draw()
 oled.showDisplay()
-time.sleep(1)
+sleep(1)
 
 oled.clearDisplay()
 oled.Eyes4Draw()
 oled.Mouth4Draw()
 oled.showDisplay()
-time.sleep(1)
+sleep(1)
 
 oled.clearDisplay()
 oled.Eyes5Draw()
 oled.Mouth5Draw()
 oled.showDisplay()
-time.sleep(1)
+sleep(1)
 
 oled.clearDisplay()
 oled.Eyes6Draw()
 oled.Mouth6Draw()
 oled.showDisplay()
-time.sleep(1)
+sleep(1)
