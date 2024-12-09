@@ -24,17 +24,154 @@ oled.fill_rect(26, 24, 2, 4, 1)
 oled.text('MicroPython', 40, 0, 1)
 oled.text('SSD1306', 40, 12, 1)
 oled.text('OLED 128x64', 40, 24, 1)
-oled.show()
+oled.show() # write the contents of the FrameBuffer to oled memory
 sleep(1)
 
 oled.fill(0)        # fill entire screen with colour=0
 
-oled.ellipse(32,16,16,16,1,1)  #left eye
-oled.ellipse(32,16,10,10,0,1)  #left eye -
-oled.ellipse(96,16,16,16,1,1)  #right eye
-oled.ellipse(96,16,10,10,0,1)  #right eye -
+def oled_eyesclosed():
+    oled.rect(16,16,32,6,1,True)
+    oled.rect(80,16,32,6,1,True)
+  
+def oled_eyes():
+    oled.ellipse(32,16,16,16,1,1)  #left eye
+    oled.ellipse(32,16,10,10,0,1)  #left eye -
+    oled.ellipse(96,16,16,16,1,1)  #right eye
+    oled.ellipse(96,16,10,10,0,1)  #right eye -
 
-oled.show()         # write the contents of the FrameBuffer to oled memory
+def oled_eyesup():
+    oled_eyes()
+    oled.rect(0,16,128,17,0,True)
+    
+def oled_eyesup2():
+    oled.ellipse(32,32,16,16,1,1)  
+    oled.ellipse(32,32,10,10,0,1)  
+    oled.ellipse(96,32,16,16,1,1) 
+    oled.ellipse(96,32,10,10,0,1)  
+    oled.rect(0,32,128,17,0,True)
+    
+def oled_eyesdown():
+    oled_eyes()
+    oled.rect(0,0,128,16,0,True)
+    
+def oled_eyesdown2():
+    oled.ellipse(32,0,16,16,1,1) 
+    oled.ellipse(32,0,10,10,0,1) 
+    oled.ellipse(96,0,16,16,1,1)  
+    oled.ellipse(96,0,10,10,0,1)  
+    
+def oled_eyeswinkleft():
+    oled_eyes()
+    oled.rect(64,0,128,16,0,True)
+    
+def oled_eyeswinkright():
+    oled_eyes()
+    oled.rect(0,0,64,16,0,True)
+    
+def oled_eyesangry():
+    oled_eyes()
+    triangle1 = array.array('I', [16,0,48,0,48,32])
+    oled.poly(0,0, triangle1, 0, True)
+    triangle2 = array.array('I', [80,0,112,0,80,32])
+    oled.poly(0,0, triangle2, 0, True) 
+    
+def oled_eyesworry():
+    oled_eyes()
+    triangle1 = array.array('I', [16,0,48,0,16,32])
+    oled.poly(0,0, triangle1, 0, True) 
+    triangle2 = array.array('I', [80,0,112,0,112,32])
+    oled.poly(0,0, triangle2, 0, True) 
+
+def oled_mouthclosed():
+    oled.rect(32,42,64,6,1,True)
+
+def oled_mouth():
+    oled.ellipse(64,48,16,16,1,1) 
+    oled.ellipse(64,48,10,10,0,1)
+    
+def oled_mouthup():
+    oled_mouth()
+    oled.rect(48,32,33,16,0,True)
+    
+def oled_mouthup2():
+    oled.ellipse(64,32,16,16,1,1) 
+    oled.ellipse(64,32,10,10,0,1)
+    oled.rect(48,16,33,16,0,True)
+    
+def oled_mouthdown():
+    oled_mouth()
+    oled.rect(48,48,33,16,0,True)
+
+def oled_mouthdown2():
+    oled.ellipse(64,64,16,16,1,1) 
+    oled.ellipse(64,64,10,10,0,1)
+    
+def oled_mouthleft():
+    oled_mouthclosed()
+    oled.ellipse(80,54,15,10,1,1)
+    oled.rect(64,48,32,6,1,True)
+    
+def oled_mouthright():
+    oled_mouthclosed()
+    oled.ellipse(48,54,15,10,1,1)
+    oled.rect(32,48,32,6,1,True)
+    
+def oled_mouthhappy():
+    oled.ellipse(64,48,15,15,1,1)
+    oled.rect(48,26,32,22,1,True)
+    
+def oled_mouthworry():
+    oled.ellipse(64,48,15,10,1,1)
+
+oled.fill(0)
+oled_eyesclosed()
+oled_mouthclosed()
+oled.show()    
+sleep(1)
+oled.fill(0)
+oled_eyes()
+oled_mouth()
+oled.show()    
+sleep(1)
+oled.fill(0)
+oled_eyesup()
+oled_mouthup()
+oled.show()    
+sleep(1)
+oled.fill(0)
+oled_eyesup2()
+oled_mouthup2()
+oled.show()    
+sleep(1)
+oled.fill(0)
+oled_eyesdown()
+oled_mouthdown()
+oled.show()    
+sleep(1)
+oled.fill(0)
+oled_eyesdown2()
+oled_mouthdown2()
+oled.show()    
+sleep(1)
+oled.fill(0)
+oled_eyeswinkleft()
+oled_mouthleft()
+oled.show()    
+sleep(1)
+oled.fill(0)
+oled_eyeswinkright()
+oled_mouthright()
+oled.show()    
+sleep(1)
+oled.fill(0)
+oled_eyesangry()
+oled_mouthhappy()
+oled.show()    
+sleep(1)
+oled.fill(0)
+oled_eyesworry()
+oled_mouthworry()
+oled.show()    
 sleep(1)
 
 oled.poweroff()     # power off the oled, pixels persist in memory
@@ -148,40 +285,34 @@ oled.clearDisplay()
 oled.Eyes1Draw()
 oled.Mouth1Draw()
 oled.showDisplay()
-sleep(1)
-
-oled.clearDisplay()
-oled.Eyes1Draw()
-oled.Mouth1Draw()
-oled.showDisplay()
-sleep(1)
+sleep(5)
 
 oled.clearDisplay()
 oled.Eyes2Draw()
 oled.Mouth2Draw()
 oled.showDisplay()
-sleep(1)
+sleep(5)
 
 oled.clearDisplay()
 oled.Eyes3Draw()
 oled.Mouth3Draw()
 oled.showDisplay()
-sleep(1)
+sleep(5)
 
 oled.clearDisplay()
 oled.Eyes4Draw()
 oled.Mouth4Draw()
 oled.showDisplay()
-sleep(1)
+sleep(5)
 
 oled.clearDisplay()
 oled.Eyes5Draw()
 oled.Mouth5Draw()
 oled.showDisplay()
-sleep(1)
+sleep(5)
 
 oled.clearDisplay()
 oled.Eyes6Draw()
 oled.Mouth6Draw()
 oled.showDisplay()
-sleep(1)
+sleep(5)
