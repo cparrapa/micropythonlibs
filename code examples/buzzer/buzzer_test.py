@@ -2,8 +2,6 @@ from ottobuzzer import OttoBuzzer
 
 buzzer = OttoBuzzer(25)      # Built in Buzzer
 
-buzzer.playEmoji("S_happy")
-
 buzzer.playNote(261, 125)
 buzzer.playNote(293, 125)
 buzzer.playNote(329, 125)
@@ -12,6 +10,27 @@ buzzer.playNote(392, 125)
 buzzer.playNote(440, 125)
 buzzer.playNote(493, 125)
 buzzer.playNote(523, 125)
+
+buzzer.playEmoji("S_connection")
+buzzer.playEmoji("S_disconnection")
+buzzer.playEmoji("S_buttonPushed")
+buzzer.playEmoji("S_mode1")
+buzzer.playEmoji("S_mode2")
+buzzer.playEmoji("S_mode3")
+buzzer.playEmoji("S_surprise")
+buzzer.playEmoji("S_JUMP")
+buzzer.playEmoji("S_OhOoh")
+buzzer.playEmoji("S_OhOoh2")
+buzzer.playEmoji("S_cuddly")
+buzzer.playEmoji("S_sleeping")
+buzzer.playEmoji("S_happy")
+buzzer.playEmoji("S_superHappy")
+buzzer.playEmoji("S_happy_short")
+buzzer.playEmoji("S_sad")
+buzzer.playEmoji("S_confused")
+buzzer.playEmoji("S_fart1")
+buzzer.playEmoji("S_fart2")
+buzzer.playEmoji("S_fart3")
 
 #buzzer.execute_RTTTL('Flinstones')
 #buzzer.execute_RTTTL('StarWars')

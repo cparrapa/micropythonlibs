@@ -26,7 +26,17 @@ oled.text('SSD1306', 40, 12, 1)
 oled.text('OLED 128x64', 40, 24, 1)
 oled.show()
 sleep(1)
+
 oled.fill(0)        # fill entire screen with colour=0
+
+oled.ellipse(32,16,16,16,1,1)  #left eye
+oled.ellipse(32,16,10,10,0,1)  #left eye -
+oled.ellipse(96,16,16,16,1,1)  #right eye
+oled.ellipse(96,16,10,10,0,1)  #right eye -
+
+oled.show()         # write the contents of the FrameBuffer to oled memory
+sleep(1)
+
 oled.poweroff()     # power off the oled, pixels persist in memory
 oled.poweron()      # power on the oled, pixels redrawn
 oled.contrast(0)    # dim
@@ -39,6 +49,7 @@ oled.invert(0)      # oled normal
 # #1. To print a string:  
 oled.text('Hello Otto ', 0, 0)
 oled.text('World', 0, 20, 1)    # draw some text at x=0, y=20, colour=1
+#oled.text("variable: {}".format(variable), 0, 30)
 # #2. To display all the commands in queue:     
 oled.show()         # write the contents of the FrameBuffer to oled memory
 oled.scroll(20, 0)  # scroll 20 pixels to the right
@@ -85,7 +96,7 @@ sleep(0.5)
 # oled.rect(x,y,w,h,c,[f])
 oled.fill(0) 
 oled.rect(0,10,50,20,1)       # Outine
-#oled.rect(30,35,50,20,1,True) # Filled: True = 1 and False = 0
+oled.rect(30,35,50,20,1,True) # Filled: True = 1 and False = 0
 oled.show()
 sleep(0.5)
 # oled.ellipse(x,y,rx,ry,c,[f])
@@ -119,35 +130,19 @@ oled.poly(0,0, triangle, 1, ) # Outline
 oled.show()
 sleep(0.5)
 oled.fill(0) 
-oled.text('1234567890', 0, 20)
+oled.text('1234567890', 0, 20) #oled.writeTextDisplay(" ", 0, 0)
 oled.text("|@$&¡!¿?()[]{}", 0, 30)
 oled.text("¬°#_+-*/=~<>^%", 0, 40)
 oled.show()
 sleep(3)
+
 oled = OttoOled(19, 18) # Connector 1
-oled.clearDisplay()
-oled.pixelDisplay(1, 0, 1)
-oled.showDisplay()
-sleep(0.5)
-oled.clearDisplay()
-oled.lineDisplay(0, 0, 128, 64)
-oled.showDisplay()
-sleep(0.5)
-oled.clearDisplay()
-oled.squareDisplay(0, 0, 128, 64)
-oled.showDisplay()
-sleep(0.5)
-oled.squareFillDisplay(0, 0, 128, 64,1)
-oled.showDisplay()
-sleep(0.5)
-oled.clearDisplay()
-oled.ringDisplay(64, 32, 32)
-oled.showDisplay()
-sleep(0.5)
-oled.clearDisplay()
-oled.circleDisplay(64, 32, 32)
-oled.showDisplay()
-sleep(0.5)
+#oled.pixelDisplay(1, 0, 1)
+#oled.lineDisplay(0, 0, 128, 64)
+#oled.squareDisplay(0, 0, 128, 64)
+#oled.squareFillDisplay(0, 0, 128, 64,1)
+#oled.ringDisplay(64, 32, 32)
+#oled.circleDisplay(64, 32, 32)
 
 oled.clearDisplay()
 oled.Eyes1Draw()
