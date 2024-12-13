@@ -1,4 +1,4 @@
-# ottooled v2.0 10.07.2024
+# ottooled v2.1 11.12.2024
 import math, framebuf
 from machine import I2C, Pin
 from ssd1306 import SSD1306_I2C
@@ -99,7 +99,6 @@ class OttoOled:
         
     def clearDisplay(self):
         self.display.fill(0)
-        self.display.show()
         
     def ShowIcon(self,icono,x,y,w,h):
         fb = framebuf.FrameBuffer(icono,w,h, framebuf.MONO_HLSB)

@@ -1,7 +1,6 @@
-# ottoneopixel v4.1 01.09.2024
+# ottoneopixel v4.2 01.09.2024
 
 # v3.0 07.08.2024 Alex Etchells: addition of colorHSV, set_pixel_line_gradient,  rotate_left, rotate_right
-#
 # v4.0 30.08.2024 Alex Etchells: Additon of 4x4 Matrix Functions
 # setMatrixPixel, setMatrixRow, setMatrixCol, drawLine, drawTriangle, drawRectangle, drawRectangleFill, drawCircle
 # v4.1 01.09.2024 Alex Etchells: Additon of 4x4 Matrix Functions
@@ -411,8 +410,6 @@ class OttoRGBMatrix(OttoNeoPixel):
             self.setMatrixPixel(x0 + y, y0 - x, r,g,b)
             self.setMatrixPixel(x0 - y, y0 - x, r,g,b)
 
-
-
 class OttoUltrasonic:
     
     _brightness = 1
@@ -479,7 +476,7 @@ class OttoUltrasonic:
 
         return (int(red * self._brightness), int(green * self._brightness), int(blue * self._brightness))
             
-    def readultrasonicRGB(self, unit):
+    def readultrasonicRGBBasic(self, unit):
         io_pin = Pin(self._io, Pin.OUT)
         io_pin.off()
         utime.sleep_us(2)
@@ -497,3 +494,19 @@ class OttoUltrasonic:
         print("D#" + str(self.distance) + "$")
         return self.distance
 
+    def readultrasonicRGB(self, unit):
+        io_pin = Pin(self._io, Pin.OUT)
+        io_pin.off()
+        utime.sleep_us(2)
+        io_pin.on()
+        utime.sleep_us(20)
+        io_pin.off()
+        io_pin = Pin(self._io, Pin.IN)
+        pulse_duration = machine.time_pulse_us(io_pin, 1)
+        
+        if ((pulse_duration < 60000) and (pulse_duration > 1)):
+            if (unit == 0):
+                self.distance = pulse_duration / 147.32
+            else:
+                self.distance = pulse_duration / 58.00
+        return self.distance

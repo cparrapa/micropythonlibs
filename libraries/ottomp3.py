@@ -1,4 +1,4 @@
-# ottomp3 v1.0 27.06.2024
+# ottomp3 v1.0 27.06.2024 pending split from buzzer library
 import machine, time
 from machine import Pin, PWM, UART, Timer
 
