@@ -1,6 +1,6 @@
 # ottobuzzer v2.2 11.12.2024
 import machine, time
-from machine import Pin, PWM, Timer
+from machine import Pin, PWM, Timer, UART
 
 IDLE = 0
 PAUSED = 1
@@ -431,7 +431,7 @@ class Player:
         self._fadeout_timer = Timer(-1)
 
         self._volume = 15
-        self._max_volume = 15
+        self._max_volume = 50
         self._fadeout_speed = 0
 
     def cmd(self, command, parameter=0x00, parameter2=0x00):
