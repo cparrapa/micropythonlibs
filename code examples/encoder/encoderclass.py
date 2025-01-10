@@ -6,7 +6,7 @@ from ottooled import OttoOled
 
 led = Pin(2, Pin.OUT)    # Built in LED
 ring = NeoPixel(Pin(4), 13)  # Connector 5
-oled = OttoOled(21, 22)
+oled = OttoOled(19, 18) # Connector 1
 
 rotary = Rotary(16, 17, 26) # GPIO Pins for the encoder pins Connector 2. third is the button press switch Connector 4.
 val = 0

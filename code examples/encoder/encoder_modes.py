@@ -1,17 +1,14 @@
 import machine
+import time, utime
+from time import sleep
 from machine import Pin, I2C
 from ssd1306 import SSD1306_I2C
-import time
-from time import sleep
-import utime
-import rotary
-from rotary import Rotary
+from ottoencoder import Rotary
 
 # OLED setup
-i2c = I2C(scl=Pin(22), sda=Pin(21), freq=400000)
+i2c = I2C(scl=Pin(18), sda=Pin(19), freq=400000)
 oled = SSD1306_I2C(128, 64, i2c, addr=0x3C)
-
-rotary = Rotary(18, 19, 26) # GPIO Pins for the encoder pins Connector 2. third is the button press switch Connector 4.
+rotary = Rotary(16, 17, 26) # GPIO Pins for the encoder pins Connector 2. third is the button press switch Connector 4.
 
 def listprograms():
     return [f for f in os.listdir('/programs') if f.endswith('.py')]

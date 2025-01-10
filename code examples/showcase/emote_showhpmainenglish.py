@@ -1,10 +1,8 @@
-import machine
-import time
+import machine, time, array
 from machine import I2C, SoftI2C, Pin
 from ssd1306 import SSD1306_I2C
 from neopixel import NeoPixel
 from ottoneopixel import OttoNeoPixel
-from ottooled import OttoOled
 from ottobuzzer import OttoBuzzer
 from ottomotor import OttoMotor
 
@@ -12,13 +10,11 @@ led = Pin(2, Pin.OUT)                 # Built in LED
 buzzer = OttoBuzzer(25)               # Built in Buzzer
 motor = OttoMotor(13, 14)             # Connectors 10 & 11
 
-#OLED setup
-i2c = I2C(scl=Pin(22), sda=Pin(21), freq=400000) # Connector 3
-oled = SSD1306_I2C(128, 64, i2c, addr=0x3C)
+i2c = SoftI2C(sda=Pin(19), scl=Pin(18))  # Connector 1
+oled = SSD1306_I2C(128, 64, i2c)
 
 n = 13
 ring = OttoNeoPixel(4, n)             # Connector 5
-numberleds = 13
 
 pixel_matrix = bytearray([
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
@@ -158,6 +154,92 @@ hprobots = bytearray ([
 if len(pixel_matrix) != 1024:
     raise ValueError("pixel_matrix size is incorrect. Expected 1024 bytes.")
 
+def oled_eyesclosed():
+   oled.rect(16,0,96,33,0,True)
+   oled.rect(16,16,32,6,1,True)
+   oled.rect(80,16,32,6,1,True)
+def oled_eyes():
+   oled.rect(16,0,96,33,0,True)
+   oled.ellipse(32,16,16,16,1,1)
+   oled.ellipse(32,16,10,10,0,1)
+   oled.ellipse(96,16,16,16,1,1)
+   oled.ellipse(96,16,10,10,0,1)
+def oled_eyesup():
+   oled_eyes()
+   oled.rect(0,16,128,17,0,True)
+def oled_eyesup2():
+   oled.rect(16,0,96,33,0,True)
+   oled.ellipse(32,32,16,16,1,1)
+   oled.ellipse(32,32,10,10,0,1)
+   oled.ellipse(96,32,16,16,1,1)
+   oled.ellipse(96,32,10,10,0,1)
+   oled.rect(0,32,128,17,0,True)
+def oled_eyesdown():
+   oled_eyes()
+   oled.rect(0,0,128,16,0,True)
+def oled_eyesdown2():
+   oled.rect(16,0,96,33,0,True)
+   oled.ellipse(32,0,16,16,1,1)
+   oled.ellipse(32,0,10,10,0,1)
+   oled.ellipse(96,0,16,16,1,1)
+   oled.ellipse(96,0,10,10,0,1)
+def oled_eyeswinkleft():
+   oled_eyes()
+   oled.rect(64,0,128,16,0,True)
+def oled_eyeswinkright():
+   oled_eyes()
+   oled.rect(0,0,64,16,0,True)
+def oled_eyesangry():
+   oled_eyes()
+   triangle1 = array.array('I', [16,0,48,0,48,32])
+   oled.poly(0,0, triangle1, 0, True)
+   triangle2 = array.array('I', [80,0,112,0,80,32])
+   oled.poly(0,0, triangle2, 0, True)
+def oled_eyesworry():
+   oled_eyes()
+   triangle1 = array.array('I', [16,0,48,0,16,32])
+   oled.poly(0,0, triangle1, 0, True)
+   triangle2 = array.array('I', [80,0,112,0,112,32])
+   oled.poly(0,0, triangle2, 0, True)
+   
+def oled_mouthclosed():
+   oled.rect(32,32,64,32,0,True)
+   oled.rect(32,42,64,6,1,True)
+def oled_mouth():
+   oled.rect(32,32,64,32,0,True)
+   oled.ellipse(64,48,16,16,1,1)
+   oled.ellipse(64,48,10,10,0,1)
+def oled_mouthup():
+   oled_mouth()
+   oled.rect(48,32,33,16,0,True)
+def oled_mouthup2():
+   oled.rect(32,32,64,32,0,True)
+   oled.ellipse(64,32,16,16,1,1)
+   oled.ellipse(64,32,10,10,0,1)
+   oled.rect(48,16,33,16,0,True)
+def oled_mouthdown():
+   oled_mouth()
+   oled.rect(48,48,33,16,0,True)
+def oled_mouthdown2():
+   oled.rect(32,32,64,32,0,True)
+   oled.ellipse(64,64,16,16,1,1)
+   oled.ellipse(64,64,10,10,0,1)
+def oled_mouthleft():
+   oled_mouthclosed()
+   oled.ellipse(80,53,15,11,1,1)
+   oled.rect(64,48,32,5,1,True)
+def oled_mouthright():
+   oled_mouthclosed()
+   oled.ellipse(48,53,15,11,1,1)
+   oled.rect(32,48,32,5,1,True)
+def oled_mouthhappy():
+   oled.rect(32,32,64,32,0,True)
+   oled.ellipse(64,48,15,15,1,1)
+   oled.rect(48,32,32,16,1,True)
+def oled_mouthworry():
+   oled.rect(32,32,64,32,0,True)
+   oled.ellipse(64,48,15,10,1,1)
+
 buzzer.playEmoji("S_connection")
 
 while True:
@@ -266,49 +348,48 @@ while True:
     buzzer.playEmoji("S_surprise")
     time.sleep(3)
     oled.fill(0)
-    oled = OttoOled(21, 22) # Connector 3
-    oled.Eyes1Draw()
-    oled.Mouth1Draw()
-    oled.showDisplay()
+    oled_eyes()
+    oled_mouth()
+    oled.show()
     ring.fillAllRGBRing("33ff33")
     buzzer.playEmoji("S_JUMP")
     time.sleep(1)
-    oled.clearDisplay()
-    oled.Eyes1Draw()
-    oled.Mouth2Draw()
-    oled.showDisplay()
+    oled.fill(0)
+    oled_eyesup2()
+    oled_mouthup()
+    oled.show()
     ring.fillAllRGBRing("cc33cc")
     buzzer.playEmoji("S_OhOoh")
     time.sleep(1)
-    oled.clearDisplay()
-    oled.Eyes3Draw()
-    oled.Mouth3Draw()
-    oled.showDisplay()
+    oled.fill(0)
+    oled_eyesup()
+    oled_mouthup2()
+    oled.show()
     ring.fillAllRGBRing("3366ff")
+    time.sleep(1)
+    oled_eyesdown()
+    oled_mouthdown()
+    oled.show()
     buzzer.playEmoji("S_sad")
     time.sleep(1)
-    oled.clearDisplay()
-    oled.Eyes4Draw()
-    oled.Mouth4Draw()
-    oled.showDisplay()
+    oled.fill(0)
+    oled_eyesdown2()
+    oled_mouthdown2()
+    oled.show()
     ring.fillAllRGBRing("ffff33")
     buzzer.playEmoji("S_happy")
     time.sleep(1)
-    oled.clearDisplay()
-    oled.Eyes5Draw()
-    oled.Mouth5Draw()
-    oled.showDisplay()
+    oled.fill(0)
+    oled_eyeswinkright()
+    oled_mouthright()
+    oled.show()
     ring.fillAllRGBRing("ff6600")
     buzzer.playEmoji("S_confused")
     time.sleep(1)
-    oled.clearDisplay()
-    oled.Eyes6Draw()
-    oled.Mouth6Draw()
-    oled.showDisplay()        
+    oled.fill(0)
+    oled_eyesworry()
+    oled_mouthworry()
+    oled.show()        
     ring.fillAllRGBRing("fe0000")
     buzzer.playEmoji("S_surprise")
     time.sleep(1)
-    
-
-    
-

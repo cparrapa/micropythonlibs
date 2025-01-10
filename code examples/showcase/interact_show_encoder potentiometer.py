@@ -2,16 +2,14 @@ import machine
 import time
 from machine import Pin, PWM, ADC, I2C
 from ottoneopixel import OttoUltrasonic
-from rotary import Rotary
+from ottoencoder import Rotary
 import math
-
 #--------------------------------------------
 # CONNECTOR SETUP
 # Encoder 4pin -> Pin 2
 # Encoder 3pin -> Pin 7
 # Pontetiometer 3pin -> Pin 8
 #--------------------------------------------
-
 # Initialize peripherals
 rotary = Rotary(16, 17, 33)  # Rotary encoder pins
 potent = ADC(Pin(27))        # Potentiometer pin

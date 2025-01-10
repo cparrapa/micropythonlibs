@@ -1,4 +1,4 @@
-# This code requires MP3, microphone and OLED display
+# This code requires MP3, microphone and OLED display, pending to update OLED to conenctor 1
 # It makes Otto move his eyes randomly and react to sound by opening his mouth
 
 import machine, time                       #importing machine and time libraries

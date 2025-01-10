@@ -1,6 +1,5 @@
-import machine
+import machine, micropython
 import utime as time
-import micropython
 from machine import Pin
 
 class Rotary:

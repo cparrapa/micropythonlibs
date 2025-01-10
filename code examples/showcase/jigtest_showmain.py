@@ -2,7 +2,7 @@
 import machine, time, math, utime, dht
 from ssd1306 import SSD1306_I2C
 from time import sleep                     #importing sleep class
-from machine import Pin, ADC, PWM          #importing Pin, ADC and PWM classes
+from machine import SoftI2C, Pin, ADC, PWM          #importing Pin, ADC and PWM classes
 from neopixel import NeoPixel
 from ottoneopixel import OttoNeoPixel
 from ottoneopixel import OttoRGBMatrix
@@ -11,7 +11,9 @@ from ottobuzzer import OttoBuzzer
 
 led = Pin(2, Pin.OUT)             # Built in LED
 buzzer = OttoBuzzer(25)           # Built in Buzzer
-i2c=machine.I2C(0,sda=Pin(19), scl=Pin(18), freq=400000) # Connector 1
+#i2c= I2C(0,sda=Pin(19), scl=Pin(18), freq=400000)  Connector 1
+#oled = SSD1306_I2C(128, 64, i2c, addr=0x3C)
+i2c = SoftI2C(sda=Pin(19), scl=Pin(18))# Connector 1
 oled = SSD1306_I2C(128, 64, i2c)
 # Connector 2 pending add mp3
 brightm = 0.3 # brightness variable for lights

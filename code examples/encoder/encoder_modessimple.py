@@ -7,7 +7,7 @@ from ssd1306 import SSD1306_I2C
 button_pin = machine.Pin(26, machine.Pin.IN, machine.Pin.PULL_UP)  # Adjust the pin number as needed
 
 # OLED setup
-i2c = I2C(scl=Pin(22), sda=Pin(21), freq=400000)
+i2c = I2C(scl=Pin(18), sda=Pin(19), freq=400000)
 oled = SSD1306_I2C(128, 64, i2c, addr=0x3C)
 
 def run_program():
