@@ -1,4 +1,4 @@
-from rotary import Rotary
+from ottoencoder import Rotary
 import utime as time
 from machine import Pin
 from neopixel import NeoPixel

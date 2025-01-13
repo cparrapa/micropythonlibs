@@ -7,7 +7,7 @@ from machine import Pin
 
 # these are the pins in the lower-left corner (USB on top)
 BUTTON_PIN_A = 26 # Connector 4
-BUTTON_PIN_B = 32 # Connector 6
+BUTTON_PIN_B = 27 # Connector 8
 
 button_presses = 0 # the count of times the button has been pressed.  A is +1, B is -1
 last_time = 0 # the last time we pressed the button

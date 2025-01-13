@@ -4,7 +4,7 @@ from machine import Pin, SoftI2C, PWM          #importing Pin, I2C and PWM class
 i2c = SoftI2C(sda=Pin(19), scl=Pin(18)) # Connector 1
 
 oled = OttoOled(19, 18)  # Connector 1
-button = Pin(26, Pin.IN) # Connector 4
+button = Pin(26, Pin.IN, Pin.PULL_DOWN) # Connector 4
 
 i = 1
 while True:

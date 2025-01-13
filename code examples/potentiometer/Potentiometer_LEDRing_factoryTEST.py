@@ -6,7 +6,7 @@ import utime
 NUM_LEDS = 13
 
 # Define the GPIO pins
-POT_PIN = 26
+POT_PIN = 32
 LED_PIN = 4
 
 # Initialize the potentiometer

@@ -6,7 +6,7 @@ i2c = SoftI2C(sda=Pin(19), scl=Pin(18)) # Connector 1
 oled = SSD1306_I2C(128, 64, i2c) # width, height using default address 0x3C
 
 rtc = RTC() 
-rtc.datetime((2024, 6, 28, 6, 15, 00, 0, 0)) 
+rtc.datetime((2025, 1, 15, 6, 15, 00, 0, 0)) 
 # rtc.datetime((YYYY, MM, DD, WD, HH, MM, SS, MS)) 
 # WD 1 = Monday 
 # WD 7 = Sunday 

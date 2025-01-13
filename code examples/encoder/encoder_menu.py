@@ -1,10 +1,11 @@
 # Rotary Menu Kevin McAleer May 2021
 from os import listdir
 from time import sleep
-from machine import I2C, Pin
+from machine import SoftI2C, Pin
 from ssd1306 import SSD1306_I2C
+from ottoencoder import Rotary
 
-i2c = I2C(scl=Pin(18), sda=Pin(19), freq=400000)
+i2c = SoftI2C(scl=Pin(18), sda=Pin(19), freq=400000)
 
 # Screen Variables
 WIDTH = 128
@@ -22,6 +23,7 @@ oled.init_display()
 
 # Setup the Rotary Encoder
 button_pin = Pin(26, Pin.IN, Pin.PULL_DOWN)
+# rotary = Rotary(16, 17, 26) #  Connector 2
 direction_pin = Pin(16, Pin.IN, Pin.PULL_UP)
 step_pin  = Pin(17, Pin.IN, Pin.PULL_UP)
 

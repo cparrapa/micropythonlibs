@@ -1,5 +1,4 @@
-import machine
-import time, utime
+import machine, time, utime
 from time import sleep
 from machine import Pin, I2C
 from ssd1306 import SSD1306_I2C
@@ -57,11 +56,9 @@ print("Programs: ", programs, "Number of prg: ", maxprog, "Selected: ", select)
 
 while True:
     oled.fill(0)
-    oled.text("Program no. {}".format(select + 1), 0, 0)
-    oled.fill_rect(0, 14, 128, 20, 1)
-    oled.text(f"{programs[select]}", 0, 20, 0)
-    oled.text("Press button", 0, 40)
-    oled.text("to run program.", 0, 50)
+    oled.text("Program # {}".format(select + 1), 0, 0)
+    oled.fill_rect(0, 10, 128, 11, 1)
+    oled.text(f"{programs[select]}", 0, 11, 0)
     oled.show()
     time.sleep(.05)
 

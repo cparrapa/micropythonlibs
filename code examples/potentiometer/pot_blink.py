@@ -2,7 +2,7 @@ from machine import Pin, ADC  #importing Pin and ADC classes
 from utime import sleep       #importing sleep class
 
 led = Pin(2, Pin.OUT)    # Built in LED
-pot=ADC(Pin(32))         # creating potentiometer object Connector 7
+pot=ADC(Pin(32))         # creating potentiometer object Connector 6
 
 MAX_DELAY = .5 # seconds
 

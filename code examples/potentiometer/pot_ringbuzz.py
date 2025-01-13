@@ -4,17 +4,13 @@ from neopixel import NeoPixel
 from ottoneopixel import OttoNeoPixel
 from ottobuzzer import OttoBuzzer
 
-led = Pin(2, Pin.OUT)                 # Built in LED
 buzzer = OttoBuzzer(25)               # Built in Buzzer
-ultrasonic = NeoPixel(Pin(18), 6)     # Connector 1
-io = 19                               # echo input and trigger out signal
-bright = 0.8                          # brightness variable for lights
 n = 13                                # Number of LEDs in ring
 ring = OttoNeoPixel(4, n)             # Connector 5
 
 import math
-adc_26 = ADC(33)                      #Connector 7
-adc_26.width(ADC.WIDTH_10BIT)         #resolution range 0 to 1023
+adc_26 = ADC(32)                      # Connector 6
+adc_26.width(ADC.WIDTH_10BIT)         # resolution range 0 to 1023
 
 def map(value, in_min, in_max, out_min, out_max):
    map = (value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min

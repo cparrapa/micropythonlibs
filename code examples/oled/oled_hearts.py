@@ -28,7 +28,6 @@ def random_heart():
     print(xofs, yofs)
     draw_heart(xofs, yofs)
 
-
 oled.fill(0)
 for n in range(10):
     random_heart()

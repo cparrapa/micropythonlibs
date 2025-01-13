@@ -36,14 +36,14 @@ def bounce(r, g, b, wait):
        matrix.pixels.write()
        time.sleep_ms(wait)
 
-while True:
-    matrix.fillAllRing(int(255 * brightm), 0, 0)
-    time.sleep(1)
-    matrix.fillAllRing(0, int(255 * brightm), 0)
-    time.sleep(1)
-    matrix.fillAllRing(0, 0, int(255 * brightm))
-    time.sleep(1)
-    bounce(int(255 * brightm), int(255 * brightm), int(255 * brightm),15)
-    rainbow_cycle(10)
-    time.sleep(1)
+matrix.fillAllRing(int(255 * brightm), 0, 0)
+time.sleep(1)
+matrix.fillAllRing(0, int(255 * brightm), 0)
+time.sleep(1)
+matrix.fillAllRing(0, 0, int(255 * brightm))
+time.sleep(1)
+bounce(int(255 * brightm), int(255 * brightm), int(255 * brightm),15)
+rainbow_cycle(10)
+time.sleep(1)
    
+

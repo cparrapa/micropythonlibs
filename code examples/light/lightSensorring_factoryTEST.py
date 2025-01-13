@@ -6,7 +6,7 @@ import utime
 NUM_LEDS = 13
 
 # Define the GPIO pins
-LIGHT_SENSOR_PIN = 32 #PORT 10
+LIGHT_SENSOR_PIN = 33 #PORT 7
 LED_PIN = 4 #PORT 5
 
 # Initialize the light sensor

@@ -22,7 +22,7 @@ button_pressed = button1
 # number of pixels
 n = 64
 # strip control gpio
-p = 16 
+p = 22 
 np = neopixel.NeoPixel(machine.Pin(p), n)
 
 # FUNCTIONS FOR LIGHTING EFFECTS
