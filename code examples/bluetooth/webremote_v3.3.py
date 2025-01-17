@@ -1,21 +1,13 @@
-# otto starter webcontrol v3.2 07.09.2024
-# v01, v02 Iván R. Artiles Bretón
-# v03 Iván R. Artiles Bretón, Alex Etchells
-# reference to ottomotor.Motors replaced with ottomptor.OttoMotor
-# led control code updated for new ring configuration
-# Mode code moved to timer to be compatible with micropythom v1.20 on
-# additon of battery voltage to status string
-# in v3.2 modifed the battery status to display percentage every minute
-# changes in formatting to conform with new preferred  practice
-# v04 updated to changes in ultrasonic lib v2.0
-
-import random, ubluetooth, ottosensors
+# otto starter webcontrol v3.3 16.01.2025
+import random, ubluetooth
+import array # Needed for polygons
 from machine import Pin, Timer, PWM, ADC
 from time import sleep_ms,sleep, ticks_ms, ticks_diff
 from ottobuzzer import OttoBuzzer
-from ottoneopixel import OttoNeoPixel
-from ottoneopixel import OttoUltrasonic
+from ottoneopixel import OttoNeoPixel, OttoUltrasonic
 from ottomotor import OttoMotor
+from ottosensors import FollowLine
+
 led = Pin(2, Pin.OUT)                   # Built in LED
 buzzer = OttoBuzzer(25)                 # Built in Buzzer
 ultrasonic = OttoUltrasonic(18, 19)     # Connector 1
@@ -23,7 +15,7 @@ analog = Pin(26, Pin.IN)                # Connector 4
 n = 13                                  # Number of LEDs in ring
 ring = OttoNeoPixel(4, n)               # Connector 5
 ring.setBrightness(5)                   # brightness  for lights
-line = ottosensors.FollowLine(32, 33, 27, 15) # Connectors 6 to 9
+line = FollowLine(32, 33, 27, 15) # Connectors 6 to 9
 sensorL=ADC(Pin(32))                    # Connector 6 analog
 sensorR=ADC(Pin(33))                    # Connector 7 analog
 motor = OttoMotor(13, 14)               # Connectors 10 & 11
@@ -44,11 +36,101 @@ loDutyR = 25
 hiDutyR = 125
 midDutyR = 75 #int(loDutyR + (hiDutyR - loDutyR)/2)
 
-'''
-temporary function to translate commands for Motors class to OttoMotor class
-ultimately to be moved to the OttoMotor class or replaced with a new method 
-in OttoMotor 
-'''
+face = ""
+oled = ""
+matrix = ""
+
+def oled_eyesclosed():
+    oled.rect(16,0,96,33,0,True)
+    oled.rect(16,16,32,6,1,True)
+    oled.rect(80,16,32,6,1,True)
+def oled_eyes():
+    oled.rect(16,0,96,33,0,True)
+    oled.ellipse(32,16,16,16,1,1)
+    oled.ellipse(32,16,10,10,0,1)
+    oled.ellipse(96,16,16,16,1,1)
+    oled.ellipse(96,16,10,10,0,1)
+def oled_eyesup():
+    oled_eyes()
+    oled.rect(0,16,128,17,0,True)
+def oled_eyesup2():
+    oled.rect(16,0,96,33,0,True)
+    oled.ellipse(32,32,16,16,1,1)
+    oled.ellipse(32,32,10,10,0,1)
+    oled.ellipse(96,32,16,16,1,1)
+    oled.ellipse(96,32,10,10,0,1)
+    oled.rect(0,32,128,17,0,True)
+def oled_eyesdown():
+    oled_eyes()
+    oled.rect(0,0,128,16,0,True)
+def oled_eyesdown2():
+    oled.rect(16,0,96,33,0,True)
+    oled.ellipse(32,0,16,16,1,1)
+    oled.ellipse(32,0,10,10,0,1)
+    oled.ellipse(96,0,16,16,1,1)
+    oled.ellipse(96,0,10,10,0,1)
+def oled_eyeswinkleft():
+    oled_eyes()
+    oled.rect(64,0,128,16,0,True)
+def oled_eyeswinkright():
+    oled_eyes()
+    oled.rect(0,0,64,16,0,True)
+def oled_eyesangry():
+    oled_eyes()
+    triangle1 = array.array('I', [16,0,48,0,48,32])
+    oled.poly(0,0, triangle1, 0, True)
+    triangle2 = array.array('I', [80,0,112,0,80,32])
+    oled.poly(0,0, triangle2, 0, True)
+def oled_eyesworry():
+    oled_eyes()
+    triangle1 = array.array('I', [16,0,48,0,16,32])
+    oled.poly(0,0, triangle1, 0, True)
+    triangle2 = array.array('I', [80,0,112,0,112,32])
+    oled.poly(0,0, triangle2, 0, True)
+def oled_mouthclosed():
+    oled.rect(32,32,64,32,0,True)
+    oled.rect(32,42,64,6,1,True)
+def oled_mouth():
+    oled.rect(32,32,64,32,0,True)
+    oled.ellipse(64,48,16,16,1,1)
+    oled.ellipse(64,48,10,10,0,1)
+def oled_mouthup():
+    oled_mouth()
+    oled.rect(48,32,33,16,0,True)
+def oled_mouthup2():
+    oled.rect(32,32,64,32,0,True)
+    oled.ellipse(64,32,16,16,1,1)
+    oled.ellipse(64,32,10,10,0,1)
+    oled.rect(48,16,33,16,0,True)
+def oled_mouthdown():
+    oled_mouth()
+    oled.rect(48,48,33,16,0,True)
+def oled_mouthdown2():
+    oled.rect(32,32,64,32,0,True)
+    oled.ellipse(64,64,16,16,1,1)
+    oled.ellipse(64,64,10,10,0,1)
+def oled_mouthleft():
+    oled_mouthclosed()
+    oled.ellipse(80,53,15,11,1,1)
+    oled.rect(64,48,32,5,1,True)
+def oled_mouthright():
+    oled_mouthclosed()
+    oled.ellipse(48,53,15,11,1,1)
+    oled.rect(32,48,32,5,1,True)
+def oled_mouthhappy():
+    oled.rect(32,32,64,32,0,True)
+    oled.ellipse(64,48,15,15,1,1)
+    oled.rect(48,32,32,16,1,True)
+def oled_mouthworry():
+    oled.rect(32,32,64,32,0,True)
+    oled.ellipse(64,48,15,10,1,1)
+def draw(bits,r=0, g=0, b=0):
+    for i, bit in enumerate(bits):
+        if bit == '1':
+            matrix[i] = (r, g, b)
+    matrix.write()
+    sleep(0.01)
+
 def MotorsMove(right_speed, left_speed, direction, t=None):
     right_speed = int(right_speed/2)
     left_speed = int(left_speed/2)
@@ -80,21 +162,10 @@ def wipe(r, g, b, wait):
         sleep_ms(wait)
 
 def get_battery_percentage(battery_reading, min_voltage=3.2, max_voltage=4.2):
-    """
-    Convert the raw battery reading from ADC to an integer battery percentage.
-    :param battery_reading: The raw ADC value from battery.read()
-    :param min_voltage: The minimum voltage corresponding to 0% battery (default 3.2V)
-    :param max_voltage: The maximum voltage corresponding to 100% battery (default 4.2V)
-    :return: Battery percentage as an integer
-    """
-    # Convert ADC value to voltage
     measV = battery_reading * 3.3 / 4095
-    voltage = measV * 90 / 51  # Apply calibration factor
-    # Calculate the battery percentage
+    voltage = measV * 90 / 51
     percentage = (voltage - min_voltage) / (max_voltage - min_voltage) * 100
-    # Limit the percentage to 0-100%
     percentage = max(0, min(percentage, 100))
-    # Return percentage as an integer
     return int(percentage)
         
 buzzer.playNote(261,125)
@@ -183,7 +254,6 @@ class BLE():
         timer3.init(period=100, mode=Timer.PERIODIC, callback=tick)    
     
     def Mode_1(self):
-        # Function to execute during "mode-1"
         # Theremin
         distance = int(ultrasonic.readultrasonicRGB("cm"))
         if distance <= (10) and distance < (20):
@@ -214,7 +284,6 @@ class BLE():
             ultrasonic.ultrasonicRGB1("000000", "000000")
                     
     def Mode_2(self):
-        # Function to execute during "mode-2"
         # Avoidance
         if (ultrasonic.readultrasonicRGB(1)) <= (15):
             ultrasonic.ultrasonicRGB1("cc0000", "cc0000")
@@ -229,7 +298,6 @@ class BLE():
             MotorsMove(sliderR, sliderL, "forward")
             
     def Mode_3(self):
-        # Function to execute during "mode-3"
         # Line Follow
         sensorL_value=sensorL.read()
         sensorR_value=sensorR.read()
@@ -257,13 +325,19 @@ class BLE():
         self.timer2.init(period=1000, mode=Timer.PERIODIC, 
             callback=lambda t: ring.fillAllRGBRing("000000"))   
     def BLE_irq(self, event, data):
+        global face
         global mode
         global toggleStatus
         global sliderR
         global sliderL
         global battery_percentage
+        global oled
+        global matrix
         digitalPinStatus = 0
-        distance_cm = int(ultrasonic.readultrasonicRGB("cm"))
+        if face == 'ultrasonic' or face == 'led':
+            distance_cm = int(ultrasonic.readultrasonicRGB("cm"))
+        else:
+            distance_cm = 0
         lineRStatus = line.readLineRight()
         lineLStatus = line.readLineLeft()
         analogValue = analog.value()
@@ -306,10 +380,22 @@ class BLE():
                     print("Exiting Mode")
                     self.curMode = 0
                     motor.Stop(1)
-                    ultrasonic.ultrasonicRGB1("000000", "000000")          
+                    if face == "ultrasonic":
+                        ultrasonic.ultrasonicRGB1("000000", "000000")
                 elif 'Connect-' in message:
                     print('Type of Otto Connected: ')
-                    print(message[8:])       
+                    print(message[8:])
+                    face = message[8:]
+                    if face == "oled":
+                        from machine import SoftI2C
+                        from ssd1306 import SSD1306_I2C
+                        i2c = SoftI2C(sda=Pin(19), scl=Pin(18))
+                        oled = SSD1306_I2C(128, 64, i2c)
+                    if face == "led":
+                        from neopixel import NeoPixel
+                        nm = 64   # Number of LEDs in matrix
+                        matrix = NeoPixel(Pin(22), nm)
+                        brightm = 0.2 # brightness variable for matrix lights
                 elif 'update' in message:
                     print('Update robot sensor values')
                 elif 'forward' in message:
@@ -367,6 +453,10 @@ class BLE():
                     print('Text sended: ')
                     print(message[1:])
                     txtString = message[1:]
+                    if face == 'oled':
+                        oled.fill(0)
+                        oled.text("{}".format(txtString), 0, 0,1)
+                        oled.show()
                 elif 'U' in message:
                     ultrasonic.ultrasonicRGB1(message[7:],message[1:7])
                 elif 'N' in message:
@@ -386,9 +476,91 @@ class BLE():
                     ring.fillRGBRing(color1, color2, color3, color4, color5, 
                         color6, color7, color8, color9, color10, color11, 
                         color12, color13)
+                elif 'oled-' in message:
+                    eyes = message.split('-')[1].split('#')[0]
+                    mouth = message.split('#')[1]
+                    oled.fill(0)
+                    if eyes == "1":
+                        oled_eyes()
+                    elif eyes == "2":
+                        oled_eyesup()
+                    elif eyes == "3":
+                        oled_eyesup2()
+                    elif eyes == "4":
+                        oled_eyesdown2()
+                    elif eyes == "5":
+                        oled_eyesdown()
+                    elif eyes == "6":
+                        oled_eyesworry()
+                    elif eyes == "7":
+                        oled_eyesangry()
+                    elif eyes == "8":
+                        oled_eyeswinkleft()
+                    elif eyes == "9":
+                        oled_eyeswinkright()
+                    elif eyes == "10":
+                        oled_eyesclosed()
+                    if mouth == "1":
+                        oled_mouth()
+                    elif mouth == "2":
+                        oled_mouthup()
+                    elif mouth == "3":
+                        oled_mouthup2()
+                    elif mouth == "4":
+                        oled_mouthdown2()
+                    elif mouth == "5":
+                        oled_mouthdown()
+                    elif mouth == "6":
+                        oled_mouthworry()
+                    elif mouth == "7":
+                        oled_mouthhappy()
+                    elif mouth == "8":
+                        oled_mouthleft()
+                    elif mouth == "9":
+                        oled_mouthright()
+                    elif mouth == "10":
+                        oled_mouthclosed()
+                    oled.show()
                 elif 'led-' in message:
                     print('LED Screen: ')
-                    print(message[4:])                
+                    icon = message[4:]
+                    print(icon)
+                    matrix.fill((0,0,0))
+                    matrix.write()
+                    if icon == 'happy':
+                        draw("0000000000000000000000000100001001100110001111000001100000000000",50,0,0)
+                    elif icon == 'sad':
+                        draw("0000000000000000000000000001100000111100011001101100001100000000",50,0,0)
+                    elif icon == 'confused':
+                        draw("0000000000000000000100000011100001101101110001111000001000000000",50,0,0)
+                    elif icon == 'astonished':
+                        draw("0001100000100100010000101000000110000001010000100010010000011000",50,0,0)
+                    elif icon == 'angry':
+                        draw("0000000000000000000000000111111011111111110000111100001111000011",50,0,0)
+                    elif icon == 'love':
+                        draw("0000000001100110111111111111111101111110001111000001100000000000",50,0,0)
+                    elif icon == 'money':
+                        draw("0000000000011000011111101100000001111110000000110111111000011000",50,0,0)
+                    elif icon == 'bolt':
+                        draw("0000110000011000001100000111110001111100000110000011000001100000",50,0,0)
+                    elif icon == 'fire':
+                        draw("0010100100000000010100100011000010110101011111010111111111111111",50,0,0)
+                    elif icon == 'warning':
+                        draw("0011110001100110111001111110011111100111111111110110011000111100",50,0,0)
+                    elif icon == 'star':
+                        draw("0001100000011000111111110111111000111100001111000110011011000011",50,0,0)
+                    elif icon == 'battery':
+                        draw("0001100001111110010000100100001001000010011111100111111001111110",50,0,0)
+                    elif icon == 'apple':
+                        draw("0000110000011000011111101111110011111100111111000111111000111100",50,0,0)
+                    elif icon == 'python':
+                        draw("0110000001111110000000100000001000111110001000000011111000000000",50,0,0)
+                    elif icon == 'flag':
+                        draw("0011000000111100001111100011110000110000001000000010000000100000",50,0,0)
+                    elif icon == 'moon':
+                        draw("0011000001100000110000001100000011000001111000110111111000111100",50,0,0)
+                    elif icon == 'sun':
+                        draw("1000000101011010001111000111111001111110001111000101101010000001",50,0,0)
                 elif 'n-' in message:
                     note = message[2:]
                     if note == "do":
@@ -429,4 +601,4 @@ class BLE():
         name = bytes(self.name, 'UTF-8')
         self.ble.gap_advertise(100, bytes([0x02, 0x01, 0x02]) + 
             bytes([len(name) + 1, 0x09]) + name)
-ble = BLE("Ottoremote v3.2")
+ble = BLE("Ottoremote v3.3")

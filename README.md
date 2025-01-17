@@ -38,7 +38,7 @@ The actual micropython text code demos, navigate by folder/component:
 * tilt: simple digital input. (TESTED)
 * showcase: set of selected codes for demostrations. (TESTED)
 * ultrasonic: Distance sonar sensor needs more examples. (WIP)
-* wifi: everything related to the use of WiFi web servers, IoT applications, etc. (WIP)
+* wifi: everything related to the use of WiFi web server. (WIP)
 
 New components and examples are always welcome!
 

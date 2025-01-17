@@ -59,3 +59,4 @@ while True:
     
     last_clk = clk_value
     time.sleep(0.01)
+    print(encoder_value)

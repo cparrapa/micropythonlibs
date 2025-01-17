@@ -6,7 +6,7 @@
 # Mode code moved to timer to be compaiblw with micropythom v1.20 on
 # additon of battery voltage to status string
 # changes in formatting to conform with new preferred  practice
-# v04 updated to changes in ultrasonic lib v2.0
+# v3.1 updated to changes in ultrasonic lib v2.0
 
 import random, ubluetooth, ottosensors
 from machine import Pin, Timer, PWM, ADC
@@ -400,5 +400,5 @@ class BLE():
         name = bytes(self.name, 'UTF-8')
         self.ble.gap_advertise(100, bytes([0x02, 0x01, 0x02]) + 
             bytes([len(name) + 1, 0x09]) + name)      
-ble = BLE("Ottov4")
+ble = BLE("Ottoremote v3.1")
 

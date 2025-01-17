@@ -399,4 +399,4 @@ class BLE():
         name = bytes(self.name, 'UTF-8')
         self.ble.gap_advertise(100, bytes([0x02, 0x01, 0x02]) + 
             bytes([len(name) + 1, 0x09]) + name)      
-ble = BLE("Ottov3")
+ble = BLE("Ottoremote v3.0")
