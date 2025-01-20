@@ -6,6 +6,7 @@ from time import sleep_ms,sleep, ticks_ms, ticks_diff
 from ottobuzzer import OttoBuzzer
 from ottoneopixel import OttoNeoPixel, OttoUltrasonic
 from ottomotor import OttoMotor
+from ottomotor import Servo
 from ottosensors import FollowLine
 
 led = Pin(2, Pin.OUT)                   # Built in LED
@@ -19,6 +20,10 @@ line = FollowLine(32, 33, 27, 15) # Connectors 6 to 9
 sensorL=ADC(Pin(32))                    # Connector 6 analog
 sensorR=ADC(Pin(33))                    # Connector 7 analog
 motor = OttoMotor(13, 14)               # Connectors 10 & 11
+servo_grip=Servo()
+servo_grip.attach(27) # Connector 8
+servo_bumper=Servo()
+servo_bumper.attach(15) # Connector 9
 toggleStatus = False
 mode = 0
 sliderR = 50
@@ -40,6 +45,29 @@ face = ""
 oled = ""
 matrix = ""
 
+def grip_close():
+    for i in range(10, 70):
+        servo_grip.write(i)
+        sleep(0.01)
+    sleep(0.5)
+        
+def grip_open():
+    for i in range(70, 10, -1):
+        servo_grip.write(i)
+        sleep(0.01)
+        servo_grip.detach
+    sleep(0.5)
+        
+def bump_up():
+    for i in range(110, 70, -1):
+        servo_bumper.write(i)
+        sleep(0.02)
+
+def bump_down():
+    for i in range(70, 110, 1):
+        servo_bumper.write(i)
+        sleep(0.02)
+        
 def oled_eyesclosed():
     oled.rect(16,0,96,33,0,True)
     oled.rect(16,16,32,6,1,True)
@@ -132,8 +160,8 @@ def draw(bits,r=0, g=0, b=0):
     sleep(0.01)
 
 def MotorsMove(right_speed, left_speed, direction, t=None):
-    right_speed = int(right_speed/2)
-    left_speed = int(left_speed/2)
+    right_speed = int(right_speed/5)
+    left_speed = int(left_speed/5)
 
     if direction == "forward":
         motor.leftServo.duty(midDutyL + left_speed) 
@@ -421,6 +449,7 @@ class BLE():
                     sliderL = int(numbers[1])
                 elif message == 'simple':
                     led.value(not led.value())
+                    bump_up()
                     digitalPinStatus = led.value()
                 elif 'dance' in message:
                     MotorsMove(sliderR, 0, "forward", 0.2)
@@ -446,9 +475,13 @@ class BLE():
                 elif message == 'switchtoggle':
                     toggleStatus = not toggleStatus
                     if toggleStatus == True:
-                        ring.fillAllRGBRing("FFFFFF")
+                        ring.fillAllRGBRing("0000FF")
+                        grip_open()
+                        bump_down()
                     else:
                         ring.fillAllRGBRing("000000")
+                        grip_close()
+                        bump_up()
                         # check out the fun clear for this
                 elif 'T' in message:
                     print('Text sended: ')
@@ -565,21 +598,21 @@ class BLE():
                 elif 'n-' in message:
                     note = message[2:]
                     if note == "do":
-                        buzzer.tone(buzzer.NOTE_C4, 100, 100)
+                        buzzer.tone(buzzer.NOTE_C4, 80, 80)
                     elif note == "re":
-                        buzzer.tone(buzzer.NOTE_D4, 100, 100)
+                        buzzer.tone(buzzer.NOTE_D4, 80, 80)
                     elif note == "mi":
-                        buzzer.tone(buzzer.NOTE_E4, 100, 100)
+                        buzzer.tone(buzzer.NOTE_E4, 80, 80)
                     elif note == "fa":
-                        buzzer.tone(buzzer.NOTE_F4, 100, 100)
+                        buzzer.tone(buzzer.NOTE_F4, 80, 80)
                     elif note == "sol":
-                        buzzer.tone(buzzer.NOTE_G4, 100, 100)
+                        buzzer.tone(buzzer.NOTE_G4, 80, 80)
                     elif note == "la":
-                        buzzer.tone(buzzer.NOTE_A4, 100, 100)
+                        buzzer.tone(buzzer.NOTE_A4, 80, 80)
                     elif note == "si":
-                        buzzer.tone(buzzer.NOTE_B4, 100, 100)
+                        buzzer.tone(buzzer.NOTE_B4, 80, 80)
                     elif note == "edo":
-                        buzzer.tone(buzzer.NOTE_C5, 100, 100)
+                        buzzer.tone(buzzer.NOTE_C5, 80, 80)
             except Exception as err:
                 print("except ", err)
             self.Send('{"D":' + str(digitalPinStatus) + 
@@ -603,4 +636,4 @@ class BLE():
         self.ble.gap_advertise(100, bytes([0x02, 0x01, 0x02]) + 
             bytes([len(name) + 1, 0x09]) + name)
 
-ble = BLE("Ottoremote v3.3")
+ble = BLE("OttoBLUEgrip v3.3")
