@@ -12,8 +12,8 @@ time.sleep(2)
 dfplayer.pause()
 
 for count in range(21):
-    dfplayer.play(1)
-    #dfplayer.play('prev')
+
+    dfplayer.play('next')
     dfplayer.volume_up()
     #dfplayer.volume_down()
     time.sleep(2)

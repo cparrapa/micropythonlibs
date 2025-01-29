@@ -1,35 +1,42 @@
-# Testing multiple components at once, becareful many connections have changed from the default GPIO pins
+# Testing multiple components at once, WARNING many connections have changed from the default GPIO pins
 import machine, time, math, utime, dht
 from ssd1306 import SSD1306_I2C
 from time import sleep                     #importing sleep class
-from machine import SoftI2C, Pin, ADC, PWM          #importing Pin, ADC and PWM classes
+from machine import SoftI2C, Pin, ADC, PWM #importing Pin, ADC and PWM classes
 from neopixel import NeoPixel
 from ottoneopixel import OttoNeoPixel
 from ottoneopixel import OttoRGBMatrix
 from ottobuzzer import OttoBuzzer
 #from ottomotor import OttoMotor
-
 led = Pin(2, Pin.OUT)             # Built in LED
 buzzer = OttoBuzzer(25)           # Built in Buzzer
-#i2c= I2C(0,sda=Pin(19), scl=Pin(18), freq=400000)  Connector 1
-#oled = SSD1306_I2C(128, 64, i2c, addr=0x3C)
-i2c = SoftI2C(sda=Pin(19), scl=Pin(18))# Connector 1
-oled = SSD1306_I2C(128, 64, i2c)
-# Connector 2 pending add mp3
+i2c = SoftI2C(sda=Pin(19), scl=Pin(18)) # Connector 1 i2c= I2C(0,sda=Pin(19), scl=Pin(18), freq=400000) 
+oled = SSD1306_I2C(128, 64, i2c) #oled = SSD1306_I2C(128, 64, i2c, addr=0x3C)
+
+# Initialize the encoder pins for Connector 2
+dt = Pin(17, Pin.IN)
+clk = Pin(16, Pin.IN)
+
 brightm = 0.3 # brightness variable for lights
 nm = 64       # Number of LEDs in the matrix
 matrix = NeoPixel(Pin(22), nm)    # Connector 3
+
 button = Pin(26, Pin.IN)          # Connector 4 digital
+
 bright = 0.5  # brightness variable for lights
 n = 13        # Number of LEDs in the ring
-ring = NeoPixel(Pin(4), n)        #Connector 5
+ring = NeoPixel(Pin(4), n)        # Connector 5
 pot=ADC(Pin(32))                  # Connector 6 analog
 pot.atten(ADC.ATTN_11DB)
 light=ADC(Pin(33))                # Connector 7 analog
 light.atten(ADC.ATTN_6DB)
-dht = dht.DHT11(Pin(27))          # Connector 8
-output = Pin(15, Pin.OUT)         # Connector 9
-tilt = Pin(13, Pin.IN)            # Connector 10
+dht = dht.DHT11(Pin(15))          # Connector 9
+tilt = Pin(14, Pin.IN)            # Connector 10
+output = Pin(13, Pin.OUT)         # Connector 11
+
+# Variables
+last_clk = clk.value()
+encoder_value = 0
 emoji=0
 
 hprobots = bytearray ([
@@ -211,6 +218,16 @@ def pixel(row, col, r=0, g=0, b=0, color=''):
        matrix[col + (row*8)] = self.color
        matrix.write();
        
+def update_leds(value):
+    """Update the LEDs based on the encoder value."""
+    led_index = value % nm
+    for i in range(nm):
+        if i == led_index:
+            matrix[i] = (0, 0, 255)  # Blue color
+        else:
+            matrix[i] = (0, 0, 0)    # Turn off LED
+    matrix.write()
+       
 def fire():
     draw("0001010010010000001001010110101010100011100000011000000101000010",50,0,0)
     draw("0000000000000000000100000001010001011110011111100111111000111100",50,25,0)
@@ -256,6 +273,15 @@ def czech():
     draw("1111111111111111111111111111111100000000000000000000000000000000",50,50,50)
     draw("0000000000000000000000000000000011111111111111111111111111111111",50,0,0)
     draw("1000000011000000111000001111000011110000111000001100000010000000",0,0,50)
+    
+def germany():
+    draw("0000000011111111111111111111111100000000000000000000000000000000",1,1,1)
+    draw("0000000000000000000000000000000011111111111111110000000000000000",50,0,0)
+    draw("0000000000000000000000000000000000000000000000001111111111111111",50,50,0)
+
+def uk():
+    draw("1111111011111110111111101111111011111110111111101111111000000000",0,0,50)
+    draw("1001001001010100001110001111111000111000010101001001001000000000",50,0,0)
 
 def love():
     draw("0111111011111111111111111111111111111111111111111111111101111110",50,50,0)
@@ -301,6 +327,7 @@ pixel(1, 0, 255,0,0)
 def map(value, in_min, in_max, out_min, out_max):
    map = (value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
    return map
+
 draw("1111111111111111111111111111111111111111111111111111111111111111",50,0,0)
 buzzer.playEmoji("S_JUMP")
 #for faster meassurements of analog inputs dht must be deleted
@@ -314,7 +341,7 @@ oled.text('Temp: %3.1f C' %temp, 0, 24)
 oled.text('Humidity: %3.1f %%' %hum, 0, 36)
 oled.show()
           
-delay = (1) / (40)
+delay = (1) / (60)
 white()
 purple()
 magenta()
@@ -362,48 +389,62 @@ azure()
 blue()
 
 while True:
+    oled.fill(0)
+    clk_value = clk.value()
+    dt_value = dt.value()
+    
+    # Detect rotation
+    if clk_value != last_clk:
+        if dt_value != clk_value:
+            encoder_value += 1
+        else:
+            encoder_value -= 1
+            update_leds(encoder_value)
+    
+    last_clk = clk_value
+    time.sleep(0.01)
+    print(encoder_value)
+    oled.text("encoder:{}".format(encoder_value), 0, 30)
+    
     print("Potentiometer:", pot.read())
-    #matrix[(int(map(pot.read(), 0, 4095, 0, 63)))] = (0, 0, 30)
-    #matrix[(int(map(light.read(), 0, 4095, 0, 63)))] = (30, 30, 0)
-    #matrix.write()
     ring[(int(map(pot.read(), 0, 4095, 12, 0)))] = (50, 0, 20)
     ring[(int(map(pot.read(), 0, 4095, 11, 0)))] = (50, 0, 0)
     ring.write()
-    oled.fill(0)
-    oled.text("Pot:{}".format(pot.read()), 0, 0)
-    oled.text("* {}%".format(int(map(light.read(), 4095, 0, 0, 100))), 0, 12)
-    oled.fill_rect(48,12,int(map(light.read(), 4095, 0, 0, 80)),8,1) 
-    oled.show()
-    ring.fill((0,0,0))
     
-    if (button.value()) == (1):
-        draw("1111111111111111111111111111111111111111111111111111111111111111",0,30,0)
+    oled.text("Pot:{}".format(pot.read()), 0, 0)
+    oled.text("ang:{}".format(int(map(pot.read(), 4095, 0, 0, 270))), 66, 0)
+    oled.text("* {}%".format(int(map(light.read(), 4095, 0, 0, 100))), 0, 12)
+    oled.fill_rect(48,12,int(map(light.read(), 4095, 0, 0, 80)),8,1)
+    ring.fill((0,0,0))
+    oled.show()
+    
+    if (button.value()) == (0):
         led.on()
         oled.text('Button pushed', 0, 48)
         oled.show()
         output.value(1)
         matrix.fill((0,0,0))
-        buzzer.playNote(261, 75)
-        buzzer.playNote(293, 75)
-        buzzer.playNote(329, 75)
-        buzzer.playNote(349, 75)
-        buzzer.playNote(392, 75)
-        buzzer.playNote(440, 75)
-        buzzer.playNote(493, 75)
-        buzzer.playNote(523, 75)
+        buzzer.playNote(261, 25)
+        buzzer.playNote(293, 25)
+        buzzer.playNote(329, 25)
+        buzzer.playNote(349, 25)
+        buzzer.playNote(392, 25)
+        buzzer.playNote(440, 25)
+        buzzer.playNote(493, 25)
+        buzzer.playNote(523, 25)
         emoji += 1
         if  emoji == (1):
             love()
         elif emoji == (2):
-            casa()
-        elif emoji == (3):
             star()
-        elif emoji == (4):
+        elif emoji == (3):
             robot()
-        elif emoji == (5):
+        elif emoji == (4):
             snow()
-        elif emoji == (6):
+        elif emoji == (5):
             tree()
+        elif emoji == (6):
+            casa()
         elif emoji == (7):
             fire()
         elif emoji == (8):
@@ -412,19 +453,20 @@ while True:
             colombia()
         elif emoji == (10):
             czech()
+        elif emoji == (11):
+            germany()
+        elif emoji == (12):
+            uk()
             emoji=0
     elif (tilt.value()) == (1):
         draw("1111111111111111111111111111111111111111111111111111111111111111",0,0,30)
         led.on()
         oled.text('tilted!', 0, 48)
         oled.show()
-        buzzer.playNote(261, 125)
-        buzzer.playNote(293, 125)
-        buzzer.playNote(329, 125)
-        buzzer.playNote(349, 125)
+        buzzer.playNote(261, 25)
+        buzzer.playNote(293, 25)
+        buzzer.playNote(329, 25)
+        buzzer.playNote(349, 25)
     else:
         output.value(0)
         led.off()
-
-
-

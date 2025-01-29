@@ -17,7 +17,7 @@ while True:
     print("Connector 7:",analogR.read_u16())
     analogL_value=analogL.read()           #reading analog pin
     analogR_value=analogR.read()           #reading analog pin
-    print("Left analog sensor:",analogL_value,"Right analog sensor:",analogR_value)
-    print("Left digital sensor:",digitalL.value(),"Right digital sensor:",digitalR.value())
+    print("Left analog:",analogL_value,"Right analog:",analogR_value)
+    print("Left digital:",digitalL.value(),"Right digital:",digitalR.value())
     led.value(button.value())
     sleep(0.2)
