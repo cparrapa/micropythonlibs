@@ -1,4 +1,4 @@
-# otto starter we ble wireless programming in blocks v01 16.06.2024
+# ble wireless programming in blocks v01 16.06.2024
 import bluetooth
 import time
 from machine import Pin, PWM

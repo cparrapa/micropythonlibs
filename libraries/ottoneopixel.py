@@ -1,9 +1,9 @@
-# ottoneopixel v4.2 01.09.2024
+# ottoneopixel v2.3 01.09.2024
 
-# v3.0 07.08.2024 Alex Etchells: addition of colorHSV, set_pixel_line_gradient,  rotate_left, rotate_right
-# v4.0 30.08.2024 Alex Etchells: Additon of 4x4 Matrix Functions
+# v2.1 07.08.2024 Alex Etchells: addition of colorHSV, set_pixel_line_gradient,  rotate_left, rotate_right
+# v2.2 30.08.2024 Alex Etchells: Additon of 4x4 Matrix Functions
 # setMatrixPixel, setMatrixRow, setMatrixCol, drawLine, drawTriangle, drawRectangle, drawRectangleFill, drawCircle
-# v4.1 01.09.2024 Alex Etchells: Additon of 4x4 Matrix Functions
+# v2.3 01.09.2024 Alex Etchells: Additon of 4x4 Matrix Functions
 # Created OttoRGBMatrix subclass
 
 import neopixel, machine, utime, time
