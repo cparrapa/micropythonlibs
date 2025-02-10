@@ -3,9 +3,9 @@ import bluetooth
 import time
 from machine import Pin, PWM
 from ottoble import BLESimplePeripheral
-from ottoneopixel import OttoNeoPixel
+from neopixel import NeoPixel
 
-ring = OttoNeoPixel(4, 13)
+ring = NeoPixel(Pin(4), 13)
 
 # Create a Bluetooth Low Energy (BLE) object
 ble = bluetooth.BLE()
@@ -18,7 +18,8 @@ commandSet = bytearray(b'')
 key = bytearray(b'EoChunk')
 last_chars = b''
 
-ring.fillAllRing(0, 255, 0)
+ring.fill((0,255,0))
+ring.write()
       
 def on_rx(x):
     global i, commandSet, key, last_chars

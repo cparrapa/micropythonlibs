@@ -5,6 +5,18 @@ Set of micro Python libraries and example codes to use with HP Robots Otto start
 ## libraries v2.0 
 In order for the examples to work, FIRST [**all files in libraries must be uploaded**](https://github.com/cparrapa/micropythonlibs/tree/main/libraries) to the circuit board in advance. Some are WIP (work in progress) not even functional.
 
+- ottomotor.py v2.0- in charge of servo motors classes (pending separate)
+- ottobuzzer.py v2.0- piezo notes and RTTTL melodies (pending separate mp3)
+- ottoneopixel.py v2.3- every RGB LED related component (pending separate ring, matrix and ultrasonic)
+- ottosensors.py v2.1- multiple sensors (pending split into independent sensors library)
+- ottodisplay.py v2.0- display faces (pending rename and update)
+- ottomp3.py v1.0- mp3 player
+- ottoble.py v2.1- bluetooth communication for block coding
+- ottoiot.py v1.0- internet of things
+- adxl345.py v1.0- default accelerometer chip
+- ssd1306.py v0.0 - default OLED driver
+- directory.py - index 
+
 These libraries are used and must be in sync with the main Webcode repository [python/libraries](https://github.com/cparrapa/webcode/blob/main/python/libraries/)
 
 ## [blocks examples](https://github.com/cparrapa/micropythonlibs/tree/main/blocks%20examples)

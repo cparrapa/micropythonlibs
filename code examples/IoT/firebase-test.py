@@ -11,7 +11,7 @@ CHECK_INTERVAL = 5  # Check every 5 seconds
 def connect_wifi(ssid, password):
     wlan = network.WLAN(network.STA_IF)
     wlan.active(True)
-    wlan.connect(ssid, password)
+    wlan.connect("ssid", "password")
 
     while not wlan.isconnected():
         print("Connecting to WiFi...")

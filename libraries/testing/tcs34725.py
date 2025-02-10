@@ -1,8 +1,8 @@
+# TCS34725 color sensor
 import machine, time, ustruct
 from machine import Pin
 from os import uname
 
-# TCS34725 color sensor
 #const = lambda x:x
 
 _COMMAND_BIT = const(0x80)

@@ -1,5 +1,5 @@
-# otto starter webcontrol v2.1 19.07.2024
-import random, ubluetooth, ottosensors
+# ble wireless programming in blocks v02 19.07.2024
+import random, ubluetooth
 from machine import Pin, Timer, PWM, ADC
 from time import sleep_ms
       
@@ -73,6 +73,7 @@ def on_rx(x):
             exec(realCommand)
         except Exception as e:
             ble.send(e)
+            print (e)
         commandSet = bytearray(b'')
 
 ble.on_write(on_rx)
