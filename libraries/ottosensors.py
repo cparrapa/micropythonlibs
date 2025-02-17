@@ -1,10 +1,6 @@
 # ottosensors v2.1 30.1.2025
-'''
-added ottolight.py from Alex Etchells
-added dht
-added rotary
-'''
 import machine, dht
+import micropython
 from machine import Pin, ADC
 
 class FollowLine:
@@ -66,17 +62,6 @@ class Percentage:
         except:
             return -1
 
-        # MIT License (MIT)
-# Copyright (c) 2022 Mike Teachman
-# https://opensource.org/licenses/MIT
-
-# Platform-independent MicroPython code for the rotary encoder module
-
-# Documentation:
-#   https://github.com/MikeTeachman/micropython-rotary
-
-import micropython
-
 _DIR_CW = const(0x10)  # Clockwise step
 _DIR_CCW = const(0x20)  # Counter-clockwise step
 
@@ -135,7 +120,6 @@ def _bound(value, incr, lower_bound, upper_bound):
 def _trigger(rotary_instance):
     for listener in rotary_instance._listener:
         listener()
-
 
 class Rotary(object):
 
