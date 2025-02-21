@@ -1,14 +1,13 @@
 # micropythonlibs
-Set of micro Python libraries and example codes to use with HP Robots Otto starter with all expansions and more.
+Set of micro Python libraries, example codes, 3D stl files and more to use with [HP Robots Otto starter and all expansions.](https://hprobots.com/otto-robot/product/)
 [version of MicroPython (v1.22)](https://micropython.org/download/ESP32_GENERIC/)
 
-## libraries v2.0 
+## [libraries v2.0 ](https://github.com/cparrapa/micropythonlibs/tree/main/libraries)
 In order for the examples to work, FIRST [**all files in libraries must be uploaded**](https://github.com/cparrapa/micropythonlibs/tree/main/libraries) to the circuit board in advance. Some are WIP (work in progress) not even functional.
 
 - ottomotor.py v2.0- in charge of servo motors classes (pending separate)
--ottowheels
--ottoangle
-otto4wd (not in blocks)
+- ottoangle.py
+- otto4wd.py (not in blocks)
 - ottobuzzer.py v2.2- piezo notes and RTTTL melodies (pending separate mp3)
 - ottomp3.py v1.0- mp3 player
 - ottoneopixel.py v2.3- every RGB LED related component (pending separate ring, matrix and ultrasonic)
@@ -16,16 +15,20 @@ otto4wd (not in blocks)
 - ottomatrix.py 8x8 leds
 - ottoultrasonic.py 6 leds
 - ottosensors.py v2.1- multiple sensors (pending split into independent sensors library or put ultra in)
--ottoencoder.py
--ottodht
-ottoline
-- ottodisplay.py v2.1- display faces (pending rename and update)
--ottowalk&roll.py
-
+- ottoencoder.py - encoder with button
+- ottodht.py temperature and humidity sensor based on dht11
+- ottoldr.py light sensor
+- ottomic.py - sound sensor 
+- ottobutton.py - for debouncing
+- ottotilt.py - premade functions like changing states
+- ottoline.py - line follow infrared sensors
+- ssd1306.py v0.0 - default OLED display driver
+- ottodisplay.py v2.1- display faces in OLED (pending rename and update)
+- ottowalk&roll.py
 - ottoble.py v2.1- bluetooth communication for block coding (depreceated)
 - ottoiot.py v1.0- internet of things
 - adxl345.py v1.0- default accelerometer chip
-- ssd1306.py v0.0 - default OLED display driver
+- ottoaccelerometer.py
 - directory.py - index 
 
 These libraries are used and must be in sync with the main Webcode repository [python/libraries](https://github.com/cparrapa/webcode/blob/main/python/libraries/)
