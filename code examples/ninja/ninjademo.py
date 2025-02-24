@@ -2,7 +2,7 @@ import machine                       #importing machine libraries
 from time import sleep               #importing sleep class
 from machine import Pin, PWM         #importing Pin and PWM classes
 from ottomotor import Servo
-from ottoninja import Ninja
+from ottowalk&roll import Ninja
 from ottoneopixel import OttoUltrasonic
 
 led = Pin(2, Pin.OUT)                 # Built in LED

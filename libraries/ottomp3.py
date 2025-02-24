@@ -1,4 +1,4 @@
-# ottomp3 v1.0 27.06.2024 pending split from buzzer library
+# ottomp3 v1.1 24.02.2024 pending split from buzzer library
 import machine, time
 from machine import Pin, PWM, UART, Timer
 
@@ -9,7 +9,7 @@ class Player:
         self._fadeout_timer = Timer(-1)
 
         self._volume = 15
-        self._max_volume = 15
+        self._max_volume = 50
         self._fadeout_speed = 0
 
     def cmd(self, command, parameter=0x00, parameter2=0x00):

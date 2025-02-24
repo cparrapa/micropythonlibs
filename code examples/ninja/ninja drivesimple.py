@@ -1,7 +1,7 @@
 import machine                       #importing machine libraries
 from time import sleep               #importing sleep class
 from machine import Pin, PWM         #importing Pin and PWM classes
-from ottoninja import Ninja
+from ottowalk&roll import Ninja
 
 ninja = Ninja(27, 15, 14, 13)         # Connector 8 (Left leg), 9(Right leg), 10(Left foot), 11(Right foot)
 

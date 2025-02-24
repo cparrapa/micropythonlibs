@@ -4,7 +4,7 @@ from machine import Pin, ADC, PWM          #importing Pin, ADC and PWM classes
 from ottobuzzer import OttoBuzzer
 from ottomotor import OttoMotor
 from ottomotor import Servo
-from ottoninja import Ninja
+from ottowalk&roll import Ninja
 from ottoneopixel import OttoUltrasonic
  
 led = Pin(2, Pin.OUT)                 # Built in LED
