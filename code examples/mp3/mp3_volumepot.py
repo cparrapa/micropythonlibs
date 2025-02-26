@@ -1,7 +1,7 @@
 import machine, time                       #importing machine and time libraries
 from time import sleep                     #importing sleep class
 from machine import Pin, ADC, PWM, SoftI2C #importing classes
-from ottobuzzer import Player
+from ottomp3 import Player
 dfplayer = Player(16, 17)
 
 led = Pin(2, Pin.OUT)                 # Built in LED

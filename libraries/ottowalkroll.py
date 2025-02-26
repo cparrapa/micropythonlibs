@@ -1,4 +1,4 @@
-# ottoninja v1 12.09.2024
+# ottowalkroll v2.0 26.02.2025
 from time import sleep               #importing sleep class
 from machine import Pin, PWM
 from ottomotor import Servo
@@ -6,19 +6,20 @@ from ottomotor import Servo
 class Ninja:
     def __init__(self, LL, RL, LF, RF): #(Left leg), (Right leg), (Left foot), (Right foot)
         self.leftlegServo=Servo()
-        self.leftlegServo.attach(LL)
+        self.leftlegServo.attach(LL) # angle servo
         self.rightlegServo=Servo()
-        self.rightlegServo.attach(RL)
+        self.rightlegServo.attach(RL) # angle servo
         self.leftfootServo=Servo()
-        self.leftfootServo.attach(LF)
+        self.leftfootServo.attach(LF) # wheel servo
         self.rightfootServo=Servo()
-        self.rightfootServo.attach(RF)
+        self.rightfootServo.attach(RF) # wheel servo
         
-    def Rollset(self):
+    def rollset(self):
         self.leftlegServo.write(180)
         self.rightlegServo.write(0)
+        sleep(0.2)
         
-    def Roll(self, direction, speed):
+    def roll(self, direction, speed):
         if(direction == -1): #backward
             if(speed == 1): #slow
                 leftSpeed = 60
@@ -44,7 +45,7 @@ class Ninja:
         self.leftfootServo.write(leftSpeed)
         self.rightfootServo.write(rightSpeed)
         
-    def Rollrotate(self, turn):
+    def rollrotate(self, turn):
         if(turn == -1): #left
             leftSpeed = 0
             rightSpeed = 0
@@ -59,15 +60,17 @@ class Ninja:
         self.leftfootServo.write(90)
         self.rightfootServo.write(90)
         
-    def Rollstop(self):
+    def rollstop(self):
         self.leftfootServo.write(90)
         self.rightfootServo.write(90)
+        sleep(0.2)
         
-    def Walkset(self):
+    def walkset(self):
         self.leftlegServo.write(90)
         self.rightlegServo.write(90)
+        sleep(0.2)
         
-    def Walk(self, direction, speed):
+    def walk(self, direction, speed):
         if(direction == -1): #backward
             if(speed == 1):
                 leftSpeed = 70
@@ -118,9 +121,11 @@ class Ninja:
         sleep(delay)
         self.leftlegServo.write(90)
         self.rightlegServo.write(90)
+        sleep(0.2)
         
-    def Walkstop(self):
+    def walkstop(self):
         self.leftfootServo.write(90)
         self.rightfootServo.write(90)
         self.leftlegServo.write(60)
         self.rightlegServo.write(120)
+        sleep(0.2)

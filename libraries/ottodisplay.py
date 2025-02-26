@@ -1,4 +1,4 @@
-# ottooled v2.1 11.12.2024
+# ottodisplay v2.1 26.02.2025
 import math, framebuf
 from machine import I2C, Pin
 from ssd1306 import SSD1306_I2C

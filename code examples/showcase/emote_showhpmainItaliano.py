@@ -4,7 +4,7 @@ from machine import I2C, SoftI2C, Pin
 from ssd1306 import SSD1306_I2C
 from neopixel import NeoPixel
 from ottoneopixel import OttoNeoPixel
-from ottooled import OttoOled
+from ottodisplay import OttoOled
 from ottobuzzer import OttoBuzzer
 from ottomotor import OttoMotor
 

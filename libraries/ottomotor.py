@@ -1,4 +1,4 @@
-# ottomotors v2.0 17.07.2024
+# ottomotors v2.1 26.02.2025
 import machine, time
 from machine import Pin, PWM
 
@@ -12,7 +12,7 @@ except ImportError:
         raise ImportError
     useServo = False
 
-class OttoMotor: #used in web code blocks lacks of calibration offset
+class OttoMotor: #used in web code blocks for wheels lacks of calibration offset
     
     def __init__(self, pin1, pin2):
         self.leftServo = PWM(Pin(pin2))

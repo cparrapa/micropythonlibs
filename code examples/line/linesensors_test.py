@@ -8,9 +8,6 @@ analogR=ADC(Pin(33))        # Connector 7
 digitalL = Pin(27, Pin.IN)  # Connector 8
 digitalR = Pin(15, Pin.IN)  # Connector 9
 
-digitalL = Pin(27, Pin.IN)  # Connector 8
-digitalR = Pin(15, Pin.IN)  # Connector 9
-
 while True:
     print("button:", button.value(), end = " ")
     print("Connector 6:",analogL.read_u16(), end = " ")

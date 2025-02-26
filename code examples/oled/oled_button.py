@@ -1,4 +1,4 @@
-from ottooled import OttoOled
+from ottodisplay import OttoOled
 from ssd1306 import SSD1306_I2C
 from machine import Pin, SoftI2C, PWM          #importing Pin, I2C and PWM classes
 i2c = SoftI2C(sda=Pin(19), scl=Pin(18)) # Connector 1

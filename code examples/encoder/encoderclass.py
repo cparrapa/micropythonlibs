@@ -2,7 +2,7 @@ from ottoencoder import Rotary
 import utime as time
 from machine import Pin
 from neopixel import NeoPixel
-from ottooled import OttoOled
+from ottodisplay import OttoOled
 
 led = Pin(2, Pin.OUT)    # Built in LED
 ring = NeoPixel(Pin(4), 13)  # Connector 5

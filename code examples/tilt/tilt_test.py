@@ -3,7 +3,7 @@ from time import sleep                     #importing sleep class
 from machine import Pin, ADC, PWM, I2C         #importing Pin, ADC and PWM classes
 from ottobuzzer import OttoBuzzer
 #OLED stuff
-from ottooled import OttoOled
+from ottodisplay import OttoOled
 from ssd1306 import SSD1306_I2C 
 
 led = Pin(2, Pin.OUT)                 # Built in LED

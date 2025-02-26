@@ -1,6 +1,6 @@
 import time, ustruct
 from machine import Pin, I2C
-from ottooled import OttoOled
+from ottodisplay import OttoOled
 
 # Constants
 ADXL345_ADDRESS = 0x53

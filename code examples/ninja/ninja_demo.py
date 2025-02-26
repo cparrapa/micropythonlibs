@@ -2,7 +2,7 @@ import machine                       #importing machine libraries
 from time import sleep               #importing sleep class
 from machine import Pin, PWM         #importing Pin and PWM classes
 from ottomotor import Servo
-from ottowalk&roll import Ninja
+from ottowalkroll import Ninja
 from ottoneopixel import OttoUltrasonic
 
 led = Pin(2, Pin.OUT)                 # Built in LED
@@ -27,36 +27,36 @@ ninja = Ninja(27, 15, 14, 13)         # Connector 8 (Left leg), 9(Right leg), 10
 
 while True:
     ultrasonic.ultrasonicRGB2(0, 255, 0)
-    ninja.Walkset()
+    ninja.walkset()
     sleep(0.5)
-    ninja.Walk(1, 3)
-    ninja.Walk(-1,3) #backward, fast
+    ninja.walk(1,3) #forward, fast
+    ninja.walk(-1,3) #backward, fast
     sleep(0.5)
-    ninja.Walkset()
+    ninja.walkset()
     ultrasonic.ultrasonicRGB2(255, 0, 0)
-    ninja.Rollset()
+    ninja.rollset()
     sleep(0.5)
-    ninja.Roll(-1, 3)
+    ninja.roll(-1, 3)
     sleep(0.5)
-    ninja.Roll(1, 3)
+    ninja.roll(1, 3)
     sleep(1)
-    ninja.Rollstop()
+    ninja.rollstop()
     sleep(0.4)
-    ninja.Rollrotate(1)
-    ninja.Rollrotate(1)
-    ninja.Rollrotate(-1)
-    ninja.Rollrotate(-1)
+    ninja.rollrotate(1)  #right
+    ninja.rollrotate(1)
+    ninja.rollrotate(-1)  #left
+    ninja.rollrotate(-1)
     sleep(0.4)
-    ninja.Rollset()
+    ninja.rollset()
     sleep(0.4)
-    ninja.Roll(1, 1)
-    ninja.Roll(1, 2)
-    ninja.Roll(1, 3)
+    ninja.roll(1, 1)
+    ninja.roll(1, 2)
+    ninja.roll(1, 3)
     sleep(0.6)
-    ninja.Rollstop()
+    ninja.rollstop()
     sleep(0.2)
     ultrasonic.ultrasonicRGB2(255, 0, 255)
-    ninja.Walkset()
+    ninja.walkset()
     sleep(0.4)
     servo_rightleg.write(90)
     servo_leftleg.write(90)

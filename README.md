@@ -2,13 +2,13 @@
 Set of micro Python libraries, example codes, 3D stl files and more to use with [HP Robots Otto starter and all expansions.](https://hprobots.com/otto-robot/product/)
 [version of MicroPython (v1.22)](https://micropython.org/download/ESP32_GENERIC/)
 
-## [libraries v2.0 ](https://github.com/cparrapa/micropythonlibs/tree/main/libraries)
-Files organized by functionality (e.g., motors, rgb ring, ultrasonic, etc). Each library file contains related classes and functions.
+## [library v2.0 ](https://github.com/cparrapa/micropythonlibs/tree/main/libraries)
+Files organized by modules (e.g., motors, rgb ring, ultrasonic, etc). Each file contains related classes, variables and functions.
 In order for the examples to work, FIRST [**all files in libraries must be uploaded**](https://github.com/cparrapa/micropythonlibs/tree/main/libraries) to the circuit board in advance. Some are WIP (work in progress) not even functional.
 
 - ottomotor.py v2.0- in charge of servo motors classes (pending separate)
 - ottoangle.py
-- ottowalk&roll.py
+- ottowalkroll.py
 - ottobattery.py - read voltage level
 - otto4wd.py (not in blocks)
 - ottobuzzer.py v2.2- piezo notes and RTTTL melodies
@@ -25,9 +25,9 @@ In order for the examples to work, FIRST [**all files in libraries must be uploa
 - ottobutton.py - for debouncing
 - ottoencoder.py - encoder with button
 - adxl345.py v1.0- default accelerometer chip
-- ottoaccelerometer.py
+- ottoaccelerometer.py (pending combine with adxl345)
 - ssd1306.py v0.0 - default third party library for OLED display driver
-- ottodisplay.py v2.1- display faces in OLED (pending rename and update)
+- ottodisplay.py v2.1- display faces in OLED (pending rename and combine with ssd1306)
 - ottomp3.py v1.0- mp3 player
 - ottoble.py v2.1- bluetooth communication for block coding (depreceated)
 - ottoiot.py v1.0- internet of things

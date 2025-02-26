@@ -1,7 +1,7 @@
 import dht
 from machine import Pin
 from time import sleep
-from ottooled import OttoOled
+from ottodisplay import OttoOled
 
 sensor = dht.DHT11(Pin(4)) # Connector 5
 oled = OttoOled(19, 18) # Connector 1

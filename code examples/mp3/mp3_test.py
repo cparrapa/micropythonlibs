@@ -1,5 +1,5 @@
 import time                       #importing time libraries
-from ottobuzzer import Player
+from ottomp3 import Player
 
 dfplayer = Player(16, 17)         # Connector 2
 #dfplayer.module_reset()

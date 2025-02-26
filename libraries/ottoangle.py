@@ -1,7 +1,8 @@
+# ottoangle v0.0 26.02.2025
 from machine import Pin, PWM
 import time
 
-class Servoscar:
+class Servo:
     # these defaults work for the standard TowerPro SG90
     __servo_pwm_freq = 50
     __min_u10_duty = 26 - 0 # offset for correction

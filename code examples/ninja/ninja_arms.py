@@ -1,12 +1,8 @@
 import machine, time                       #importing machine and time libraries
 from time import sleep                     #importing sleep class
 from machine import Pin, ADC, PWM          #importing Pin, ADC and PWM classes
-from ottobuzzer import OttoBuzzer
 from ottomotor import OttoMotor
 from ottomotor import Servo
- 
-led = Pin(2, Pin.OUT)                 # Built in LED
-buzzer = OttoBuzzer(25)               # Built in Buzzer
 
 # arm servo motors
 servo_leftarm=Servo()
@@ -26,35 +22,44 @@ servo_leftfoot.attach(14)	# Connector 10
 servo_rightfoot=Servo()
 servo_rightfoot.attach(13)	# Connector 11
  
-delay = 0.5
+delay = 0.3
 while True:
     servo_rightleg.write(90)
     servo_leftleg.write(90)
     servo_rightarm.write(90)
     servo_leftarm.write(90)
     time.sleep(delay)
-    servo_rightleg.write(107)
-    servo_leftleg.write(125)
+    servo_rightleg.write(150)
+    servo_leftleg.write(120)
+    time.sleep(delay)
     servo_rightarm.write(150)
+    time.sleep(delay)
     servo_leftarm.write(150)
     time.sleep(delay)
-    servo_rightfoot.write(125)
+    servo_leftfoot.write(125)
     time.sleep(delay)
     servo_rightarm.write(90)
+    time.sleep(delay)
     servo_leftarm.write(90)
-    servo_rightfoot.write(90)
+    time.sleep(delay)
+    servo_leftfoot.write(90)
     time.sleep(delay)
     servo_rightleg.write(90)
     servo_leftleg.write(90)
+    time.sleep(delay)
     servo_rightarm.write(50)
+    time.sleep(delay)
     servo_leftarm.write(50)
     time.sleep(delay)
-    servo_rightleg.write(46)
-    servo_leftleg.write(54)
+    servo_rightleg.write(60)
+    servo_leftleg.write(30)
     time.sleep(delay)
-    servo_leftfoot.write(55)
+    servo_rightfoot.write(55)
     time.sleep(delay)
-    servo_leftfoot.write(90)
+    servo_rightfoot.write(90)
+    time.sleep(delay)
     servo_rightarm.write(20)
+    time.sleep(delay)
     servo_leftarm.write(20)
     time.sleep(delay)
+

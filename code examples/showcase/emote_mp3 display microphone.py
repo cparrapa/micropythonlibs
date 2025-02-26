@@ -7,7 +7,7 @@ from machine import Pin, ADC, PWM          #importing Pin, ADC and PWM classes
 from ottobuzzer import OttoBuzzer
 from ottoneopixel import OttoUltrasonic
 from ottomotor import OttoMotor
-from ottooled import OttoOled
+from ottodisplay import OttoOled
 import random
 offset = 0
 

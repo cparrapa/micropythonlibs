@@ -2,7 +2,7 @@ from time import sleep  #importing sleep class
 from ssd1306 import SSD1306_I2C
 from machine import Pin, SoftI2C
 import array # Needed for polygons
-from ottooled import OttoOled
+from ottodisplay import OttoOled
 i2c = SoftI2C(sda=Pin(19), scl=Pin(18)) # Connector 1
 oled = SSD1306_I2C(128, 64, i2c) # width, height using default address 0x3C
 
