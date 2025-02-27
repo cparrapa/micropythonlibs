@@ -1,4 +1,4 @@
-# ottowalkroll v2.0 26.02.2025
+# ottowalkroll v2.1 27.02.2025
 from time import sleep               #importing sleep class
 from machine import Pin, PWM
 from ottomotor import Servo
@@ -129,3 +129,44 @@ class Ninja:
         self.leftlegServo.write(60)
         self.rightlegServo.write(120)
         sleep(0.2)
+        
+class Arms:
+    def __init__(self, LA, RA): #(Left arm), (Right arm)
+        self.leftarm=Servo()
+        self.leftarm.attach(LA)
+        self.rightarm=Servo()
+        self.rightarm.attach(RA)
+        
+    def move(self, turn, direction):
+        if(turn == "left"):
+            if(direction == "up"):
+                leftAngle = 0
+            elif(direction == "center"):
+                leftAngle = 60
+            elif(direction == "down"):
+                leftAngle = 120
+
+        elif(turn == "right"):
+            if(direction == "up"):
+                rightAngle = 120
+            elif(direction == "center"):
+                rightAngle = 60
+            elif(direction == "down"):
+                rightAngle = 0
+            
+        elif(turn == "both"):
+            if(direction == "up"):
+                leftAngle = 0
+                rightAngle = 120
+            elif(direction == "center"):
+                leftAngle = 60
+                rightAngle = 60
+            elif(direction == "down"):
+                leftAngle = 120
+                rightAngle = 0
+            
+        sleep(0.3)
+        self.leftarm.write(leftAngle)
+        sleep(0.1)
+        self.rightarm.write(rightAngle)
+        sleep(0.3)
