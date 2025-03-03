@@ -1,4 +1,6 @@
 These 3 files provide a proof of concept self hosted web control  
+plus micripyserver.py from https://github.com/troublegum/micropyserver   
+
 ottoSelfHostedWebControl.py is the main program  
 edit secrets.py to contain your wif details  
   
