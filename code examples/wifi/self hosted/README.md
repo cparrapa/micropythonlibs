@@ -1,8 +1,10 @@
 These 3 files provide a proof of concept self hosted web control  
-plus micripyserver.py from https://github.com/troublegum/micropyserver   
 
 ottoSelfHostedWebControl.py is the main program  
+ottoWebInterface.py creates the web page  
 edit secrets.py to contain your wif details  
+
+we also need micripyserver.py from https://github.com/troublegum/micropyserver   I've added a copy here for convenience
   
 I lifted the code from my Otto Mini and so there are buttons that do nothing (Moves and Gestrues)  
   
