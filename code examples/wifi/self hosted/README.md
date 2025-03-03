@@ -8,3 +8,5 @@ Control and Songs should work
   
 For the ip address display code uncomment out  102 to 132 in ottoSelfHostedWebControl.py     
 ip address is also given in serial monitor  
+
+open this ip in a browser on a device on the same network and off you go (hopefully)
