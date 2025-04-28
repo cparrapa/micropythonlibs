@@ -78,10 +78,10 @@ while True:
     sensorL_value=sensorL.read()           #reading analog pin
     sensorR_value=sensorR.read()           #reading analog pin
     print("Left analog sensor:",sensorL_value,"Right analog sensor:",sensorR_value)
-    if (sensorL_value) >= (700):
+    if (sensorL_value) >= (700): #1000
         pin_led.on()
-        leftServo.duty(60)
-        rightServo.duty(60)
+        leftServo.duty(60) #70
+        rightServo.duty(60) #70
         ultrasonicRGB[0] = (255, 255, 0)
         ultrasonicRGB[1] = (255, 255, 0)
         ultrasonicRGB[2] = (255, 255, 0)
@@ -89,10 +89,10 @@ while True:
         ultrasonicRGB[4] = (0, 0, 0)
         ultrasonicRGB[5] = (0, 0, 0)
         ultrasonicRGB.write()
-    elif (sensorR_value) >= (700):
+    elif (sensorR_value) >= (700): #1000
         pin_led.on()
-        leftServo.duty(100)
-        rightServo.duty(100)
+        leftServo.duty(100) #90
+        rightServo.duty(100) #90
         ultrasonicRGB[0] = (0, 0, 0)
         ultrasonicRGB[1] = (0, 0, 0)
         ultrasonicRGB[2] = (0, 0, 0)
@@ -102,8 +102,8 @@ while True:
         ultrasonicRGB.write()
     else:
         pin_led.off()
-        leftServo.duty(100)
-        rightServo.duty(60)
+        leftServo.duty(100) #120
+        rightServo.duty(60) #40
         ultrasonicRGB[0] = (255, 0, 0)
         ultrasonicRGB[1] = (255, 0, 0)
         ultrasonicRGB[2] = (255, 0, 0)

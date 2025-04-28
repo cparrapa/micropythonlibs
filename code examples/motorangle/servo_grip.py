@@ -12,22 +12,22 @@ servo_bumper=Servo()
 servo_bumper.attach(15) # Connector 9
 
 def grip_close():
-    for i in range(10, 70):
+    for i in range(40, 80):
         servo_grip.write(i)
         sleep(0.01)
         
 def grip_open():
-    for i in range(70, 10, -1):
+    for i in range(80, 40, -1):
         servo_grip.write(i)
         sleep(0.01)
         
 def bump_up():
-    for i in range(110, 70, -1):
+    for i in range(70, 40, -1):
         servo_bumper.write(i)
         sleep(0.02)
 
 def bump_down():
-    for i in range(70, 100, 1):
+    for i in range(40, 70, 1):
         servo_bumper.write(i)
         sleep(0.02)
 
