@@ -101,13 +101,3 @@ In any case always double check GPIO pins defined within the code and their resp
 * Connector #9:  GPIO 15 (servo angle right)
 * Connector #10: GPIO 13 (servo wheel left)
 * Connector #11: GPIO 33 (servo wheel right)
-
-The components assigment to the GPIO are only default connections, you can rearrange depending on your application.
-
-## [3D print .STL](https://github.com/cparrapa/micropythonlibs/tree/main/3d%20print%20stl)
-You will find all 3D printable files in this folder sorted by type of modularity, with some exception prebuilds. There are also some neutral .STP files that work as templates for importing in any CAD software.
-* top:  head part commonly use for LED ring or sensors, it could allocate anything that fits or make it taller if required.
-* middle: the band that initially fits only the main circuit board and battery but also for spacers.
-* face: this modifies greatly the appearance of the robot you could fit multiple displays and even sensors.
-* bottom: any propulsion system you want is going to be likely here.
-* bumper: more on the accessory side but it has great potential for multiple extra devices and attachments. 
