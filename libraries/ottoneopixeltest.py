@@ -1,6 +1,6 @@
-# ottoneopixel v2.3 01.09.2024 (updated 20.05.2025)
-import neopixel, machine, utime, time, _thread
-from machine import Pin
+# ottoneopixel v2.3 01.09.2024
+import neopixel, machine, utime, time
+from machine import Pin, Timer
 
 class OttoNeoPixel:
     
@@ -9,8 +9,25 @@ class OttoNeoPixel:
     def __init__(self, pin, ledcount):
         self._ledcount = ledcount
         self.pixels = neopixel.NeoPixel(Pin(pin), ledcount)
-        self._last_update = time.ticks_ms()
-        self._running = False
+        self.pixValues = [(0, 0, 0),(0, 0, 0),(0, 0, 0),(0, 0, 0),(0, 0, 0),(0, 0, 0),(0, 0, 0),(0, 0, 0),(0, 0, 0),(0, 0, 0),(0, 0, 0),(0, 0, 0),(0, 0, 0)]
+        self._timer = None
+        self._step = 0
+        self._active = False
+        self._bounce_params = {
+            'active': False,
+            'step': 0,
+            'n': 0,
+            'color': (0,0,0),
+            'interval': 50,
+            'brightness': 1.0
+        }
+        self._cycle_params = {
+            'active': False,
+            'pos': 0,
+            'n': 0,
+            'color': (0,0,0),
+            'interval': 50
+        }
         
     def setBrightness(self, brightness):
         self._brightness = brightness
@@ -50,10 +67,12 @@ class OttoNeoPixel:
         self.pixels.write()
 
     def clearRGB(self):
-        self._running = False
-        time.sleep_ms(100)
-        for count in range(self._ledcount):
-            self.pixels[count] = (0, 0, 0)
+        self._active = False 
+        if self._timer:
+            self._timer.deinit()
+            self._timer = None
+        for i in range(self._ledcount):
+            self.pixels[i] = (0, 0, 0)
         self.pixels.write()
 
     def HexColorToRGB(self, colourValue):
@@ -67,37 +86,96 @@ class OttoNeoPixel:
 
         return (int(red * self._brightness), int(green * self._brightness), int(blue * self._brightness))
 
-    def bounce(self, n, r, g, b, wait):
-        def run_effect():
-            while self._running:
-                for pos in range(n-1, -1, -1):  
-                    if not self._running:
-                        break
-                    for j in range(n):
-                        self.pixels[j] = (r, g, b)
-                    self.pixels[pos] = (0, 0, 0)
-                    self.pixels.write()
-                    time.sleep_ms(wait)
+    def bounce(self, n, r, g, b, wait, brightness=1.0):
+  
+        if self._timer:
+            self._timer.deinit()
+            
+        self._bounce_params = {
+            'active': True,
+            'pos': n-1,  #
+            'n': min(n, self._ledcount),
+            'color': (
+                int(r * brightness),
+                int(g * brightness),
+                int(b * brightness)
+            ),
+            'interval': wait,
+            'brightness': brightness
+        }
         
-            for i in range(n):
-                self.pixels[i] = (0, 0, 0)
-            self.pixels.write()
-        self._running = True
-        _thread.start_new_thread(run_effect, ())
+ 
+        for i in range(self._bounce_params['n']):
+            self.pixels[i] = self._bounce_params['color']
+        self.pixels.write()
+        
 
+        try:
+            self._timer = Timer(0) 
+        except:
+            self._timer = Timer()   
+            
+        self._timer.init(
+            period=self._bounce_params['interval'],
+            mode=Timer.PERIODIC,
+            callback=self._bounce_update
+        )
 
-    def cycle(self, n, r, g, b, wait):
-        def run_effect():
-            step = 0
-            while self._running:
-                for j in range(n):
-                    self.pixels[j] = (0, 0, 0)
-                self.pixels[(n - 1 - step) % n] = (r, g, b)
-                self.pixels.write()
-                step = (step + 1) % n
-                time.sleep_ms(wait)
-        self._running = True
-        _thread.start_new_thread(run_effect, ())
+    def _bounce_update(self, timer):
+        if not self._bounce_params['active']:
+            return
+            
+        params = self._bounce_params
+        n = params['n']
+        
+     
+        self.pixels[params['pos']] = params['color']
+        
+    
+        params['pos'] = (params['pos'] - 1) % n
+        
+     
+        self.pixels[params['pos']] = (0, 0, 0)
+        self.pixels.write()
+        
+    def cycle(self, n, r, g, b, interval):
+        if self._timer:
+            self._timer.deinit()
+            
+        self._cycle_params = {
+            'active': True,
+            'pos': n-1,  
+            'n': min(n, self._ledcount),
+            'color': (r, g, b),
+            'interval': interval
+        }
+        
+       
+        try:
+            self._timer = Timer(0) 
+        except:
+            self._timer = Timer()   
+            
+        self._timer.init(
+            period=self._cycle_params['interval'],
+            mode=Timer.PERIODIC,
+            callback=self._update_cycle
+        )
+
+    def _update_cycle(self, timer):
+        if not self._cycle_params['active']:
+            return
+            
+        params = self._cycle_params
+        n = params['n']
+        
+        for j in range(n):
+            self.pixels[j] = (0, 0, 0)
+        
+        self.pixels[params['pos']] = params['color']
+        self.pixels.write()
+        
+        params['pos'] = (params['pos'] - 1) % n
 
 
     def wheel(self, pos):
@@ -111,18 +189,22 @@ class OttoNeoPixel:
        pos -= 170
        return (pos * 3, 0, 255 - pos * 3)
     
-    def rainbow_cycle(self, n, wait):
-        def run_effect():
-            j = 0
-            while self._running:
-                for i in range(n):
-                    rc_index = (i * 256 // n) + j
-                    self.pixels[i] = self.wheel(rc_index & 255)
-                self.pixels.write()
-                j = (j + 1) % 256
-                time.sleep_ms(wait)
-        self._running = True
-        _thread.start_new_thread(run_effect, ())
+    def rainbow_cycle(self, n, interval):
+        self._ledcount = n
+        self._active = True  
+        if self._timer:
+            self._timer.deinit()
+        self._timer = Timer(0)
+        self._timer.init(period=interval, mode=Timer.PERIODIC, callback=self._update_rainbow)
+        
+    def _update_rainbow(self, timer):
+        if not self._active:
+            return
+        for i in range(self._ledcount):
+            rc_index = (i * 256 // self._ledcount) + self._step
+            self.pixels[i] = self.wheel(rc_index & 255)
+        self.pixels.write()
+        self._step = (self._step + 1) % 256
 
     def mazeCollect(self, colourValue):
         self.fillAllRGBRing(colourValue)
@@ -130,6 +212,17 @@ class OttoNeoPixel:
         self.clearRGB()
 
     def colorHSV(self, hue, sat, val):
+        """
+        Converts HSV color to rgb tuple and returns it.
+        The logic is almost the same as in Adafruit NeoPixel library:
+        https://github.com/adafruit/Adafruit_NeoPixel so all the credits for that
+        go directly to them (license: https://github.com/adafruit/Adafruit_NeoPixel/blob/master/COPYING)
+
+        :param hue: Hue component. Should be on interval 0..65535
+        :param sat: Saturation component. Should be on interval 0..255
+        :param val: Value component. Should be on interval 0..255
+        :return: (r, g, b) tuple
+        """
         if hue >= 65536:
             hue %= 65536
 
@@ -175,6 +268,15 @@ class OttoNeoPixel:
 
 
     def set_pixel_line_gradient(self, pixel1, pixel2, left_rgb, right_rgb):
+        """
+        Create a gradient with two RGB colors between "pixel1" and "pixel2" (inclusive)
+
+        :param pixel1: Index of starting pixel (inclusive)
+        :param pixel2: Index of ending pixel (inclusive)
+        :param left_rgb: Tuple of form (r, g, b) representing starting color
+        :param right_rgb: Tuple of form (r, g, b)  ending color        
+        :return: None
+        """
         if pixel2 - pixel1 == 0:
             return
         right_pixel = max(pixel1, pixel2)
@@ -191,6 +293,12 @@ class OttoNeoPixel:
             self.setRGBLed(red, green, blue, left_pixel + i)
 
     def rotate_left(self, num_of_pixels=None):
+        """
+        Rotate <num_of_pixels> pixels to the left
+
+        :param num_of_pixels: Number of pixels to be shifted to the left. If None, it shifts for 1.
+        :return: None
+        """
         n = self._ledcount
         if num_of_pixels is None:
             num_of_pixels = 1
@@ -198,15 +306,24 @@ class OttoNeoPixel:
             num_of_pixels = 1
         if num_of_pixels > n-1:
             num_of_pixels = n-1
-        pixValues = [self.pixels[i] for i in range(n)]
+        for i in range(n):
+            self.pixValues[i] = self.pixels[i]
         for i in range(n):
             newIndex = i - num_of_pixels
             if newIndex < 0:
                 newIndex += n
-            self.pixels[newIndex] = pixValues[i]
+            self.pixels[newIndex] = self.pixValues[i]
         self.pixels.write()
 
+
+
     def rotate_right(self, num_of_pixels=None):
+        """
+        Rotate <num_of_pixels> pixels to the right
+
+        :param num_of_pixels: Number of pixels to be shifted to the right. If None, it shifts for 1.
+        :return: None
+        """
         n = self._ledcount
         if num_of_pixels is None:
             num_of_pixels = 1
@@ -214,14 +331,16 @@ class OttoNeoPixel:
             num_of_pixels = 1
         if num_of_pixels > n-1:
             num_of_pixels = n-1
-        pixValues = [self.pixels[i] for i in range(n)]
+        for i in range(n):
+            self.pixValues[i] = self.pixels[i]
         for i in range(n):
             newIndex = i + num_of_pixels
             if newIndex >= n:
                 newIndex -= n
-            self.pixels[newIndex] = pixValues[i]
+            self.pixels[newIndex] = self.pixValues[i]
         self.pixels.write()
         
+    """  8x8 RGB matrix functions   """
 class OttoRGBMatrix(OttoNeoPixel):
     
     def __init__(self, pin, ledcount):
@@ -237,7 +356,7 @@ class OttoRGBMatrix(OttoNeoPixel):
         self.pixels[pixelPos] = (r,g,b)
         self.pixels.write()
 
-    def setMatrixRow(self, row, rgb = [(0,0,0)]*8, drawNow = False):
+    def setMatrixRow(self, row, rgb = [(0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0)], drawNow = False):
         for i in range(8):
             r = int(rgb[i][0]  * self._brightness)
             g = int(rgb[i][1]  * self._brightness)
@@ -247,7 +366,7 @@ class OttoRGBMatrix(OttoNeoPixel):
         if drawNow:
             self.pixels.write()
 
-    def setMatrixCol(self, col, rgb = [(0,0,0)]*8, drawNow = False):
+    def setMatrixCol(self, col, rgb = [(0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0), (0,0,0)], drawNow = False):
         for i in range(8):
             r = int(rgb[i][0]  * self._brightness)
             g = int(rgb[i][1]  * self._brightness)
@@ -257,18 +376,42 @@ class OttoRGBMatrix(OttoNeoPixel):
         if drawNow:
             self.pixels.write()
 
+
     def drawLine(self, x0: int, y0: int, x1: int, y1: int, r: int,g: int,b: int):
+        """
+        draws a line from x0,y0 to x1,y1 of colour r,g,b
+        """
         steep = abs(y1-y0) > abs(x1-x0)
+        
         if steep:
-            x0, y0 = y0, x0
-            x1, y1 = y1, x1
+            # Swap x/y
+            tmp = x0
+            x0 = y0
+            y0 = tmp
+            
+            tmp = y1
+            y1 = x1
+            x1 = tmp
+        
         if x0 > x1:
-            x0, x1 = x1, x0
-            y0, y1 = y1, y0
-        dx = x1 - x0
-        dy = abs(y1 - y0)
-        err = dx >> 1
-        ystep = 1 if y0 < y1 else -1
+            # Swap start/end
+            tmp = x0
+            x0 = x1
+            x1 = tmp
+            tmp = y0
+            y0 = y1
+            y1 = tmp
+        
+        dx = x1 - x0;
+        dy = int(abs(y1-y0))
+        
+        err = dx >> 1 # Divide by 2
+        
+        if(y0 < y1):
+            ystep = 1
+        else:
+            ystep = -1
+            
         while x0 <= x1:
             if steep:
                 self.setMatrixPixel(y0, x0, r,g,b)
@@ -280,23 +423,63 @@ class OttoRGBMatrix(OttoNeoPixel):
                 err += dx
             x0 += 1
 
+
     def drawTriangle(self, x0,y0, x1, y1, x2, y2, r,g,b):
+        """
+        Draws a triangle with corners at (x0,y0), (x1, y1), and (x2,y2). All lines are drawn with the specified r,g,b
+        :param x0 The x coordinate of the first vertex
+        :param y0 The y coordinate of the first vertex
+        :param x1 The x coordinate of the second vertex
+        :param y1 The y coordinate of the second vertex
+        :param x2 The x coordinate of the third vertex
+        :param y2 The y coordinate of the third vertex
+        :params r,g,b  rgb values
+        """
         self.drawLine(x0, y0, x1, y1, r,g,b)
         self.drawLine(x1, y1, x2, y2, r,g,b)
         self.drawLine(x2, y2, x0, y0, r,g,b)
      
     def drawRectangle(self, x0, y0, x1, y1, r,g,b):
+        """
+        Draws a rectangle with upper-left corner (x0,y0) and lower right corner (x1, y1). All edge lines are drawn with the specified r,g,b.
+        Pixels inside the rectangle are left unmodified.
+
+        :param x0 The x coordinate of the upper left corner
+        :param y0 The y coordinate of the upper left corner
+        :param x1 The x coordinate of the lower right corner
+        :param y1 The y coordinate of the lower right corner
+        :params r,g,b  rgb values
+        """
         self.drawLine(x0, y0, x1, y0, r,g,b)
         self.drawLine(x1, y0, x1, y1, r,g,b)
         self.drawLine(x1, y1, x0, y1, r,g,b)
         self.drawLine(x0, y1, x0, y0, r,g,b)
         
+
+
     def drawRectangleFill(self, x0: int, y0: int, x1: int, y1: int, r,g,b):
+        """
+        Draws a rectangle with upper-left corner (x0,y0) and lower right corner (x1, y1). The rectangle is then filled to form a solid block of the specified r,g,b.
+        
+        :param x0 The x coordinate of the upper left corner
+        :param y0 The y coordinate of the upper left corner
+        :param x1 The x coordinate of the lower right corner
+        :param y1 The y coordinate of the lower right corner
+        :params r,g,b  rgb values
+        """
         for x in range(x0, x1+1):
             for y in range(y0, y1+1):
                 self.setMatrixPixel(x,y,r,g,b)
 
+
     def drawCircle(self, x0, y0, rad, r,g,b):
+        """
+        Draws a circle with center (self, x0,y0) and radius rad. The circle outline is drawn in the specified r,g,b. Pixels inside the circle are not modified.
+         
+        :param x0 The x coordinate of the circle center
+        :param y0 The y coordinate of the circle center
+        :params r,g,b  rgb values
+        """
         f = 1-rad
         ddf_x = 1
         ddf_y = -2*rad
@@ -356,7 +539,7 @@ class OttoUltrasonic:
         self.pixels.write()
     
     def setultrasonicRGBEye(self, red, green, blue, eyenumber):
-        if eyenumber == 0:
+        if(eyenumber == 0):
             self.pixels[0] = (int(red * self._brightness), int(green * self._brightness), int(blue * self._brightness))
             self.pixels[1] = (int(red * self._brightness), int(green * self._brightness), int(blue * self._brightness))
             self.pixels[2] = (int(red * self._brightness), int(green * self._brightness), int(blue * self._brightness))
@@ -380,9 +563,14 @@ class OttoUltrasonic:
         self.pixels.write()
 
     def HexColorToRGB(self, colourValue):
-        red = int(colourValue[0:2], 16)
-        green = int(colourValue[2:4], 16)
-        blue = int(colourValue[4:6], 16)
+        hexRed = colourValue[0:2]
+        hexGreen = colourValue[2:4]
+        hexBlue = colourValue[4:6]
+        
+        red = int(hexRed, 16)
+        green = int(hexGreen, 16)
+        blue = int(hexBlue, 16)
+
         return (int(red * self._brightness), int(green * self._brightness), int(blue * self._brightness))
             
     def readultrasonicRGBBasic(self, unit):
@@ -395,8 +583,11 @@ class OttoUltrasonic:
         io_pin = Pin(self._io, Pin.IN)
         pulse_duration = machine.time_pulse_us(io_pin, 1)
         
-        if 1 < pulse_duration < 60000:
-            self.distance = pulse_duration / (147.32 if unit == 0 else 58.00)
+        if ((pulse_duration < 60000) and (pulse_duration > 1)):
+            if (unit == 0):
+                self.distance = pulse_duration / 147.32
+            else:
+                self.distance = pulse_duration / 58.00
         print("D#" + str(self.distance) + "$")
         return self.distance
 
@@ -410,7 +601,9 @@ class OttoUltrasonic:
         io_pin = Pin(self._io, Pin.IN)
         pulse_duration = machine.time_pulse_us(io_pin, 1)
         
-        if 1 < pulse_duration < 60000:
-            self.distance = pulse_duration / (147.32 if unit == 0 else 58.00)
+        if ((pulse_duration < 60000) and (pulse_duration > 1)):
+            if (unit == 0):
+                self.distance = pulse_duration / 147.32
+            else:
+                self.distance = pulse_duration / 58.00
         return self.distance
-
