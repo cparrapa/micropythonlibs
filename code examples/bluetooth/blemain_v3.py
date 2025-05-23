@@ -60,20 +60,20 @@ ble = BLE("Otto")
 commandSet = bytearray(b'')
 key = bytearray(b'EoChunk')
 last_chars = b''
-stop_flag = False  # Çalışmayı durdurmak için bayrak
+stop_flag = False  # Flag to stop the work
 
 def print(*args, **kwargs):
     """ BLE üzerinden mesaj gönderir. """
-    message = " ".join(map(str, args))  # Gelen veriyi stringe çevir
+    message = " ".join(map(str, args))  # Convert incoming data to string
     ble.send(message)
     
 async def exec_command(command):
     global stop_flag
-    stop_flag = False  # Komut başladığında bayrağı sıfırla
+    stop_flag = False  # Reset the flag when the command starts
     try:
         exec_locals = {
             'stop_flag': lambda: stop_flag,  
-            'print': print  # `print` fonksiyonunu BLE'ye yönlendir
+            'print': print  # Forward `print` function to BLE
         }
         exec(command, {}, exec_locals)
     except Exception as e:
@@ -90,15 +90,15 @@ def on_rx(x):
         commandSet = bytearray(b'')
         
         if realCommand.strip() == "#close#":
-            stop_flag = True  # Çalışmayı durdur
+            stop_flag = True  # Stop working
             ble.send("Execution stopped")
             return
         
-        asyncio.create_task(exec_command(realCommand))  # Yeni komutu çalıştır
+        asyncio.create_task(exec_command(realCommand))  # Run the new command
 
 ble.on_write(on_rx)
 
-# asyncio event loop'u çalıştır
+# run asyncio event loop
 loop = asyncio.get_event_loop()
 while True:
     loop.run_forever()
