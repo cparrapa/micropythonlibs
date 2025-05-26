@@ -7,7 +7,6 @@ Product Link:
 - Servo Motor: https://diyables.io/products/servo-motor-sg90-180-degree
 - Sensor Kit: https://diyables.io/products/sensor-kit
 
-
 Copyright (c) 2024, DIYables.io. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -37,7 +36,6 @@ STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
 IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 """
-
 
 from machine import Pin, PWM
 import utime

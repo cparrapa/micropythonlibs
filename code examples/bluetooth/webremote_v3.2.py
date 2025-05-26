@@ -1,13 +1,13 @@
 # otto starter webcontrol v3.2 07.09.2024
-# v01, v02 Iván R. Artiles Bretón
-# v03 Iván R. Artiles Bretón, Alex Etchells
+# v1.0, v2.0 Iván R. Artiles Bretón
+# v3.0 Iván R. Artiles Bretón, Alex Etchells
 # reference to ottomotor.Motors replaced with ottomptor.OttoMotor
 # led control code updated for new ring configuration
 # Mode code moved to timer to be compatible with micropythom v1.20 on
 # additon of battery voltage to status string
 # in v3.2 modifed the battery status to display percentage every minute
 # changes in formatting to conform with new preferred  practice
-# v04 updated to changes in ultrasonic lib v2.0
+# v3.2 updated to changes in ultrasonic lib v2.0
 
 import random, ubluetooth, ottosensors
 from machine import Pin, Timer, PWM, ADC

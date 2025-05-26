@@ -5,9 +5,6 @@
 #     (min_us could be decreased to 500 if required) now done
 #               Alex Just-Alex Nov 2024
 #********************************************************
-
-
-
 import machine
 
 try:
@@ -19,7 +16,6 @@ except ImportError:
         print("espServo not defined")
         raise ImportError
     useServo = False
-
 
 class Servo:
     def __init__(self, freq = 50, min_us = 500, max_us = 2500, max_ang = 180):

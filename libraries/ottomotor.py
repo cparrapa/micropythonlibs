@@ -1,4 +1,4 @@
-# ottomotors v2.1 26.02.2025
+# ottomotors v2.2 26.02.2025 min_us and max_us updated
 import machine, time
 from machine import Pin, PWM
 
@@ -207,7 +207,7 @@ class OttoMotor: #used in web code blocks for wheels lacks of calibration offset
             self.rightServo.duty(0)
 
 class Servo: #used in web control main lacks of calibration offset.
-    def __init__(self, freq=50, min_us=1000, max_us=2000, max_ang=180):
+    def __init__(self, freq=50, min_us=500, max_us=2500, max_ang=180):
         global useServo
         self.min_us = min_us
         self.max_us = max_us

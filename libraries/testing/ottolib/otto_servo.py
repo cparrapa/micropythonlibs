@@ -2,7 +2,6 @@
 import machine
 try:
     from esp32 import Servo as espServo
-
     useServo = True
 except ImportError:
     """This version of esp32 doesn't support Servo, use PWM instead"""
@@ -14,7 +13,7 @@ except ImportError:
     useServo = False
 
 class Servo:
-    def __init__(self, freq=50, min_us=1000, max_us=2000, max_ang=180):
+    def __init__(self, freq=50, min_us=1000, max_us=2000, max_ang=180): #or min_us=500, max_us=2500
         global useServo
         self.min_us = min_us
         self.max_us = max_us

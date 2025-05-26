@@ -1,12 +1,7 @@
-# otto 4wd class v0.0 27 Aug 2024
-# Alex Etchells
-# A class to control HP Otto with 4 wheel drive
-# and a subclass for mecanum wheels
-#
+# otto 4wd class v0.0 27 Aug 2024 Alex Etchells
+# A class to control HP Otto with 4 wheel drive and a subclass for mecanum wheels
 # The constructor takes the connector number (rather than Pin)
-#
 # Speed values should be in the range -50 to + 50
-#
 from ottomotor import OttoMotor
 
 """

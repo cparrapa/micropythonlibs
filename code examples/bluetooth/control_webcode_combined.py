@@ -1,4 +1,4 @@
-# otto starter combined wireless programming and remote control v1.0 31.07.2024
+# otto starter combined wireless programming and remote control v1.0 31.07.2024 TESTING
 import bluetooth
 import ubluetooth
 import time

@@ -1,4 +1,4 @@
-# ottoangle v0.0 26.02.2025
+# ottoangle v0.0 26.02.2025 not working great needs more tests
 from machine import Pin, PWM
 import time
 
@@ -42,17 +42,3 @@ class Servo:
         self.__motor = PWM(Pin(pin))
         self.__motor.freq(self.__servo_pwm_freq)
         
-from ottoangle import Servo
-import time
-
-motor=Servo(pin=22) # A changer selon la broche utilisée
-motor.move(0) # tourne le servo à 0°
-time.sleep(0.3)
-motor.move(90) # tourne le servo à 90°
-time.sleep(0.3)
-motor.move(180) # tourne le servo à 180°
-time.sleep(0.3)
-motor.move(90) # tourne le servo à 90°
-time.sleep(0.3)
-motor.move(0) # tourne le servo à 0°
-time.sleep(0.3)
