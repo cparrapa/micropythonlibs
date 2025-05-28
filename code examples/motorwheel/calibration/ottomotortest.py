@@ -1,5 +1,5 @@
 # ottomotors v3.0 26.05.2025 calibration under TEST
-import machine, time
+import time
 import ujson  # For JSON storage
 from machine import Pin, PWM
 
