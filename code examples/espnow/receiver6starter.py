@@ -4,16 +4,17 @@ from ottoneopixel import OttoNeoPixel
 from ottobuzzer import OttoBuzzer
 from time import sleep
 from ottomotor import OttoMotor
-offset = 0
-
+from ottoneopixel import OttoUltrasonic
 import network
 import espnow
 import machine
 
+offset = 0
+
 # A WLAN interface must be active to send()/recv()
 sta = network.WLAN(network.STA_IF)  # Or network.AP_IF
 sta.active(True)
-sta.disconnect()      # For ESP8266
+sta.disconnect()  
 
 # Initialize ESP-NOW
 esp = espnow.ESPNow()
@@ -22,14 +23,13 @@ esp.active(True)
 led_pin = machine.Pin(2, machine.Pin.OUT)
 buzzer = OttoBuzzer(25)
 motor = OttoMotor(13, 14)             # Connectors 10 & 11
-
+ultrasonic = OttoUltrasonic(18, 19)
 motor.leftServo.freq(50)
 motor.rightServo.freq(50)
-
 n = 13                                # Number of LEDs in ring
 ring = OttoNeoPixel(4, n)             # Connector 5
-
-ring.fillAllRing(0, 255, 0)
+ring.fillAllRing(0, 255, 255)
+ultrasonic.ultrasonicRGB2(0, 255, 255)
 
 while True:
     _, msg = esp.recv()
@@ -39,8 +39,8 @@ while True:
             led_pin.on()
             ring.fillAllRing(255, 0, 0)
             buzzer.playNote(261, 125)
-            motor.leftServo.duty(109- offset)
-            motor.rightServo.duty(43+ offset)
+            motor.leftServo.duty(127- offset)
+            motor.rightServo.duty(29+ offset)
         elif msg == b'AOff':
             print("Turning off LED")
             led_pin.off()
@@ -60,8 +60,8 @@ while True:
         elif msg == b'Con':
             ring.fillAllRing(255, 255, 0)
             buzzer.playNote(329, 125)
-            motor.rightServo.duty(115+ offset)
-            motor.leftServo.duty(115- offset)
+            motor.rightServo.duty(100+ offset)
+            motor.leftServo.duty(100- offset)
         elif msg == b'Coff':
             ring.fillAllRing(0, 0, 0)
             motor.rightServo.duty(0)
@@ -69,8 +69,8 @@ while True:
         elif msg == b'Don':
             ring.fillAllRing(0, 255, 0)
             buzzer.playNote(349, 125)
-            motor.rightServo.duty(45+ offset)
-            motor.leftServo.duty(45- offset)
+            motor.rightServo.duty(70+ offset)
+            motor.leftServo.duty(70- offset)
         elif msg == b'Doff':
             ring.fillAllRing(0, 0, 0)
             motor.rightServo.duty(0)
@@ -78,13 +78,18 @@ while True:
         elif msg == b'Eon':
             ring.fillAllRing(0, 255, 130)
             buzzer.playNote(392, 125)
+            ultrasonic.ultrasonicRGB2(0, 255, 130)
+            motor.rightServo.duty(60+ offset)
+            motor.leftServo.duty(60- offset)
         elif msg == b'Eoff':
             ring.fillAllRing(0, 0, 0)
         elif msg == b'Fon':
             ring.fillAllRing(0, 120, 255)
+            ultrasonic.ultrasonicRGB2(0, 120, 255)
             buzzer.playNote(440, 125)
+            motor.rightServo.duty(95+ offset)
+            motor.leftServo.duty(95- offset)
         elif msg == b'Foff':
             ring.fillAllRing(0, 0, 0)
         else:
             print("Unknown message!")
-

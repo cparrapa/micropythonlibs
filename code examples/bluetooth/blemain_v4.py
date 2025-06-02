@@ -2,7 +2,11 @@
 import ubluetooth, time
 import uasyncio as asyncio
 from machine import Pin
+
 from neopixel import NeoPixel
+ring = NeoPixel(Pin(4), 13)
+ring.fill((0,255,0))
+ring.write()
 
 nm = 64
 matrix = NeoPixel(Pin(22), nm)
