@@ -3,6 +3,11 @@ import random, ubluetooth, uasyncio as asyncio
 from machine import Pin, Timer, PWM, ADC
 from time import sleep_ms
 
+from neopixel import NeoPixel
+ring = NeoPixel(Pin(4), 13)
+ring.fill((0,255,0))
+ring.write()
+
 class BLE():
     def __init__(self, name):
         self.name = name
@@ -102,5 +107,3 @@ ble.on_write(on_rx)
 loop = asyncio.get_event_loop()
 while True:
     loop.run_forever()
-
-
