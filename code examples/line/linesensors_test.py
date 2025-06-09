@@ -17,4 +17,4 @@ while True:
     print("Left analog:",analogL_value,"Right analog:",analogR_value)
     print("Left digital:",digitalL.value(),"Right digital:",digitalR.value())
     led.value(button.value())
-    sleep(0.2)
+    sleep(0.1)

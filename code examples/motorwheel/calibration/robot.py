@@ -23,6 +23,7 @@ class Robot:
         self.wheel_base = wheel_base_mm  # Distance between wheels (left <--> right)
 
         self.base_speed_cm_s = 8  # Measured speed at 100% (default estimate)
+        self.rotation_speed_deg_per_s = 180  # Placeholder value to be calibrated
 
     def _percent_to_duty(self, percent, trim_percent, direction):
         effective_percent = percent + trim_percent
@@ -83,16 +84,18 @@ class Robot:
         else:
             self.backward(speed, duration)
 
+
     def rotate_angle(self, angle_deg, speed=50):
         # Angle in degrees → arc length = angle / 360 * wheel_base * π
         # For in-place turning: both wheels spin in opposite directions
         # So actual rotation speed is doubled (both wheels contribute)
-        turn_circumference = math.pi * self.wheel_base
-        arc_length = (abs(angle_deg) / 360.0) * turn_circumference
-        speed_cm_s = self.base_speed_cm_s * (speed / 100.0)
-        if speed_cm_s <= 0:
+        # Duration based on empirically measured rotation speed
+        abs_angle = abs(angle_deg)
+        effective_speed = (speed / 100.0) * self.rotation_speed_deg_per_s
+        if effective_speed <= 0:
             return
-        duration = arc_length / (2 * speed_cm_s)  # Divide by 2 for in-place spin
+        duration = abs_angle / effective_speed
+
         if angle_deg > 0:
             self.turn_right(speed, duration)
         else:

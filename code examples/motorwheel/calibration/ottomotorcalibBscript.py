@@ -1,6 +1,6 @@
 from machine import Pin, ADC, PWM          #importing Pin, ADC and PWM classes
 import machine, time                       #importing machine and time libraries
-from ottomotortest import OttoMotors
+from ottomotorcalibB import OttoMotors
 
 def test_otto_motors():
     # Instantiate OttoMotors with designated pins.
