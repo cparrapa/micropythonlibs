@@ -2,7 +2,7 @@ from machine import Pin
 from neopixel import NeoPixel
 import utime
 
-# 5x7 font (A-Z, 0-9, and a few symbols)
+# 5x7 font with uppercase, lowercase, digits, and symbols
 FONT = {
     ' ': [0x00, 0x00, 0x00, 0x00, 0x00],
     '!': [0x00, 0x00, 0x5F, 0x00, 0x00],
@@ -45,10 +45,36 @@ FONT = {
     'X': [0x63, 0x14, 0x08, 0x14, 0x63],
     'Y': [0x07, 0x08, 0x70, 0x08, 0x07],
     'Z': [0x61, 0x51, 0x49, 0x45, 0x43],
+    'a': [0x20, 0x54, 0x54, 0x54, 0x78],
+    'b': [0x7F, 0x48, 0x44, 0x44, 0x38],
+    'c': [0x38, 0x44, 0x44, 0x44, 0x20],
+    'd': [0x38, 0x44, 0x44, 0x48, 0x7F],
+    'e': [0x38, 0x54, 0x54, 0x54, 0x18],
+    'f': [0x08, 0x7E, 0x09, 0x01, 0x02],
+    'g': [0x0C, 0x52, 0x52, 0x52, 0x3E],
+    'h': [0x7F, 0x08, 0x04, 0x04, 0x78],
+    'i': [0x00, 0x44, 0x7D, 0x40, 0x00],
+    'j': [0x20, 0x40, 0x44, 0x3D, 0x00],
+    'k': [0x7F, 0x10, 0x28, 0x44, 0x00],
+    'l': [0x00, 0x41, 0x7F, 0x40, 0x00],
+    'm': [0x7C, 0x04, 0x18, 0x04, 0x78],
+    'n': [0x7C, 0x08, 0x04, 0x04, 0x78],
+    'o': [0x38, 0x44, 0x44, 0x44, 0x38],
+    'p': [0x7C, 0x14, 0x14, 0x14, 0x08],
+    'q': [0x08, 0x14, 0x14, 0x18, 0x7C],
+    'r': [0x7C, 0x08, 0x04, 0x04, 0x08],
+    's': [0x48, 0x54, 0x54, 0x54, 0x20],
+    't': [0x04, 0x3F, 0x44, 0x40, 0x20],
+    'u': [0x3C, 0x40, 0x40, 0x20, 0x7C],
+    'v': [0x1C, 0x20, 0x40, 0x20, 0x1C],
+    'w': [0x3C, 0x40, 0x30, 0x40, 0x3C],
+    'x': [0x44, 0x28, 0x10, 0x28, 0x44],
+    'y': [0x0C, 0x50, 0x50, 0x50, 0x3C],
+    'z': [0x44, 0x64, 0x54, 0x4C, 0x44]
 }
 
 ROWS = 8
-COLS = 32
+COLS = 8
 NUM_PIXELS = ROWS * COLS
 matrix = NeoPixel(Pin(22), NUM_PIXELS)
 
@@ -66,16 +92,13 @@ def apply_transform(x, y, rotate, flip_h, flip_v):
         x, y = 7 - x, 7 - y
     elif rotate == 270:
         x, y = 7 - y, x
-
     if flip_h:
         x = 7 - x
     if flip_v:
         y = 7 - y
-
     return x, y
 
-
-def set_pixel(x, y, color, rotate=90, flip_h=False, flip_v=False, brightness=1.0):
+def set_pixel(x, y, color, rotate=0, flip_h=False, flip_v=False, brightness=1.0):
     if not (0 <= x < COLS and 0 <= y < ROWS):
         return
     x, y = apply_transform(x, y, rotate, flip_h, flip_v)
@@ -83,19 +106,18 @@ def set_pixel(x, y, color, rotate=90, flip_h=False, flip_v=False, brightness=1.0
     matrix[x * ROWS + y] = (r, g, b)
 
 def draw_char(char, x_offset, color, rotate, flip_h, flip_v, brightness):
-    data = FONT.get(char.upper(), FONT[' '])
+    data = FONT.get(char, FONT[' '])
     for x in range(5):
         col = data[x]
         for y in range(7):
             if col & (1 << y):
                 set_pixel(x + x_offset, y, color, rotate, flip_h, flip_v, brightness)
 
-def scroll_text(message, speed=100, color=(0, 0, 50), rotate=0, flip_h=False, flip_v=False, brightness=1.0):
+def scroll_text(message, speed=100, color=(0, 0, 255), rotate=0, flip_h=False, flip_v=False, brightness=1.0):
     spacing = 1
     text_width = len(message) * (5 + spacing)
     pos = COLS
-
-    while True:
+    while pos > -text_width:
         fill((0, 0, 0))
         x = pos
         for char in message:
@@ -103,29 +125,19 @@ def scroll_text(message, speed=100, color=(0, 0, 50), rotate=0, flip_h=False, fl
             x += 6
         show()
         pos -= 1
-        if pos < -text_width:
-            pos = COLS
-        utime.sleep_ms
-        
-        # Example usage
+        utime.sleep_ms(speed)
 
-# Normal scrolling
-scroll_text("HELLO!", speed=100)
+# List of messages with different orientations
+messages = [
+    {"text": "Hello!", "rotate": 0, "flip_h": False, "flip_v": False},
+    {"text": "MicroPython", "rotate": 180, "flip_h": False, "flip_v": False},
+    {"text": "ESP32", "rotate": 90, "flip_h": False, "flip_v": False},
+    {"text": "NeoPixel", "rotate": 270, "flip_h": True, "flip_v": False},
+]
 
-# Upside down
-scroll_text("Rot180!", rotate=180)
-
-# Rotated 90° clockwise
-scroll_text("Rot90!", rotate=90)
-
-# Flipped horizontally
-scroll_text("FlipH!", flip_h=True)
-
-# Rotated and flipped
-
-scroll_text("HELLO!", rotate=270, flip_v=True)
-        
-
-
-
-
+# Scroll each message
+while True:
+    for msg in messages:
+        scroll_text(msg["text"], speed=100, color=(0, 0, 50),
+                    rotate=msg["rotate"], flip_h=msg["flip_h"], flip_v=msg["flip_v"], brightness=0.5)
+        utime.sleep(1)

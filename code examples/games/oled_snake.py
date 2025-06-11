@@ -4,7 +4,7 @@ import random
 import time
 
 # === OLED Display Setup ===
-i2c = I2C(0, scl=Pin(22), sda=Pin(21))
+i2c = I2C(0, scl=Pin(18), sda=Pin(19))
 oled = ssd1306.SSD1306_I2C(128, 64, i2c)
 
 # === Buttons & Buzzer ===
