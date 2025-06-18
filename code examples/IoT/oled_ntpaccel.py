@@ -180,7 +180,7 @@ def do_sta_connect():
 
     if not sta_if.isconnected():
       sta_if.active(True)
-      sta_if.connect("Kolombiczequitos","parrasvarcova2018*")
+      sta_if.connect("REPLACE_WITH_YOUR_SSID","REPLACE_WITH_YOUR_PASSWORD")
 
     print("Connecting to network ...")
 
