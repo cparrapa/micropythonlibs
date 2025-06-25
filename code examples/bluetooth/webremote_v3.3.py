@@ -316,7 +316,7 @@ class BLE():
             period=1000,
             mode=Timer.PERIODIC,
             callback=lambda t: (
-                ring.fillAllRGBRing("000077")
+                ring.fillAllRGBRing("")
             )
         )
         sleep_ms(200)
@@ -603,4 +603,4 @@ class BLE():
         self.ble.gap_advertise(100, bytes([0x02, 0x01, 0x02]) + 
             bytes([len(name) + 1, 0x09]) + name)
 
-ble = BLE("Ottoremote v3.3")
+ble = BLE("Otto remote v3.3")

@@ -1,4 +1,4 @@
-# ble wireless programming in blocks v04 24.02.2025
+# ble wireless programming in blocks v4.1 22.06.2025
 import ubluetooth, time
 import uasyncio as asyncio
 from machine import Pin
@@ -48,6 +48,18 @@ class BLE:
 
     def disconnected(self):
         print("BLE Disconnected")
+        self.curMode = 0
+        motor.Stop(1)
+        self.timer1.init(
+            period=1000,
+            mode=Timer.PERIODIC,
+            callback=lambda t: (
+                ring.fillAllRGBRing("077777")
+            )
+        )
+        sleep_ms(200)
+        self.timer2.init(period=1000, mode=Timer.PERIODIC, 
+            callback=lambda t: ring.fillAllRGBRing("000000"))  
         self.advertiser()
 
     def on_write(self, callback):
@@ -70,16 +82,33 @@ class BLE:
         BLE_NUS = ubluetooth.UUID(NUS_UUID)
         BLE_TX = (ubluetooth.UUID(TX_UUID), ubluetooth.FLAG_NOTIFY | ubluetooth.FLAG_WRITE | ubluetooth.FLAG_READ)
         BLE_UART = (BLE_NUS, (BLE_TX,))
-        SERVICES = (BLE_UART,)
-        ((self.tx,),) = self.ble.gatts_register_services(SERVICES)
-
+        SERVICES = (BLE_UART, )
+        ((self.tx,), ) = self.ble.gatts_register_services(SERVICES)
+    
     def send(self, data):
         self.ble.gatts_notify(0, self.tx, data + '')
-
+    
     def advertiser(self):
         name = bytes(self.name, 'UTF-8')
         self.ble.gap_advertise(100, bytes([0x02, 0x01, 0x02]) + bytes([len(name) + 1, 0x09]) + name)
 
+def print(*args, **kwargs):
+    """ BLE üzerinden mesaj gönderir. """
+    message = " ".join(map(str, args))  # Convert incoming data to string
+    ble.send(message)
+    
+async def exec_command(command):
+    global stop_flag
+    stop_flag = False  # Reset the flag when the command starts
+    try:
+        exec_locals = {
+            'stop_flag': lambda: stop_flag,  
+            'print': print  # Forward `print` function to BLE
+        }
+        exec(command, {}, exec_locals)
+    except Exception as e:
+        ble.send(str(e))
+        
 class CommandExecutor:
     def __init__(self, ble):
         self.ble = ble
@@ -132,7 +161,7 @@ def on_rx(executor, key):
 
 
 async def main():
-    ble = BLE("Otto")
+    ble = BLE("Otto coding v4.1")
     executor = CommandExecutor(ble)
     key = bytearray(b'EoChunk')
     ble.on_write(on_rx(executor, key))

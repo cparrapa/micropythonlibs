@@ -44,7 +44,7 @@ class BLE():
             message = buffer.decode('UTF-8').strip()
             self._write_callback(buffer)
 
-    def register(self):        
+    def register(self):     
         # Nordic UART Service (NUS)
         NUS_UUID = '6e400001-b5a3-f393-e0a9-e50e24dcca9e'
         TX_UUID = '6e400003-b5a3-f393-e0a9-e50e24dcca9e'

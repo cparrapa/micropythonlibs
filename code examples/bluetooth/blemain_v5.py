@@ -1,11 +1,13 @@
 # ble wireless programming in blocks v05 5.03.2025 it has a bug that locks usb communication
-import ubluetooth
+import ubluetooth, time
 import uasyncio as asyncio
 from machine import Pin
-import time  
-from neopixel import NeoPixel
-from ottobuzzer import Player 
 
+from neopixel import NeoPixel
+from ottobuzzer import Player
+ring = NeoPixel(Pin(4), 13)
+ring.fill((0,255,0))
+ring.write()
 
 nm = 64
 matrix = NeoPixel(Pin(22), nm)
@@ -29,7 +31,7 @@ def rainbow_cycle(wait):
             rc_index = (i * 256 // nm) + j
             matrix[i] = wheel(rc_index & 255)
         matrix.write()
-        time.sleep_ms(wait) 
+        time.sleep_ms(wait)
 
 class BLE:
     def __init__(self, name):
@@ -78,7 +80,6 @@ class BLE:
     def advertiser(self):
         name = bytes(self.name, 'UTF-8')
         self.ble.gap_advertise(100, bytes([0x02, 0x01, 0x02]) + bytes([len(name) + 1, 0x09]) + name)
-
 
 class CommandExecutor:
     def __init__(self, ble, player):
@@ -142,7 +143,7 @@ def on_rx(executor, key):
 
 async def main():
     ble = BLE("Otto")
-    player = Player(pin_TX=1, pin_RX=3)  
+    player = Player(pin_TX=16, pin_RX=17)  
     executor = CommandExecutor(ble, player)  
     key = bytearray(b'EoChunk')
     ble.on_write(on_rx(executor, key))
