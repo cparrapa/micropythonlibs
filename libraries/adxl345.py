@@ -101,5 +101,16 @@ class ADXL345:
         self.i2c.stop()
         sleep(0.1)
         
+    def read_axes(self):
+        data = self.i2c.readfrom_mem(self.addr, 0x32, 6)
+
+        def to_signed(val):
+            return val - 65536 if val > 32767 else val
+
+        x = to_signed(data[0] | (data[1] << 8))
+        y = to_signed(data[2] | (data[3] << 8))
+        z = to_signed(data[4] | (data[5] << 8))
+
+        return x, y, z
                 
 
