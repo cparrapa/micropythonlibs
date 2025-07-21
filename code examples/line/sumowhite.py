@@ -11,7 +11,6 @@ led = Pin(2, Pin.OUT)                 # Built in LED
 bright = 0.8                          # brightness variable for lights
 n = 13                                # Number of LEDs in ring
 ring = OttoNeoPixel(4, n)             # Connector 5
-
 offset = 0
 ultrasonic = OttoUltrasonic(18, 19)
 io = 19     # echo input and trigger out signal
@@ -28,7 +27,6 @@ def distance():
    distance = 0
    if ((pulse_duration < 60000) and (pulse_duration > 1)):
       distance = pulse_duration / 58.00;
-
    return distance
 
 motor = OttoMotor(13, 14)             # Connectors 10 & 11
@@ -69,4 +67,3 @@ while True:
     left_black = 550
     search()
     takeout()
-
