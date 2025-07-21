@@ -38,7 +38,7 @@ while True:
     if current_buttonA_state != last_buttonA_state:
         utime.sleep_ms(debounce_delay)
         current_buttonA_state = buttonA_pin.value()
-        if current_buttonA_state == 0:
+        if current_buttonA_state == 1:
             message = "AOn"
         else:
             message = "AOff"
@@ -51,7 +51,7 @@ while True:
     if current_buttonB_state != last_buttonB_state:
         utime.sleep_ms(debounce_delay)
         current_buttonB_state = buttonB_pin.value()
-        if current_buttonB_state == 0:
+        if current_buttonB_state == 1:
             message = "Bon"
             led.on()
         else:
@@ -86,3 +86,28 @@ while True:
         print(f"Sending command: {message}")
         esp.send(peer, message.encode())
         last_buttonD_state = current_buttonD_state
+        
+    # Check for button combinations
+    if buttonA_pin.value() == 1 and buttonC_pin.value() == 0:
+        message = "Eon"
+        print(f"Sending combo command: {message}")
+        esp.send(peer, message.encode())
+        utime.sleep_ms(300)  # Prevent multiple triggers
+
+    elif buttonA_pin.value() == 1 and buttonD_pin.value() == 0:
+        message = "Fon"
+        print(f"Sending combo command: {message}")
+        esp.send(peer, message.encode())
+        utime.sleep_ms(300)
+
+    elif buttonB_pin.value() == 1 and buttonC_pin.value() == 0:
+        message = "Gon"
+        print(f"Sending combo command: {message}")
+        esp.send(peer, message.encode())
+        utime.sleep_ms(300)
+
+    elif buttonB_pin.value() == 1 and buttonD_pin.value() == 0:
+        message = "Hon"
+        print(f"Sending combo command: {message}")
+        esp.send(peer, message.encode())
+        utime.sleep_ms(300)
