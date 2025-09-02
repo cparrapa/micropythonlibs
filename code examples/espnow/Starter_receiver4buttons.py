@@ -72,5 +72,21 @@ while True:
             ring.fillAllRing(0, 0, 0)
             motor.rightServo.duty(0)
             motor.leftServo.duty(0)
+        elif msg == b'Eon':
+            ring.fillAllRing(0, 255, 130)
+            buzzer.playNote(392, 125)
+            ultrasonic.ultrasonicRGB2(0, 255, 130)
+            motor.rightServo.duty(60+ offset)
+            motor.leftServo.duty(60- offset)
+        elif msg == b'Eoff':
+            ring.fillAllRing(0, 0, 0)
+        elif msg == b'Fon':
+            ring.fillAllRing(0, 120, 255)
+            ultrasonic.ultrasonicRGB2(0, 120, 255)
+            buzzer.playNote(440, 125)
+            motor.rightServo.duty(95+ offset)
+            motor.leftServo.duty(95- offset)
+        elif msg == b'Foff':
+            ring.fillAllRing(0, 0, 0)
         else:
             print("Unknown message!")

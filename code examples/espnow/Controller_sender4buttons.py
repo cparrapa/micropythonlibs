@@ -20,6 +20,8 @@ buttonA_pin = Pin(26, Pin.IN, Pin.PULL_UP) # Connector 4
 buttonB_pin = Pin(32, Pin.IN, Pin.PULL_UP) # Connector 6
 buttonC_pin = Pin(4, Pin.IN, Pin.PULL_UP)  # Connector 5
 buttonD_pin = Pin(33, Pin.IN, Pin.PULL_UP) # Connector 7
+buttonE_pin = Pin(15, Pin.IN, Pin.PULL_UP)
+buttonF_pin = Pin(13, Pin.IN, Pin.PULL_UP)
 
 buzzer = OttoBuzzer(25)
 led = Pin(2, Pin.OUT)
@@ -31,6 +33,8 @@ last_buttonA_state = buttonA_pin.value()
 last_buttonB_state = buttonB_pin.value()
 last_buttonC_state = buttonC_pin.value()
 last_buttonD_state = buttonD_pin.value()
+last_buttonE_state = buttonE_pin.value()
+last_buttonF_state = buttonF_pin.value()
 
 while True:
     # Debounce Button A
@@ -66,7 +70,7 @@ while True:
     if current_buttonC_state != last_buttonC_state:
         utime.sleep_ms(debounce_delay)
         current_buttonC_state = buttonC_pin.value()
-        if current_buttonC_state == 0:
+        if current_buttonC_state == 1:
             message = "Con"
         else:
             message = "Coff"
@@ -79,7 +83,7 @@ while True:
     if current_buttonD_state != last_buttonD_state:
         utime.sleep_ms(debounce_delay)
         current_buttonD_state = buttonD_pin.value()
-        if current_buttonD_state == 0:
+        if current_buttonD_state == 1:
             message = "Don"
         else:
             message = "Doff"
@@ -111,3 +115,29 @@ while True:
         print(f"Sending combo command: {message}")
         esp.send(peer, message.encode())
         utime.sleep_ms(300)
+
+    # Debounce Button E
+    current_buttonE_state = buttonE_pin.value()
+    if current_buttonE_state != last_buttonE_state:
+        utime.sleep_ms(debounce_delay)
+        current_buttonE_state = buttonE_pin.value()
+        if current_buttonE_state == 0:
+            message = "Eon"
+        else:
+            message = "Eoff"
+        print(f"Sending command: {message}")
+        esp.send(peer, message.encode())
+        last_buttonE_state = current_buttonE_state
+        
+    # Debounce Button F
+    current_buttonF_state = buttonF_pin.value()
+    if current_buttonF_state != last_buttonF_state:
+        utime.sleep_ms(debounce_delay)
+        current_buttonF_state = buttonF_pin.value()
+        if current_buttonF_state == 0:
+            message = "Fon"
+        else:
+            message = "Foff"
+        print(f"Sending command: {message}")
+        esp.send(peer, message.encode())
+        last_buttonF_state = current_buttonF_state
