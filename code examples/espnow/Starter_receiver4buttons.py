@@ -1,3 +1,4 @@
+# Robot receiver 4 buttons
 from machine import Pin, ADC, PWM, SoftI2C
 from time import sleep
 from neopixel import NeoPixel
@@ -83,8 +84,8 @@ while True:
             led_pin.on()
             ring.fillRGBRing("fe0000", "000000", "000000", "000000", "000000", "000000", "000000", "000000", "fe0000", "fe0000", "fe0000", "000000", "000000")
             buzzer.playNote(329, 125)
-            motor.rightServo.duty(100+ offset)
-            motor.leftServo.duty(100- offset)
+            motor.rightServo.duty(60+ offset)
+            motor.leftServo.duty(60- offset)
         elif msg == b'Coff':
             led_pin.off()
             ring.fillAllRing(0, 0, 0)
@@ -95,8 +96,8 @@ while True:
             led_pin.on()
             ring.fillRGBRing("fe0000", "000000", "fe0000", "fe0000", "fe0000", "000000", "000000", "000000", "000000", "000000", "000000", "000000", "000000")
             buzzer.playNote(349, 125)
-            motor.rightServo.duty(70+ offset)
-            motor.leftServo.duty(70- offset)
+            motor.rightServo.duty(100+ offset)
+            motor.leftServo.duty(100- offset)
         elif msg == b'Doff':
             led_pin.off()
             ring.fillAllRing(0, 0, 0)
