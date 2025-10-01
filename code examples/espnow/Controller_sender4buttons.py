@@ -12,8 +12,8 @@ sta.disconnect()
 esp = espnow.ESPNow()
 esp.active(True)
 
-# Define receiving Otto MAC address, use Mac Address finder.py code to find it
-peer = b'\xfc\xb4gzw@'
+# b'\xb0\xa72#\xc9h' colombia
+peer = b'\xfc\xb4g}\xb7\xe0'
 esp.add_peer(peer)
 
 # Set up buttons, buzzer, and LED
