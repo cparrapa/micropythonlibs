@@ -1,11 +1,6 @@
 import machine, time                       #importing machine and time libraries
 from time import sleep                     #importing sleep class
 from machine import Pin, ADC, PWM          #importing Pin, ADC and PWM classes
-from neopixel import NeoPixel
-from ottoneopixel import OttoNeoPixel
-from ottobuzzer import OttoBuzzer
-from ottomotor import OttoMotor
-import dht
 
 tilt = Pin(13, Pin.IN)
 

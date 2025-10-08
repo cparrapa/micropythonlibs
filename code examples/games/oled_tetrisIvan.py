@@ -411,7 +411,6 @@ if __name__ == "__main__":
     try:
         # Uncomment for demo mode
         # demo_mode()
-        
         # Main game
         main()
     except KeyboardInterrupt:

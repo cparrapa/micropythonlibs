@@ -5,7 +5,7 @@ from ottobuzzer import OttoBuzzer
 
 led = Pin(2, Pin.OUT)       # Built in LED
 buzzer = OttoBuzzer(25)     # Built in Buzzer
-button = Pin(26, Pin.IN)    # Connector 4
+button = Pin(4, Pin.IN)    # Connector 4
 
 while True:
     print(button.value())
