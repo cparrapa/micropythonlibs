@@ -460,7 +460,7 @@ while True:
         elif emoji == (12):
             uk()
             emoji=0
-    elif (tilt.value()) == (0):
+    elif (tilt.value()) == (1):
         draw("1111111111111111111111111111111111111111111111111111111111111111",0,0,30)
         led.on()
         ring.fill((0,0,0))

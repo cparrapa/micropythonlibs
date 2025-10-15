@@ -278,6 +278,11 @@ def germany():
     draw("0000000011111111111111111111111100000000000000000000000000000000",1,1,1)
     draw("0000000000000000000000000000000011111111111111110000000000000000",50,0,0)
     draw("0000000000000000000000000000000000000000000000001111111111111111",50,50,0)
+    
+def italy():
+    draw("1100000011000000110000001100000011000000110000001100000011000000",0,60,0)
+    draw("0011110000111100001111000011110000111100001111000011110000111100",60,60,60)
+    draw("0000001100000011000000110000001100000011000000110000001100000011",60,0,0)
 
 def uk():
     draw("1111111011111110111111101111111011111110111111101111111000000000",0,0,50)
@@ -399,7 +404,7 @@ while True:
             encoder_value += 1
         else:
             encoder_value -= 1
-            update_leds(encoder_value)
+            #update_leds(encoder_value)
     
     last_clk = clk_value
     time.sleep(0.01)
@@ -448,14 +453,16 @@ while True:
         elif emoji == (7):
             fire()
         elif emoji == (8):
-            dominicana()
+            italy()
         elif emoji == (9):
-            colombia()
+            dominicana()
         elif emoji == (10):
-            czech()
+            colombia()
         elif emoji == (11):
-            germany()
+            czech()
         elif emoji == (12):
+            germany()
+        elif emoji == (13):
             uk()
             emoji=0
     elif (tilt.value()) == (1):
