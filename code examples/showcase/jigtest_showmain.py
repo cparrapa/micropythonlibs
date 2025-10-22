@@ -23,8 +23,8 @@ matrix = NeoPixel(Pin(22), nm)    # Connector 3
 
 button = Pin(26, Pin.IN)          # Connector 4 digital
 
-bright = 0.5  # brightness variable for lights
-n = 13        # Number of LEDs in the ring
+bright = 1# brightness variable for lights
+n = 6        # Number of LEDs in the ring
 ring = NeoPixel(Pin(4), n)        # Connector 5
 pot=ADC(Pin(32))                  # Connector 6 analog
 pot.atten(ADC.ATTN_11DB)
@@ -218,15 +218,6 @@ def pixel(row, col, r=0, g=0, b=0, color=''):
        matrix[col + (row*8)] = self.color
        matrix.write();
        
-def update_leds(value):
-    """Update the LEDs based on the encoder value."""
-    led_index = value % nm
-    for i in range(nm):
-        if i == led_index:
-            matrix[i] = (0, 0, 255)  # Blue color
-        else:
-            matrix[i] = (0, 0, 0)    # Turn off LED
-    matrix.write()
        
 def fire():
     draw("0001010010010000001001010110101010100011100000011000000101000010",50,0,0)
@@ -279,10 +270,29 @@ def germany():
     draw("0000000000000000000000000000000011111111111111110000000000000000",50,0,0)
     draw("0000000000000000000000000000000000000000000000001111111111111111",50,50,0)
     
+def dutch():
+    draw("0000000011111111111111111111111100000000000000000000000000000000",60,0,0)
+    draw("0000000000000000000000000000000011111111111111110000000000000000",60,60,60)
+    draw("0000000000000000000000000000000000000000000000001111111111111111",0,0,60)
+    
 def italy():
     draw("1100000011000000110000001100000011000000110000001100000011000000",0,60,0)
     draw("0011110000111100001111000011110000111100001111000011110000111100",60,60,60)
     draw("0000001100000011000000110000001100000011000000110000001100000011",60,0,0)
+ 
+def spain():
+    draw("1111111111111111000000000000000000000000000000000000000000000000",60,0,0)
+    draw("0000000000000000111111111111111111111111111111110000000000000000",60,60,0)
+    draw("0000000000000000000000000000000000000000000000001111111111111111",60,0,0)
+    
+def catala():
+    draw("1111111100000000111111110000000011111111000000001111111100000000",60,60,0)
+    draw("0000000011111111000000001111111100000000111111110000000011111111",60,0,0)
+    draw("1000000011000000111000001111000011110000111000001100000010000000",0,0,50)
+ 
+def ukraine():
+    draw("1111111111111111111111111111111100000000000000000000000000000000",0,20,60)
+    draw("0000000000000000000000000000000011111111111111111111111111111111",60,60,0)
 
 def uk():
     draw("1111111011111110111111101111111011111110111111101111111000000000",0,0,50)
@@ -335,16 +345,6 @@ def map(value, in_min, in_max, out_min, out_max):
 
 draw("1111111111111111111111111111111111111111111111111111111111111111",50,0,0)
 buzzer.playEmoji("S_JUMP")
-#for faster meassurements of analog inputs dht must be deleted
-dht.measure()
-temp = dht.temperature()
-hum = dht.humidity()
-print('Temperature: %3.1f C' %temp)
-print('Humidity: %3.1f %%' %hum)
-sleep(0.1)
-oled.text('Temp: %3.1f C' %temp, 0, 24)
-oled.text('Humidity: %3.1f %%' %hum, 0, 36)
-oled.show()
           
 delay = (1) / (60)
 white()
@@ -392,6 +392,7 @@ spring()
 cyan()
 azure()
 blue()
+dht.measure()
 
 while True:
     oled.fill(0)
@@ -404,16 +405,15 @@ while True:
             encoder_value += 1
         else:
             encoder_value -= 1
-            #update_leds(encoder_value)
     
     last_clk = clk_value
     time.sleep(0.01)
     print(encoder_value)
-    oled.text("encoder:{}".format(encoder_value), 0, 30)
+    oled.text("encoder:{}".format(encoder_value), 0, 22)
     
     print("Potentiometer:", pot.read())
-    ring[(int(map(pot.read(), 0, 4095, 12, 0)))] = (50, 0, 20)
-    ring[(int(map(pot.read(), 0, 4095, 11, 0)))] = (50, 0, 0)
+    ring[(int(map(pot.read(), 0, 4095, 5, 0)))] = (50, 0, 0)
+    ring[(int(map(pot.read(), 0, 4095, 4, 0)))] = (0, 50, 0)
     ring.write()
     
     oled.text("Pot:{}".format(pot.read()), 0, 0)
@@ -421,11 +421,19 @@ while True:
     oled.text("* {}%".format(int(map(light.read(), 4095, 0, 0, 100))), 0, 12)
     oled.fill_rect(48,12,int(map(light.read(), 4095, 0, 0, 80)),8,1)
     ring.fill((0,0,0))
+        #for faster meassurements of analog inputs dht must be deleted
+    temp = dht.temperature()
+    hum = dht.humidity()
+    print('Temperature: %3.1f C' %temp)
+    print('Humidity: %3.1f %%' %hum)
+    oled.text('Temp: %3.1f C' %temp, 0, 42)
+    oled.text('Humidity: %3.1f %%' %hum, 0, 54)
     oled.show()
+
     
     if (button.value()) == (0):
         led.on()
-        oled.text('Button pushed', 0, 48)
+        oled.text('Button pushed', 0, 32)
         oled.show()
         output.value(1)
         matrix.fill((0,0,0))
@@ -437,6 +445,7 @@ while True:
         buzzer.playNote(440, 25)
         buzzer.playNote(493, 25)
         buzzer.playNote(523, 25)
+        dht.measure()
         emoji += 1
         if  emoji == (1):
             love()
@@ -463,6 +472,14 @@ while True:
         elif emoji == (12):
             germany()
         elif emoji == (13):
+            dutch()
+        elif emoji == (14):
+            spain()
+        elif emoji == (15):
+            catala()
+        elif emoji == (16):
+            ukraine()
+        elif emoji == (17):
             uk()
             emoji=0
     elif (tilt.value()) == (1):
@@ -477,3 +494,5 @@ while True:
     else:
         output.value(0)
         led.off()
+
+
