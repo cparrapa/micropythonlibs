@@ -1,0 +1,251 @@
+import machine                       #importing machine libraries
+from time import sleep               #importing sleep class
+from machine import Pin, PWM         #importing Pin and PWM classes
+from ottomotor import Servo
+from ottowalkroll import Ninja
+from ottoneopixel import OttoUltrasonic
+from neopixel import NeoPixel
+from ottoneopixel import OttoNeoPixel
+
+led = Pin(2, Pin.OUT)                 # Built in LED
+ultrasonic = OttoUltrasonic(18, 19)
+ultrasonic.ultrasonicRGB2(0, 0, 255)
+
+bright = 0.8                          # brightness variable for lights
+n = 13                                # Number of LEDs in ring
+ring = OttoNeoPixel(4, n)             # Connector 5
+
+ring.fillRGBRing("ffffff", "ff0101", "ff8000", "ffff00", "80ff00", "00ff00", "00ff80", "00ffff", "0080ff", "0000ff", "7f00ff", "ff00ff", "ff007f")
+
+
+# angle servo motors
+servo_leftleg=Servo()
+servo_leftleg.attach(27)	# Connector 8
+servo_rightleg=Servo()
+servo_rightleg.attach(15)	# Connector 9
+
+# wheel servo motors
+servo_leftfoot=Servo()
+servo_leftfoot.attach(14)	# Connector 10
+servo_rightfoot=Servo()
+servo_rightfoot.attach(13)	# Connector 11
+
+delay = 0.2
+ninja = Ninja(27, 15, 14, 13)         # Connector 8 (Left leg), 9(Right leg), 10(Left foot), 11(Right foot)
+
+# scroll_matrix_emoji_animated.py
+# MicroPython script for ESP32 NeoPixel 8x8 matrix
+# Scrolls emoji-style messages with rotation, flipping, and RGB color cycling
+
+from machine import Pin
+from neopixel import NeoPixel
+import utime
+
+# 5x7 font with emoji-style symbols and full ASCII letters
+FONT = {
+    ' ': [0x00, 0x00, 0x00, 0x00, 0x00],
+    '♥': [0x0A, 0x1F, 0x1F, 0x0E, 0x04],
+    '☺': [0x3E, 0x45, 0x51, 0x45, 0x3E],
+    '☀': [0x14, 0x3E, 0x1C, 0x3E, 0x14],
+    '☁': [0x0C, 0x1E, 0x1F, 0x1C, 0x08],
+    '★': [0x14, 0x3E, 0x1C, 0x3E, 0x14],
+    '♫': [0x18, 0x1C, 0x1E, 0x1C, 0x18],
+    '☕': [0x0E, 0x15, 0x15, 0x0E, 0x04],
+    'A': [0x7E, 0x11, 0x11, 0x11, 0x7E],
+    'B': [0x7F, 0x49, 0x49, 0x49, 0x36],
+    'C': [0x3E, 0x41, 0x41, 0x41, 0x22],
+    'D': [0x7F, 0x41, 0x41, 0x22, 0x1C],
+    'E': [0x7F, 0x49, 0x49, 0x49, 0x41],
+    'F': [0x7F, 0x09, 0x09, 0x09, 0x01],
+    'G': [0x3E, 0x41, 0x49, 0x49, 0x7A],
+    'H': [0x7F, 0x08, 0x08, 0x08, 0x7F],
+    'I': [0x00, 0x41, 0x7F, 0x41, 0x00],
+    'J': [0x20, 0x40, 0x41, 0x3F, 0x01],
+    'K': [0x7F, 0x08, 0x14, 0x22, 0x41],
+    'L': [0x7F, 0x40, 0x40, 0x40, 0x40],
+    'M': [0x7F, 0x02, 0x04, 0x02, 0x7F],
+    'N': [0x7F, 0x04, 0x08, 0x10, 0x7F],
+    'O': [0x3E, 0x41, 0x41, 0x41, 0x3E],
+    'P': [0x7F, 0x09, 0x09, 0x09, 0x06],
+    'Q': [0x3E, 0x41, 0x51, 0x21, 0x5E],
+    'R': [0x7F, 0x09, 0x19, 0x29, 0x46],
+    'S': [0x46, 0x49, 0x49, 0x49, 0x31],
+    'T': [0x01, 0x01, 0x7F, 0x01, 0x01],
+    'U': [0x3F, 0x40, 0x40, 0x40, 0x3F],
+    'V': [0x1F, 0x20, 0x40, 0x20, 0x1F],
+    'W': [0x7F, 0x20, 0x18, 0x20, 0x7F],
+    'X': [0x63, 0x14, 0x08, 0x14, 0x63],
+    'Y': [0x07, 0x08, 0x70, 0x08, 0x07],
+    'Z': [0x61, 0x51, 0x49, 0x45, 0x43],
+    'a': [0x20, 0x54, 0x54, 0x54, 0x78],
+    'b': [0x7F, 0x48, 0x44, 0x44, 0x38],
+    'c': [0x38, 0x44, 0x44, 0x44, 0x20],
+    'd': [0x38, 0x44, 0x44, 0x48, 0x7F],
+    'e': [0x38, 0x54, 0x54, 0x54, 0x18],
+    'f': [0x08, 0x7E, 0x09, 0x01, 0x02],
+    'g': [0x0C, 0x52, 0x52, 0x52, 0x3E],
+    'h': [0x7F, 0x08, 0x04, 0x04, 0x78],
+    'i': [0x00, 0x44, 0x7D, 0x40, 0x00],
+    'j': [0x20, 0x40, 0x44, 0x3D, 0x00],
+    'k': [0x7F, 0x10, 0x28, 0x44, 0x00],
+    'l': [0x00, 0x41, 0x7F, 0x40, 0x00],
+    'm': [0x7C, 0x04, 0x18, 0x04, 0x78],
+    'n': [0x7C, 0x08, 0x04, 0x04, 0x78],
+    'o': [0x38, 0x44, 0x44, 0x44, 0x38],
+    'p': [0x7C, 0x14, 0x14, 0x14, 0x08],
+    'q': [0x08, 0x14, 0x14, 0x18, 0x7C],
+    'r': [0x7C, 0x08, 0x04, 0x04, 0x08],
+    's': [0x48, 0x54, 0x54, 0x54, 0x20],
+    't': [0x04, 0x3F, 0x44, 0x40, 0x20],
+    'u': [0x3C, 0x40, 0x40, 0x20, 0x7C],
+    'v': [0x1C, 0x20, 0x40, 0x20, 0x1C],
+    'w': [0x3C, 0x40, 0x30, 0x40, 0x3C],
+    'x': [0x44, 0x28, 0x10, 0x28, 0x44],
+    'y': [0x0C, 0x50, 0x50, 0x50, 0x3C],
+    'z': [0x44, 0x64, 0x54, 0x4C, 0x44],
+}
+
+ROWS = 8
+COLS = 8
+NUM_PIXELS = ROWS * COLS
+matrix = NeoPixel(Pin(22), NUM_PIXELS)
+
+def fill(color):
+    for i in range(NUM_PIXELS):
+        matrix[i] = color
+
+def show():
+    matrix.write()
+
+def apply_transform(x, y, rotate, flip_h, flip_v):
+    if rotate == 90:
+        x, y = y, 7 - x
+    elif rotate == 180:
+        x, y = 7 - x, 7 - y
+    elif rotate == 270:
+        x, y = 7 - y, x
+    if flip_h:
+        x = 7 - x
+    if flip_v:
+        y = 7 - y
+    return x, y
+
+def set_pixel(x, y, color, rotate=0, flip_h=False, flip_v=False, brightness=1.0):
+    if not (0 <= x < COLS and 0 <= y < ROWS):
+        return
+    x, y = apply_transform(x, y, rotate, flip_h, flip_v)
+    r, g, b = [int(c * brightness) for c in color]
+    matrix[x * ROWS + y] = (r, g, b)
+
+def draw_char(char, x_offset, color, rotate, flip_h, flip_v, brightness):
+    data = FONT.get(char, FONT[' '])
+    for x in range(5):
+        col = data[x]
+        for y in range(7):
+            if col & (1 << y):
+                set_pixel(x + x_offset, y, color, rotate, flip_h, flip_v, brightness)
+
+def scroll_text(message, speed=100, rotate=0, flip_h=False, flip_v=False, brightness=1.0):
+    spacing = 1
+    text_width = len(message) * (5 + spacing)
+    pos = COLS
+    hue = 0
+
+    while True:
+        fill((0, 0, 0))
+        x = pos
+        for char in message:
+            color = hsv_to_rgb(hue % 360, 1.0, 1.0)
+            draw_char(char, x, color, rotate, flip_h, flip_v, brightness)
+            x += 6
+            hue += 15
+        show()
+        pos -= 1
+        if pos < -text_width:
+            break
+        utime.sleep_ms(speed)
+
+def hsv_to_rgb(h, s, v):
+    h = float(h)
+    s = float(s)
+    v = float(v)
+    h60 = h / 60.0
+    h60f = int(h60)
+    f = h60 - h60f
+    p = int(255 * v * (1 - s))
+    q = int(255 * v * (1 - f * s))
+    t = int(255 * v * (1 - (1 - f) * s))
+    v = int(255 * v)
+    if h60f == 0:
+        return (v, t, p)
+    elif h60f == 1:
+        return (q, v, p)
+    elif h60f == 2:
+        return (p, v, t)
+    elif h60f == 3:
+        return (p, q, v)
+    elif h60f == 4:
+        return (t, p, v)
+    elif h60f == 5:
+        return (v, p, q)
+    else:
+        return (0, 0, 0)
+
+# Example usage: scroll multiple emoji messages with animation
+messages = [
+    {"text": "♥ Hello ☀Ciao", "rotate": 270, "flip_h": True, "flip_v": False},
+    {"text": "♫ Maker Faire Rome ☁", "rotate": 270, "flip_h": True, "flip_v": False},
+    {"text": "☕ 2025 ☺", "rotate": 270, "flip_h": True, "flip_v": False},
+]
+
+def draw(bits,r=0, g=0, b=0):
+   for i, bit in enumerate(bits):
+       if bit == '1':
+           matrix[i] = (r, g, b)
+   matrix.write()
+   sleep(0.01)
+   
+def italia():
+    draw("1100000011000000110000001100000011000000110000001100000011000000",0,70,0)
+    draw("0011110000111100001111000011110000111100001111000011110000111100",70,70,70)
+    draw("0000001100000011000000110000001100000011000000110000001100000011",70,0,0)
+ 
+
+while True:
+    for msg in messages:
+        scroll_text(msg["text"], speed=50, rotate=msg["rotate"], flip_h=msg["flip_h"], flip_v=msg["flip_v"], brightness=0.3)
+    italia()
+    ring.fillRGBRing("ffffff", "ffffff", "fe0000", "fe0000", "fe0000", "ffffff", "ffffff", "ffffff", "00ff00", "00ff00", "00ff00", "ffffff", "ffffff")
+
+    ultrasonic.ultrasonicRGB2(0, 255, 0)
+    ninja.walkset()
+    sleep(0.5)
+    ninja.walk(1,3) #forward, fast
+    ninja.walk(-1,3) #backward, fast
+    sleep(0.5)
+    ninja.walkset()
+    ultrasonic.ultrasonicRGB2(255, 0, 0)
+    ninja.rollset()
+    sleep(0.5)
+    ninja.roll(-1, 3)
+    sleep(0.5)
+    ninja.roll(1, 3)
+    sleep(1)
+    ninja.rollstop()
+    sleep(0.4)
+    ninja.rollrotate(1)  #right
+    ninja.rollrotate(1)
+    ninja.rollrotate(-1)  #left
+    ninja.rollrotate(-1)
+    sleep(0.4)
+    ninja.rollset()
+    sleep(0.4)
+    ninja.roll(1, 1)
+    ninja.roll(1, 2)
+    ninja.roll(1, 3)
+    sleep(0.6)
+    ninja.rollstop()
+    sleep(0.2)
+    ultrasonic.ultrasonicRGB2(255, 0, 255)
+    ninja.walkset()
+    sleep(0.4)z
