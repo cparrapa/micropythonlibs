@@ -54,52 +54,45 @@ while True:
     if msg:             # msg == None if timeout in recv()
         if msg == b'A': # UP pressed forward
             print("Turning on LED")
-            led_pin.on()
+            #led_pin.on()
                             # 0			1		2			3		4			5			6		7			8		9			10		11			12
             ring.fillRGBRing("fe0000", "fe0000", "000000", "000000", "000000", "000000", "000000", "000000", "000000", "000000", "000000", "fe0000", "fe0000")
             buzzer.playNote(261, 125)
             motor.leftServo.duty(127- offset)
             motor.rightServo.duty(29+ offset)
         elif msg == b'AOff':
-            print("Turning off LED")
-            led_pin.off()
+            #print("Turning off LED")
             ring.fillAllRing(0, 0, 0)
             ring.setRGBring(0, "fe0000")
             motor.rightServo.duty(0)
             motor.leftServo.duty(0)
         elif msg == b'B': # DOWN oressed backward
-            led_pin.on()
             ring.fillRGBRing("fe0000", "000000", "000000", "000000", "000000", "fe0000", "fe0000", "fe0000", "000000", "000000", "000000", "000000", "000000")
             buzzer.playNote(293, 125)
             motor.leftServo.duty(43- offset)
             motor.rightServo.duty(109+ offset)
             sleep(0.1)
         elif msg == b'Boff':
-            led_pin.off()
             ring.fillAllRing(0, 0, 0)
             ring.setRGBring(0, "fe0000")
             motor.rightServo.duty(0)
             motor.leftServo.duty(0)
         elif msg == b'C': # Turn LEFT pressed
-            led_pin.on()
             ring.fillRGBRing("fe0000", "000000", "000000", "000000", "000000", "000000", "000000", "000000", "fe0000", "fe0000", "fe0000", "000000", "000000")
             buzzer.playNote(329, 125)
             motor.rightServo.duty(60+ offset)
             motor.leftServo.duty(60- offset)
         elif msg == b'Coff':
-            led_pin.off()
             ring.fillAllRing(0, 0, 0)
             ring.setRGBring(0, "fe0000")
             motor.rightServo.duty(0)
             motor.leftServo.duty(0)
         elif msg == b'D': # Turn RIGHT pressed
-            led_pin.on()
             ring.fillRGBRing("fe0000", "000000", "fe0000", "fe0000", "fe0000", "000000", "000000", "000000", "000000", "000000", "000000", "000000", "000000")
             buzzer.playNote(349, 125)
             motor.rightServo.duty(100+ offset)
             motor.leftServo.duty(100- offset)
         elif msg == b'Doff':
-            led_pin.off()
             ring.fillAllRing(0, 0, 0)
             ring.setRGBring(0, "fe0000")
             motor.rightServo.duty(0)
@@ -124,5 +117,3 @@ while True:
             led_pin.off()
             ring.fillAllRing(0, 0, 0)
             """
-        else:
-            print("Unknown message!")
