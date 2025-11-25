@@ -1,4 +1,4 @@
-from robot import Robot
+from ottomotorcalibD import Robot
 import time
 
 bot = Robot(left_pin=14, right_pin=13, left_dir=1, right_dir=-1,

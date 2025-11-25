@@ -1,8 +1,21 @@
-# ottomotorscalib
+# ottomotorscalib library with inservo esp32 lib
 import machine
 import time
 from machine import Pin, PWM
 from esp32 import Servo as espServo
+
+"""
+from ottoangle import Servo
+motor=Servo(pin=15)
+motor.move(0) 
+time.sleep(1)
+motor.move(90) 
+time.sleep(1)
+motor.move(180) 
+time.sleep(1)
+motor.move(90) 
+time.sleep(1)
+"""
 
 try:
     useServo = True

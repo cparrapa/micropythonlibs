@@ -1,4 +1,4 @@
-# ottomotors v3.0 26.05.2025 calibration under TEST
+# ottomotors v3.0 26.05.2025 calibration for library under TEST
 import time
 import ujson  # For JSON storage
 from machine import Pin, PWM
@@ -34,7 +34,6 @@ class Motor:
     def stop(self):
         # Stops the motor by setting it to the neutral duty.
         self.servo.duty(90)
-
 
 class OttoMotors:
     # Physical constants – adjust these to match your robot’s configuration.

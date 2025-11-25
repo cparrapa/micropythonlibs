@@ -1,16 +1,15 @@
 # ottosensors v2.1 30.1.2025
 import machine, dht
-import micropython
 from machine import Pin, ADC
 
 class FollowLine:
-        
+
     def __init__(self, pin1, pin2, pin3, pin4):
-        self.analogL=ADC(Pin(pin1))                 
-        self.analogR=ADC(Pin(pin2))  
+        self.analogL=ADC(Pin(pin1))
+        self.analogR=ADC(Pin(pin2))
         self.digitalL = machine.Pin((pin3), machine.Pin.IN)
-        self.digitalR = machine.Pin((pin4), machine.Pin.IN)    
-            
+        self.digitalR = machine.Pin((pin4), machine.Pin.IN)
+
     def detectLineLeft(self):
         return self.digitalL.value()
 
@@ -27,7 +26,7 @@ class DHT:
 
     def __init__(self, pin):
         self.d = dht.DHT11(Pin(pin))
-         
+
     def temperature(self):
         try:
             self.d.measure()
@@ -36,7 +35,7 @@ class DHT:
         except OSError as e:
             print('Failed to read temp sensor.')
             return "0"
-        
+
     def humidity(self):
         try:
             self.d.measure()
@@ -45,14 +44,14 @@ class DHT:
         except OSError as e:
             print('Failed to read temp sensor.')
             return "0"
-        
+
 class Percentage:
     def __init__(self, connector=5):
         connectorPin = [None,None,None,None,26,4,32,33,27,15,14,13] #GPIO pin for the 3pin connectors (4 to 11)
         self.adc=ADC(Pin(connectorPin[connector]))
         self.adc.atten(ADC.ATTN_11DB)
         self.adc.width(ADC.WIDTH_12BIT)
-    
+
     #return a value from 0 to 100
     def Read(self):
         try:
@@ -177,15 +176,15 @@ class Rotary(object):
         if l not in self._listener:
             raise ValueError('{} is not an installed listener'.format(l))
         self._listener.remove(l)
-        
+
     def _process_rotary_pins(self, pin):
         old_value = self._value
         clk_dt_pins = (self._hal_get_clk_value() <<
                        1) | self._hal_get_dt_value()
-                       
+
         if self._invert:
             clk_dt_pins = ~clk_dt_pins & 0x03
-            
+
         # Determine next state
         if self._half_step:
             self._state = _transition_table_half_step[self._state &
@@ -223,7 +222,7 @@ class Rotary(object):
                 _trigger(self)
         except:
             pass
-      
+
 class RotaryIRQ(Rotary):
 
     def __init__(self, pin_num_clk, pin_num_dt, min_val=0, max_val=10, incr=1,

@@ -5,7 +5,7 @@ from machine import Pin, PWM, Timer, UART
 IDLE = 0
 PAUSED = 1
 PLAYING = 2
- 
+
 # define frequency for each tone
 B1  = 31
 C2  = 33
@@ -246,7 +246,7 @@ class OttoBuzzer:
 
     def __init__(self, pin):
         self._pin = Pin(pin)
-    
+
     def playNote(self, freq, interval):
         if freq > 0:
             buzzer = PWM(self._pin)
@@ -254,7 +254,7 @@ class OttoBuzzer:
             buzzer.duty(512)
             time.sleep(interval / 1000)
             buzzer.duty(0)
-    
+
     def tone(self, freq, noteDuration, silentDuration):
         if freq > 0:
             buzzer = PWM(self._pin)
@@ -263,103 +263,124 @@ class OttoBuzzer:
             time.sleep(noteDuration / 1000)
             time.sleep(silentDuration / 1000)
             buzzer.duty(0)
-          
-    def playEmoji(self, emoji):
-        if (emoji == "S_connection") :
+
+
+    def play_emoji(self, emoji):
+        if emoji == "connect":
             self.tone(self.NOTE_E5,50,30)
             self.tone(self.NOTE_E6,55,25)
             self.tone(self.NOTE_A6,60,10)
-            
-        elif (emoji == "S_disconnection") :
+            return
+
+        if emoji == "disconnect":
             self.tone(self.NOTE_E5,50,30)
             self.tone(self.NOTE_A6,55,25)
             self.tone(self.NOTE_E6,50,60)
+            return
 
-        elif (emoji == "S_buttonPushed") :
+        if emoji == "button":
             self.bendTones(self.NOTE_E6, self.NOTE_G6, 1.03, 20, 2)
             time.sleep(30 / 1000)
             self.bendTones (self.NOTE_E6, self.NOTE_D7, 1.04, 10, 2)
+            return
 
-        elif (emoji == "S_mode1") :
-            self.bendTones(self.NOTE_E6, self.NOTE_A6, 1.02, 30, 10)   
+        if emoji == "mode1":
+            self.bendTones(self.NOTE_E6, self.NOTE_A6, 1.02, 30, 10)
+            return
 
-        elif (emoji == "S_mode2") :
-            self.bendTones(self.NOTE_G6, self.NOTE_D7, 1.03, 30, 10) 
+        if emoji == "mode2":
+            self.bendTones(self.NOTE_G6, self.NOTE_D7, 1.03, 30, 10)
+            return
 
-        elif (emoji == "S_mode3") :
-            self.tone(self.NOTE_E6,50,100)  
-            self.tone(self.NOTE_G6,50,80)   
-            self.tone(self.NOTE_D7,300,0)   
+        if emoji == "mode3":
+            self.tone(self.NOTE_E6,50,100)
+            self.tone(self.NOTE_G6,50,80)
+            self.tone(self.NOTE_D7,300,0)
+            return
 
-        elif (emoji == "S_surprise") :
+        if emoji == "surprise":
             self.bendTones(800, 2150, 1.02, 10, 1)
             self.bendTones(2149, 800, 1.03, 7, 1)
+            return
 
-        elif (emoji == "S_JUMP") :
+        if emoji == "jump":
             self.bendTones(880, 2000, 1.04, 8, 3)
             time.sleep(200 / 1000)
+            return
 
-        elif (emoji == "S_OhOoh") :
-            self.bendTones(880, 2000, 1.04, 8, 3)  
+        if emoji == "oh":
+            self.bendTones(880, 2000, 1.04, 8, 3)
             time.sleep(200 / 1000)
             i = 880
             while i < 2000:
                 self.tone(self.NOTE_B5,5,10)
                 i = i * 1.04
+            return
 
-        elif (emoji == "S_OhOoh2") :
+        if emoji == "oh2":
             self.bendTones(1880, 3000, 1.03, 8, 3)
             time.sleep(200 / 1000)
             i = 1880
             while i < 3000:
                 self.tone(self.NOTE_C6,10,10)
-                i = i * 1.03  
+                i = i * 1.03
+            return
 
-        elif (emoji == "S_cuddly") :
+        if emoji == "cuddle":
             self.bendTones(700, 900, 1.03, 16, 4)
             self.bendTones(899, 650, 1.01, 18, 7)
+            return
 
-        elif (emoji == "S_sleeping") :
+        if emoji == "sleep":
             self.bendTones(100, 500, 1.04, 10, 10)
             time.sleep(500 / 1000)
             self.bendTones(400, 100, 1.04, 10, 1)
+            return
 
-        elif (emoji == "S_happy") :
+        if emoji == "happy":
             self.bendTones(1500, 2500, 1.05, 20, 8)
             self.bendTones(2499, 1500, 1.05, 25, 8)
+            return
 
-        elif (emoji == "S_superHappy") :
-            self.bendTones(2000, 6000, 1.05, 8, 3),
+        if emoji == "superhappy":
+            self.bendTones(2000, 6000, 1.05, 8, 3)
             time.sleep(50 / 1000)
             self.bendTones(5999, 2000, 1.05, 13, 2)
+            return
 
-        elif (emoji == "S_happy_short") :
+        if emoji == "happyshort":
             self.bendTones(1500, 2000, 1.05, 15, 8)
             time.sleep(100 / 1000)
             self.bendTones(1900, 2500, 1.05, 10, 8)
+            return
 
-        elif (emoji == "S_sad") :
+        if emoji == "sad":
             self.bendTones(880, 669, 1.02, 20, 200)
+            return
 
-        elif (emoji == "S_confused") :
+        if emoji == "confused":
             self.bendTones(1000, 1700, 1.03, 8, 2)
             self.bendTones(1699, 500, 1.04, 8, 3)
             self.bendTones(1000, 1700, 1.05, 9, 10)
+            return
 
-        elif (emoji == "S_fart1") :
+        if emoji == "fart1":
             self.bendTones(1600, 3000, 1.02, 2, 15)
+            return
 
-        elif (emoji == "S_fart2") :
+        if emoji == "fart2":
             self.bendTones(2000, 6000, 1.02, 2, 20)
+            return
 
-        elif (emoji == "S_fart3") :
+        if emoji == "fart3":
             self.bendTones(1600, 4000, 1.02, 2, 20)
             self.bendTones(4000, 3000, 1.02, 2, 20)
+            return
 
     def bendTones (self, initFrequency, finalFrequency, prop, noteDuration, silentDuration):
         if(silentDuration == 0):
             silentDuration = 1
-        
+
         if initFrequency < finalFrequency:
             i = initFrequency
             while i < finalFrequency:
@@ -406,24 +427,24 @@ class OttoBuzzer:
             print(eval(value.upper()));
             outList.append((eval(value.upper()), length))
         return outList
-    
+
     def find(self,name):
         for song in self.SONGS:
             song_name = song.split(':')[0]
             if song_name == name:
                 return song
-     
+
     def execute_RTTTL(self,name):
         song=self.find(name)
-        tune = self.RTTTL_notes(song) 
+        tune = self.RTTTL_notes(song)
         for freqc, msec in tune:
             self.playNote(freqc, msec)
 
     def execute_RTTTL_song(self,songRTTTL):
-        tune = self.RTTTL_notes(songRTTTL) 
+        tune = self.RTTTL_notes(songRTTTL)
         for freqc, msec in tune:
             self.playNote(freqc, msec)
-            
+
 class Player:
     def __init__(self, pin_TX, pin_RX):
         self.uart = UART(1, 9600, tx=pin_TX, rx=pin_RX)
@@ -440,8 +461,8 @@ class Player:
         #print(query)
         self.uart.write(query)
         time.sleep(0.05)
-        
-    # with checksum, but it doesnÂ´t work    
+
+    # with checksum, but it doesnÂ´t work
     def cmd2(self,cmd,param1=0,param2=0):
         out_bytes = bytearray(10)
         out_bytes[0]=126
@@ -464,13 +485,13 @@ class Player:
 
     def _fade_out_process(self, timer):
         new_volume = self._volume - self._fadeout_speed
-        
+
         if new_volume <= 0:
             print("fadeout finished")
             new_volume = 0
             self._fadeout_timer.deinit()
             self.stop()
-            new_volume = self._max_volume # reset volume to max 
+            new_volume = self._max_volume # reset volume to max
         self.volume(new_volume)
 
     # playback
@@ -502,10 +523,10 @@ class Player:
 
     def loop_disable(self):
         self.cmd(0x19, 0x01)
-        
+
     def PlayFolder(self, folder_id, song_id):
         self.cmd(0x0F,song_id,folder_id)
-        
+
     # volume control
 
     def volume_up(self):
@@ -521,7 +542,7 @@ class Player:
             self._volume = int(sorted([0, volume, self._max_volume])[1])
             #print("volume", self._volume)
             self.cmd(0x06, self._volume)
-        
+
         return self._volume
 
     # hardware
