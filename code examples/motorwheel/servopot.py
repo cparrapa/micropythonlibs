@@ -10,9 +10,9 @@ MAX_US = 2500         # pulse for +100% (full forward)
 # --------------------------------
 
 pwm = PWM(Pin(SERVO_PIN), freq=FREQ)
-potA = ADC(Pin(32, mode=Pin.IN)) # Create an ADC object linked to Connector 6
-potA.width(ADC.WIDTH_12BIT)
-potA.atten(ADC.ATTN_11DB)
+pot = ADC(Pin(32, mode=Pin.IN)) # Create an ADC object linked to Connector 6
+pot.width(ADC.WIDTH_12BIT)
+pot.atten(ADC.ATTN_11DB)
 
 def set_servo_speed(percent):
     """
@@ -40,6 +40,6 @@ def map(x, in_min, in_max, out_min, out_max):
 
 
 while True:
-    val = potA.read()
+    val = pot.read()
     sleep(0.01)
     set_servo_speed(map(val, 0, 4095, -100,100))
