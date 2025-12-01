@@ -1,4 +1,4 @@
-# D simplified library for calibration under TEST
+# D complex  library for calibration under TEST
 from machine import Pin, PWM
 import time
 import math
@@ -84,7 +84,6 @@ class Robot:
             self.forward(speed, duration)
         else:
             self.backward(speed, duration)
-
 
     def rotate_angle(self, angle_deg, speed=50):
         # Angle in degrees → arc length = angle / 360 * wheel_base * π
