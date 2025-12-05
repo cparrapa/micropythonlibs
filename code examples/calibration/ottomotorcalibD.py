@@ -1,4 +1,4 @@
-# D complex  library for calibration under TEST
+# D complex GPT library for calibration under TEST
 from machine import Pin, PWM
 import time
 import math

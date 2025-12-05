@@ -1,4 +1,4 @@
-# ottomotors v3.0 26.05.2025 calibration for library GPT under TEST
+# ottomotors v3.0 26.05.2025 calibration for library under TEST
 import time
 import ujson  # For JSON storage
 from machine import Pin, PWM

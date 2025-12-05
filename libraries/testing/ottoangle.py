@@ -2,6 +2,14 @@
 from machine import Pin, PWM
 import time
 
+sg90 = PWM(Pin(14, mode=Pin.OUT))
+sg90.freq(50)
+
+# 0.5ms/20ms = 0.025 = 2.5% duty cycle
+# 2.4ms/20ms = 0.12 = 12% duty cycle
+# 0.025*1024=25.6 sg90.duty(26)
+# 0.12*1024=122.88 sg90.duty(123)
+
 class Servo:
     # these defaults work for the standard TowerPro SG90
     __servo_pwm_freq = 50
@@ -41,4 +49,15 @@ class Servo:
         self.__angle_conversion_factor = (self.__max_u10_duty - self.__min_u10_duty) / (self.max_angle - self.min_angle)
         self.__motor = PWM(Pin(pin))
         self.__motor.freq(self.__servo_pwm_freq)
-        
+
+motor=Servo(pin=14) # A changer selon la broche utilisée
+motor.move(0) # tourne le servo à 0°
+time.sleep(0.3)
+motor.move(90) # tourne le servo à 90°
+time.sleep(0.3)
+motor.move(180) # tourne le servo à 180°
+time.sleep(0.3)
+motor.move(90) # tourne le servo à 90°
+time.sleep(0.3)
+motor.move(0) # tourne le servo à 0°
+time.sleep(0.3)

@@ -32,14 +32,16 @@ def set_servo_speed(percent):
     # convert microseconds → duty for ESP32 PWM
     duty = int((pulse_us / 20000) * 1023)  # 20ms period, 10-bit duty
     pwm.duty(duty)
-
     return pulse_us
 
 def map(x, in_min, in_max, out_min, out_max):
     return (x - in_min) * (out_max - out_min) // (in_max - in_min) + out_min
 
-
 while True:
     val = pot.read()
     sleep(0.01)
-    set_servo_speed(map(val, 0, 4095, -100,100))
+    speed=map(val, 0, 4095, -100,100)
+    set_servo_speed(speed)
+    print("Raw: %3d" % val )
+    print("Speed: %3d%%" % speed)
+    
