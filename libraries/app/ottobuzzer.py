@@ -99,6 +99,7 @@ DS9 = 4978
 P = 0
 
 class OttoBuzzer:
+    buzzer: PWM | None = None
     NOTE_C0 = 16.35
     NOTE_Db0 = 17.32
     NOTE_D0 = 18.35
@@ -247,6 +248,12 @@ class OttoBuzzer:
     def __init__(self, pin):
         self._pin = Pin(pin)
 
+    def __get_buzzer(self) -> PWM:
+        if not self.buzzer:
+            self.buzzer = PWM(self._pin)
+            return self.buzzer
+        return self.buzzer
+
     def playNote(self, freq, interval):
         if freq > 0:
             buzzer = PWM(self._pin)
@@ -254,6 +261,15 @@ class OttoBuzzer:
             buzzer.duty(512)
             time.sleep(interval / 1000)
             buzzer.duty(0)
+
+    def tone_on(self, freq):
+        buzz = self.__get_buzzer()
+        buzz.freq(int(freq))
+        buzz.duty(512)
+
+    def tone_off(self):
+        buzz = self.__get_buzzer()
+        buzz.duty(0)
 
     def tone(self, freq, noteDuration, silentDuration):
         if freq > 0:

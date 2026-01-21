@@ -8,7 +8,7 @@ class WiFiManager:
         self.password = password
         self.wlan = network.WLAN(network.STA_IF)
 
-    def connect(self, max_retries=10, timeout=5):
+    def connect(self, max_retries=10, timeout=4):
         if not self.wlan.active():
             self.wlan.active(True)
             time.sleep(1)

@@ -1,4 +1,4 @@
-from machine import Pin, Timer, PWM, ADC, reset as machine_reset
+from machine import Pin, ADC, reset as machine_reset
 from time import sleep
 from ottobuzzer import OttoBuzzer
 from ottoneopixel import OttoNeoPixel, OttoUltrasonic
@@ -6,6 +6,10 @@ from ottomotor import OttoMotor
 from ottosensors import FollowLine
 import os
 import asyncio
+import json
+import gc
+import uhashlib
+import random
 
 led = Pin(2, Pin.OUT)  # Built in LED
 buzzer = OttoBuzzer(25)  # Built in Buzzer
@@ -40,6 +44,7 @@ oled = ""
 matrix = ""
 
 # Sensor values
+active_mode = 0
 distance_sensor_enabled = False
 line_sensors_enabled = False
 
@@ -107,27 +112,35 @@ def handle_movement_settings(command: str):
         sliderL = int(key[1:4])
         sliderR = int(key[4:])
 
+
 def handle_tones(command: str):
     if command[0] != 'N':
         return
 
     key = command[1:]
+    if command[1] == ":":
+        freq = float(command[2:])
+        buzzer.tone_on(freq)
+        return
+
     if key == "do":
-        buzzer.tone(buzzer.NOTE_C4, 100, 100)
+        buzzer.tone_on(buzzer.NOTE_C4)
     elif key == "re":
-        buzzer.tone(buzzer.NOTE_D4, 100, 100)
+        buzzer.tone_on(buzzer.NOTE_D4)
     elif key == "mi":
-        buzzer.tone(buzzer.NOTE_E4, 100, 100)
+        buzzer.tone_on(buzzer.NOTE_E4)
     elif key == "fa":
-        buzzer.tone(buzzer.NOTE_F4, 100, 100)
+        buzzer.tone_on(buzzer.NOTE_F4)
     elif key == "sol":
-        buzzer.tone(buzzer.NOTE_G4, 100, 100)
+        buzzer.tone_on(buzzer.NOTE_G4)
     elif key == "la":
-        buzzer.tone(buzzer.NOTE_A4, 100, 100)
+        buzzer.tone_on(buzzer.NOTE_A4)
     elif key == "si":
-        buzzer.tone(buzzer.NOTE_B4, 100, 100)
+        buzzer.tone_on(buzzer.NOTE_B4)
     elif key == "edo":
-        buzzer.tone(buzzer.NOTE_C5, 100, 100)
+        buzzer.tone_on(buzzer.NOTE_C5)
+    elif key == "off":
+        buzzer.tone_off()
 
 
 def convert_joystick_degrees(deg: int) -> int:
@@ -334,9 +347,61 @@ def handle_dance_moves(command: str):
         motors_move(90, 0, "forward", 0.6)
         return
 
+def handle_library_tools(command: str, ble_print):
+    if command[0] != 'L':
+        return
+
+    key = command[1:]
+    if key == "L":
+        asyncio.create_task(transmit_library_versions(ble_print))
+
+async def transmit_library_versions(ble_print):
+    # If anything  fails here, lock.json is missing or malformed, just send el finito event
+    try:
+        with open("lock.json", "r") as f:
+            libraries = json.load(f)["libraries"]
+
+        for library in libraries:
+            gc.collect()
+            with open(library, "rb") as f:
+                content = f.read()
+                sha256 = uhashlib.sha256()
+                sha256.update(content)
+                checksum = sha256.digest()
+                checksum_hex = ''.join('{:02x}'.format(b) for b in checksum)
+                tampered_with = checksum_hex != libraries[library]["digest"]
+
+            await asyncio.sleep(0)
+            ble_print(format_library_version_message(library, libraries[library]["version"], tampered_with))
+    except Exception as e:
+        ble_print(e)
+
+    await asyncio.sleep(0)
+    ble_print("l:finito")
+
+def format_library_version_message(library: str, version: str, tampered: bool) -> str:
+    return f'l:{library}:{version}:{'true' if tampered else 'false'}'
 
 def format_sensor_message(sensor, value):
     return f's:{sensor}:{value}'
+
+
+def handle_modes(command: str):
+    if command[0] != 'X':
+        return
+
+    global active_mode
+    mode = int(command[1])
+
+    if mode == 0:
+        active_mode = 0
+    elif mode == 1 and active_mode != 1:
+        asyncio.create_task(start_mode_1())
+    elif mode == 2 and active_mode != 2:
+        asyncio.create_task(start_mode_2())
+    elif mode == 3 and active_mode != 3:
+        asyncio.create_task(start_mode_3())
+
 
 def handle_sensors(command: str, ble_print):
     if command[0] != 'R':
@@ -362,6 +427,90 @@ def handle_sensors(command: str, ble_print):
         else:
             line_sensors_enabled = False
 
+async def start_mode_1():
+    global active_mode
+    active_mode = 1
+
+    while active_mode == 1:
+        distance = ultrasonic.readultrasonicRGB(1)
+
+        if distance <= 10:
+            ultrasonic.ultrasonicRGB1("ff0000", "ff0000")
+            buzzer.tone(buzzer.NOTE_C5, 100, 100)
+        elif distance < 20:
+            ultrasonic.ultrasonicRGB1("ff6666", "ff6666")
+            buzzer.tone(buzzer.NOTE_B4, 100, 100)
+        elif  distance < 30:
+            ultrasonic.ultrasonicRGB1("ff9966", "ff9966")
+            buzzer.tone(buzzer.NOTE_A4, 100, 100)
+        elif distance < 40:
+            ultrasonic.ultrasonicRGB1("ffff66", "ffff66")
+            buzzer.tone(buzzer.NOTE_G4, 100, 100)
+        elif distance < 50:
+            ultrasonic.ultrasonicRGB1("ffff33", "ffff33")
+            buzzer.tone(buzzer.NOTE_F4, 100, 100)
+        elif distance < 60:
+            ultrasonic.ultrasonicRGB1("66ff99", "66ff99")
+            buzzer.tone(buzzer.NOTE_E4, 100, 100)
+        elif distance < 70:
+            ultrasonic.ultrasonicRGB1("33ffff", "33ffff")
+            buzzer.tone(buzzer.NOTE_D4, 100, 100)
+        elif distance < 80:
+            ultrasonic.ultrasonicRGB1("66ffff", "66ffff")
+            buzzer.tone(buzzer.NOTE_C4, 100, 100)
+        elif distance < 90:
+            ultrasonic.ultrasonicRGB1("9999ff", "9999ff")
+            buzzer.tone(buzzer.NOTE_A3, 100, 100)
+        else:
+            ultrasonic.ultrasonicRGB1("000000", "000000")
+
+        await asyncio.sleep_ms(100)
+    else:
+        ultrasonic.ultrasonicRGB1("000000", "000000")
+
+
+async def start_mode_2():
+    global active_mode
+    active_mode = 2
+
+    while active_mode == 2:
+        if (ultrasonic.readultrasonicRGB(1)) <= (15):
+            ultrasonic.ultrasonicRGB1("cc0000", "cc0000")
+            motor.Stop(1)
+            await asyncio.sleep_ms(100)
+
+            if (random.randint(1, 2)) == (1):
+                motors_move(sliderR, sliderL, "right", 0.5)
+            else:
+                motors_move(sliderR, sliderL, "left", 0.5)
+        else:
+            ultrasonic.ultrasonicRGB1("ffffff", "ffffff")
+            motors_move(sliderR, sliderL, "forward")
+
+        await asyncio.sleep_ms(100)
+    else:
+        ultrasonic.ultrasonicRGB1("000000", "000000")
+        motor.Stop(1)
+
+
+async def start_mode_3():
+    global active_mode
+    active_mode = 3
+
+    while active_mode == 3:
+        sensorL_value = line.readLineLeft()
+        sensorR_value = line.readLineRight()
+
+        if (sensorL_value) >= (700):
+            motors_move(25, 25, "left")
+        elif (sensorR_value) >= (700):
+            motors_move(25, 25, "right")
+        else:
+            motors_move(sliderR, sliderL, "forward")
+
+        await asyncio.sleep_ms(40)
+    else:
+        motor.Stop(1)
 
 async def start_line_sensors(ble_print, period: float):
     global line_sensors_enabled
@@ -393,6 +542,7 @@ async def start_ultrasonic_sensor(ble_print, period: float):
 
 def remote_control(key, ble_print):
     handle_sensors(key, ble_print)
+    handle_library_tools(key, ble_print)
     handle_movement(key)
     handle_tones(key)
     handle_joystick(key)
@@ -402,3 +552,4 @@ def remote_control(key, ble_print):
     handle_movement_settings(key)
     handle_sound_emotes(key)
     handle_dance_moves(key)
+    handle_modes(key)

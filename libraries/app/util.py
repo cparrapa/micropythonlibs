@@ -2,10 +2,37 @@ import esp32
 import ubluetooth
 import hashlib
 
-BLE_NVS_NAMESPACE = 'storage'
+BLE_NVS_NAMESPACE = 'cnfg'
 BLE_NAME_NVS_KEY = 'ble_name'
 BLE_DEFAULT_NAME = "otto"
-BLE_BUFFER_SIZE=20
+
+
+def get_nvs_value(key: str) -> str | None:
+    nvs = esp32.NVS(BLE_NVS_NAMESPACE)
+    try:
+        blob_length = nvs.get_blob(key, bytearray())
+        buffer = bytearray(blob_length)
+        nvs.get_blob(key, buffer)
+        return buffer.decode()
+    except OSError:
+        return None
+
+
+def set_nvs_value(key: str, value: str):
+    nvs = esp32.NVS(BLE_NVS_NAMESPACE)
+    nvs.set_blob(key, value.encode())
+    nvs.commit()
+
+
+def delete_nvs_key(key: str):
+    nvs = esp32.NVS(BLE_NVS_NAMESPACE)
+    try:
+        nvs.erase_key(key)
+        nvs.commit()
+    except OSError:
+        # The key is already deleted
+        return
+
 
 
 def get_ble_name_from_mac_address():
@@ -22,32 +49,22 @@ def get_ble_name_from_mac_address():
 
 
 def get_ble_name():
-    try:
-        nvs = esp32.NVS(BLE_NVS_NAMESPACE)
-        buff = bytearray(BLE_BUFFER_SIZE)
-        actual_lenght = nvs.get_blob(BLE_NAME_NVS_KEY, buff)
-        data = buff[:actual_lenght]
-        return data.decode("utf-8")
-    except OSError:
+    found_nvs_value = get_nvs_value(BLE_NAME_NVS_KEY)
+    if not found_nvs_value:
         try:
             return get_ble_name_from_mac_address()
         except:
             return BLE_DEFAULT_NAME
 
+    return found_nvs_value
+
 
 def set_ble_name(name):
     try:
-        nvs = esp32.NVS(BLE_NVS_NAMESPACE)
-        nvs.set_blob(BLE_NAME_NVS_KEY, name.encode())
-        nvs.commit()
+        set_nvs_value(BLE_NAME_NVS_KEY, name)
     except OSError:
         print("Settings BLE name failed")
 
 
 def reset_ble_name():
-    try:
-        nvs = esp32.NVS(BLE_NVS_NAMESPACE)
-        nvs.erase_key(BLE_NAME_NVS_KEY)
-        nvs.commit()
-    except OSError:
-        print("Deleting BLE name failed")
+    delete_nvs_key(BLE_NAME_NVS_KEY)

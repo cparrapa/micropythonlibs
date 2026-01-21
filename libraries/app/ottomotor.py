@@ -2,7 +2,7 @@
 import machine, time
 from machine import Pin, PWM
 
-try:    
+try:
     from esp32 import Servo as espServo
     useServo = True
 except ImportError:
@@ -13,13 +13,13 @@ except ImportError:
     useServo = False
 
 class OttoMotor: #used in web code blocks lacks of calibration offset
-    
+
     def __init__(self, pin1, pin2):
         self.leftServo = PWM(Pin(pin2))
         self.leftServo.freq(50)
         self.rightServo = PWM(Pin(pin1))
         self.rightServo.freq(50)
-        
+
     def Move(self, direction, step, speed):
         if(direction == -1):
             if(speed == 1):
@@ -49,7 +49,7 @@ class OttoMotor: #used in web code blocks lacks of calibration offset
                 leftSpeed = 115
             elif(speed == 3):
                 leftSpeed = 130
-                
+
         self.rightServo.freq(50)
         self.leftServo.freq(50)
         self.rightServo.duty(rightSpeed)
@@ -87,12 +87,12 @@ class OttoMotor: #used in web code blocks lacks of calibration offset
                 leftSpeed = 115
             elif(speed == 3):
                 leftSpeed = 130
-                
+
         self.rightServo.freq(50)
         self.leftServo.freq(50)
         self.rightServo.duty(rightSpeed)
         self.leftServo.duty(leftSpeed)
-        
+
     def Rotate(self, turn):
         if(turn == 0):
             rightSpeed = 45
@@ -106,7 +106,7 @@ class OttoMotor: #used in web code blocks lacks of calibration offset
             rightSpeed = 45
             leftSpeed = 45
             stepDelay = 0.8
-            
+
         self.rightServo.freq(50)
         self.leftServo.freq(50)
         self.rightServo.duty(rightSpeed)
@@ -114,7 +114,7 @@ class OttoMotor: #used in web code blocks lacks of calibration offset
         time.sleep(stepDelay)
         self.rightServo.duty(0)
         self.leftServo.duty(0)
-        
+
     def Moveleft(self, direction, step, speed):
         if(direction == -1):
             if(speed == 1):
@@ -130,13 +130,13 @@ class OttoMotor: #used in web code blocks lacks of calibration offset
                 leftSpeed = 115
             elif(speed == 3):
                 leftSpeed = 100
-                
+
         self.rightServo.freq(50)
         self.leftServo.freq(50)
         self.leftServo.duty(leftSpeed)
         time.sleep(step)
         self.leftServo.duty(0)
-        
+
     def Moveleftloop(self, direction, speed):
         if(direction == -1):
             if(speed == 1):
@@ -152,9 +152,9 @@ class OttoMotor: #used in web code blocks lacks of calibration offset
                 leftSpeed = 115
             elif(speed == 3):
                 leftSpeed = 100
-                
+
         self.leftServo.duty(leftSpeed)
-        
+
     def Moveright(self, direction, step, speed):
         if(direction == -1):
             if(speed == 1):
@@ -170,13 +170,13 @@ class OttoMotor: #used in web code blocks lacks of calibration offset
                 rightSpeed = 45
             elif(speed == 3):
                 rightSpeed = 30
-                
+
         self.rightServo.freq(50)
         self.leftServo.freq(50)
         self.rightServo.duty(rightSpeed)
         time.sleep(step)
         self.rightServo.duty(0)
-        
+
     def Moverightloop(self, direction, speed):
         if(direction == -1):
             if(speed == 1):
@@ -192,14 +192,14 @@ class OttoMotor: #used in web code blocks lacks of calibration offset
                 rightSpeed = 45
             elif(speed == 3):
                 rightSpeed = 30
-                
+
         self.rightServo.freq(50)
         self.leftServo.freq(50)
         self.rightServo.duty(rightSpeed)
-        
+
     def Stop(self, motor):
         if(motor == 1):
-            self.rightServo.duty(0) 
+            self.rightServo.duty(0)
             self.leftServo.duty(0)
         elif(motor ==  2):
             self.leftServo.duty(0)

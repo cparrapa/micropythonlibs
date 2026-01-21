@@ -2,10 +2,12 @@ import ubluetooth
 import uasyncio as asyncio
 import os
 import gc
-import sys
 import machine
 import util
 import rc
+import ubinascii
+import ujson
+from binascii import a2b_base64
 
 FLAG_FILE = "code_stopper"
 
@@ -14,6 +16,7 @@ class BLE:
         self.name = util.get_ble_name()
         self.ble = ubluetooth.BLE()
         self.ble.active(True)
+        self.ble.config(gap_name=self.name[:26]) # Set GAP_NAME (ak PLATFORM NAME)
         self._write_callback = None
         self._code_stopper = None
         self.tx = None
@@ -22,11 +25,11 @@ class BLE:
         self.ble.irq(self.ble_irq)
 
     def connected(self):
-        # For implementing events that run on bluetooth connect event
-        pass
+        # Turn off advertisting after successfull connect
+        self.ble.gap_advertise(None)
 
     def disconnected(self):
-        self.advertiser()
+        asyncio.create_task(self.re_advertise())
 
     def code_stopper_func(self, callback):
         self._code_stopper = callback
@@ -48,11 +51,31 @@ class BLE:
             elif self._write_callback:
                 self._write_callback(buffer)
 
+    async def re_advertise(self):
+        await asyncio.sleep_ms(500)
+        self.advertiser()
 
     def advertiser(self):
+        # Turn off advertising before starting new
+        try:
+            self.ble.gap_advertise(None)
+        except:
+            pass
+
         name = bytes(self.name, 'UTF-8')
-        adv_data = bytes([0x02, 0x01, 0x06]) + bytes([len(name) + 1, 0x09]) + name
-        self.ble.gap_advertise(100, adv_data)
+        # Take only first 26 bytes of name, if it is longer
+        if len(name) > 26:
+            name = name[:26]
+
+        nus_uuid = ubluetooth.UUID('6e400001-b5a3-f393-e0a9-e50e24dcca9e')
+        uuid_bytes = bytes(nus_uuid)
+
+        adv_data = bytearray()
+        adv_data += bytes([0x02, 0x01, 0x06])
+        adv_data += bytes([len(uuid_bytes) + 1, 0x07]) + uuid_bytes
+        resp_data = bytes([len(name) + 1, 0x09]) + name
+
+        self.ble.gap_advertise(100, adv_data, resp_data=resp_data)
 
     def register(self):
         NUS_UUID = '6e400001-b5a3-f393-e0a9-e50e24dcca9e'
@@ -64,8 +87,6 @@ class BLE:
         ((self.tx,),) = self.ble.gatts_register_services(SERVICES)
 
     def send(self, data):
-        print(data)
-
         if isinstance(data, str):
             data = data.encode()
         self.ble.gatts_notify(0, self.tx, data)
@@ -122,8 +143,8 @@ def on_rx(executor, key):
                 executor.ble_print("Execution stopped")
             else:
                 if "update_firmware" in real_command:
-                    executor.ble_print(real_command)
                     import update_library
+                    manager = update_library.UpdateLibraryManager(executor.ble_print)
                     params = []
                     in_quotes = False
                     current_param = ""
@@ -137,7 +158,12 @@ def on_rx(executor, key):
                         elif in_quotes:
                             current_param += char
 
-                    update_library.update_libraries(params[0], params[1], params[2], executor.ble_print)
+                    manager.trigger_update_libraries(params[0], params[1], params[2], params[3])
+                elif "update(" in real_command:
+                    import update_library
+                    manager = update_library.UpdateLibraryManager(executor.ble_print)
+                    json_data = ujson.loads(ubinascii.a2b_base64(real_command.split("(")[1].split(")")[0]).decode())
+                    manager.trigger_update_libraries(json_data["ssid"], json_data["pass"], json_data["id"], json_data["url"])
                 elif "set_ble_name" in real_command:
                     import util
                     params = []
@@ -172,7 +198,7 @@ def run_usercode():
         exec(code)
         return
     except Exception as e:
-        sys.print_exception(e)
+        print(e)
         return
 
 
