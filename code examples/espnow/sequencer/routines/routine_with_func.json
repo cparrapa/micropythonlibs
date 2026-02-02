@@ -1,0 +1,12 @@
+[
+    {"cmd": "DEF FUNC", "name": "blink_twice"},
+        {"cmd": "LED ON"},
+        {"cmd": "WAIT", "time": 1},
+        {"cmd": "LED OFF"},
+        {"cmd": "WAIT", "time": 1},
+    {"cmd": "END FUNC"},
+    {"cmd": "CALL FUNC", "name": "blink_twice"},
+    {"cmd": "REPEAT", "times": 3},
+        {"cmd": "CALL FUNC", "name": "blink_twice"},
+    {"cmd": "END"}
+]
