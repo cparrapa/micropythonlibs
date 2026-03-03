@@ -1,103 +1,122 @@
-# micropythonlibs
-Set of micro Python libraries, example codes, 3D stl files and more to use with [HP Robots Otto starter and all expansions.](https://hprobots.com/otto-robot/product/)
-[version of MicroPython (v1.22)](https://micropython.org/download/ESP32_GENERIC/)
+# HP Robots Otto – MicroPython Libraries
 
-## [library v2.0 ](https://github.com/cparrapa/micropythonlibs/tree/main/libraries)
-Files organized by modules (e.g., motors, rgb ring, ultrasonic, etc). Each file contains related classes, variables and functions.
-In order for the examples to work, FIRST [**all files in libraries must be uploaded**](https://github.com/cparrapa/micropythonlibs/tree/main/libraries) to the circuit board in advance. Some are WIP (work in progress) not even functional.
+A complete collection of MicroPython libraries, example programs, 3D STL files, and resources for use with the [HP Robots Otto starter and all expansions.](https://hprobots.com/otto-robot/product/) 
+Compatible with MicroPython v1.26.1.
+[👉 Recommended: Use our Quick Flasher to install MicroPython easily)](https://hprobots.com/otto-code/webcode/pythonuploader/pythonuploader.html)
 
-- ottomotor.py v2.0- in charge of servo motors classes (pending separate)
-- ottoangle.py
-- ottowalkroll.py
-- ottobattery.py - read voltage level
-- otto4wd.py (not in blocks)
-- ottobuzzer.py v2.2- piezo notes and RTTTL melodies
-- ottoline.py - line follow infrared sensors
-- ottoneopixel.py v2.3- every RGB LED related component (pending separate ring, matrix and ultrasonic)
-- ottoring.py 13 leds
-- ottomatrix.py 8x8 leds
-- ottoultrasonic.py 6 leds
-- ottosensors.py v2.1- multiple sensors (pending split into independent sensors library)
-- ottodht.py - temperature and humidity sensor based on dht11
-- ottoldr.py - light sensor
-- ottomic.py - sound sensor 
-- ottotilt.py - premade functions like changing states
-- ottobutton.py - for debouncing
-- ottoencoder.py - encoder with button
-- adxl345.py v1.0- default accelerometer chip
-- ottoaccelerometer.py (pending combine with adxl345)
-- ssd1306.py v0.0 - default third party library for OLED display driver
-- ottodisplay.py v2.1- display faces in OLED (pending rename and combine with ssd1306)
-- ottomp3.py v1.0- mp3 player
-- ottoble.py v2.1- bluetooth communication for block coding (depreceated)
-- ottoiot.py v1.0- internet of things
-- directory.py - index 
+If you prefer using Arduino IDE, follow the Arduino alternative programming guide included in this repository.
 
-These libraries are used and must be in sync with the main Webcode repository [python/libraries](https://github.com/cparrapa/webcode/blob/main/python/libraries/)
+📌 This repository includes:
 
-### Naming Conventions
-* Classes: Use CamelCase for class names (e.g., MotorController).
-* Functions: Use CamelCase for function names (e.g., CalculateSpeed).
-* Files: Use descriptive names in snake_case (e.g., motor_control.py).
-* Variables: Use snake_case for variable names (e.g., motor_speed).
-* Modules: Use snake_case for module names (e.g., sensor_utils).
-* Constants: Use UPPER_CASE_WITH_UNDERSCORES for constants (e.g., MAX_SPEED).
-
-## [blocks examples](https://github.com/cparrapa/micropythonlibs/tree/main/blocks%20examples)
-Examples that work in [webcode icons, words or AI](https://hprobots.com/otto-code/webcode/webcode.html). 
-The best [guide to get started in blocks is here](https://hprobots.com/otto-robot/code/#flipbook-hp-robots-otto-starter-coding-intro/1/)
-This will help beginners to do the transition to text code. The idea is to have for every example both block and text version.
-
-## [code examples](https://github.com/cparrapa/micropythonlibs/tree/main/code%20examples)
-The actual micropython text code demos, navigate by folder/component:
-
-* accelerometer: examples with ADXL345 sensor but we need games with it (TESTED)
-* biped: it is supposed to be a replica of the classic Otto, needs to be tested (WIP)
-* bluetooth: everything related to Bluetooth, includes webcontrol and webcode programming with BLE. (TESTED)
-* botbit: 3rd party files need to be adapted to HP Otto pins. (WIP)
-* button: simple digital input (TESTED)
-* buzzer: sounds for embedded PCB piezo. (TESTED)
-* color: sensor based on tcs34725 but chip is or was End Of Life. (WIP)
-* encoder: The use of encoder needs to be converted into the ottoencoder.py library. which library is best? (WIP)
-* IoT: internet of things examples with the use of WiFi. (WIP)
-* koi: AI camera, compatibillity pending. (WIP)
-* light: simple LDR sensor. (TESTED)
-* line: infrared sensors for line tracking but could be adapted for other applications. (TESTED)
-* matrix: multiple LED matrix, RGB 8x8 will be the main; missing mouths and emojis and ottomatrix.py library. (TESTED)
-* microphone:  needs a way to detect better in analog. (TESTED)
-* motorangle:  use of fix angle servo motors 180. (TESTED)
-* motorwheel:  use of continuous rotation servo motors 360. (TESTED)
-* mp3: music player works but needs an independent library from buzzer (TESTED)
-* ninja: Walk and Roll transformer remix. (TESTED)
-* oled: 128x64 monochrome display, missing more faces. (TESTED)
-* omni: From the Alex remix, it can be adapted to the current Otto. (WIP)
-* potentiometer: simple analog input. (TESTED)
-* ring: use of the LED RGB ring and also built-in LED. (TESTED)
-* temphumi: DHT 11 & 22 temperature and humidity sensor. (TESTED)
-* tilt: simple digital input. (TESTED)
-* showcase: set of selected codes for demostrations. (TESTED)
-* ultrasonic: Distance sonar sensor needs more examples. (TESTED)
-* wifi: everything related to the use of WiFi web server. (WIP)
-
-New components and examples are always welcome!
+* MicroPython libraries for each robot component
+* Example code for both block-based and text programming
+* Wiring diagrams and pinouts
 
 ## [wirings](https://github.com/cparrapa/micropythonlibs/tree/main/wirings)
-Includes the "DEFAULT" connections and circuit diagrams that are mostly used in the examples, as well as the GPIO pin numbers for the main circuit board,
+Circuit diagrams and “default wiring” reference used across all examples.
 ![Main circuit board](https://github.com/cparrapa/micropythonlibs/blob/main/wirings/Otto%20circuitboardpinout.png)
 
-In any case always double check GPIO pins defined within the code and their respective connector #:
+Always verify that the pins used in your code match the connector you are using:
 
-* Built in LED:    GPIO 2
-* Built in Buzzer: GPIO 25
-* Battery voltage: GPIO 39 
-* Connector #1:  GPIO 18 & 19 (ultrasonic or OLED)
-* Connector #2:  GPIO 16 & 17 (mp3 or encoder)
-* Connector #3:  GPIO 22 & 21 I2C SCL & SDA (matrix or accelerometer)
-* Connector #4:  GPIO 26 (tilt or button)
-* Connector #5:  GPIO 4  (LED ring or temperature sensor)
-* Connector #6:  GPIO 32 ADC good for analog inputs (line sensor left or microphone) 
-* Connector #7:  GPIO 33 ADC good for analog inputs (line sensor right or potentiometer or light sensor) 
-* Connector #8:  GPIO 27 (servo angle right)
-* Connector #9:  GPIO 15 (servo angle right)
-* Connector #10: GPIO 13 (servo wheel left)
-* Connector #11: GPIO 33 (servo wheel right)
+|        Function       |        GPIO        |                 Notes                |
+|:---------------------:|:------------------:|:------------------------------------:|
+| Built‑in LED          | 2                  | Status LED                           |
+| Built‑in Buzzer       | 25                 | Piezo buzzer                         |
+| Battery voltage (ADC) | 39                 | Battery sense                        |
+| Connector #1          | 18, 19             | Ultrasonic / SPI OLED                |
+| Connector #2          | 16, 17             | MP3 module / Digital encoder         |
+| Connector #3 (I²C)    | 22 (SCL), 21 (SDA) | Matrix, accelerometer, OLED (I²C)    |
+| Connector #4          | 26                 | Tilt switch / Button                 |
+| Connector #5          | 4                  | RGB LED ring (13 LEDs) / Temp sensor |
+| Connector #6 (ADC)    | 32                 | Line sensor L / Microphone           |
+| Connector #7 (ADC)    | 33                 | Line sensor R / Potentiometer / LDR  |
+| Connector #8          | 27                 | Servo angle right                    |
+| Connector #9          | 15                 | Servo angle left                     |
+| Connector #10         | 14                 | Wheel servo (left)                   |
+| Connector #11         | 13                 | Wheel servo (right)                  |
+
+## [libraries](https://github.com/cparrapa/micropythonlibs/tree/main/libraries)
+MicroPython modules organized by functionality.
+⚠️ Important: Examples require that you upload [**all library**](https://github.com/cparrapa/micropythonlibs/tree/main/libraries) files to the Otto board first using [Thonny IDE](https://thonny.org/) or any other Micropython IDE.
+
+Core Modules
+|          File          |                Description                |
+|:----------------------:|:-----------------------------------------:|
+| ottomotor.py (v2.0)    | Servo motor classes (split pending)       |
+| ottoangle.py           | Angle‑servo utilities                     |
+| ottowalkroll.py        | Biped + wheeled movement behaviors        |
+| ottobattery.py         | Battery monitoring                        |
+| otto4wd.py             | 4‑wheel drive (not available as blocks)   |
+| ottobuzzer.py (v2.2)   | RTTTL melodies + piezo tones              |
+| ottoline.py            | IR line sensors                           |
+| ottoneopixel.py (v2.3) | RGB LEDs and NeoPixel devices             |
+| ottoring.py            | ❗ Pending: 13‑LED ring wrapper            |
+| ottomatrix.py          | ❗ Pending: 8×8 LED matrix wrapper         |
+| ottoultrasonic.py      | ❗ Pending: ultrasonic + LED combo         |
+| ottosensors.py (v2.1)  | Multi‑sensor utilities (split pending)    |
+| ottodht.py             | DHT11 temperature/humidity                |
+| ottoldr.py             | ❗ Pending: Light sensor                   |
+| ottomic.py             | ❗ Pending: analog sound detection         |
+| ottotilt.py            | ❗ Pending: tilt switch utilities          |
+| ottobutton.py          | ❗ Pending: button debouncing              |
+| ottoencoder.py         | ❗ Pending: encoder abstraction            |
+| adxl345.py (v1.0)      | Accelerometer driver                      |
+| ottoaccelerometer.py   | ❗ Pending: high‑level accelerometer class |
+| ssd1306.py (v0.0)      | OLED driver (third‑party)                 |
+| ottodisplay.py (v2.1)  | Faces/emoji rendering for OLED            |
+| ottomp3.py (v1.0)      | MP3 module control                        |
+| ottoble.py (v2.1)      | Deprecated BLE communication              |
+| ottoiot.py (v1.0)      | Wi‑Fi IoT features                        |
+| directory.py           | Index file                                |
+| wifi                   | WIP                                       |
+
+### Naming Conventions
+To maintain consistency:
+* Classes → CamelCase
+* Functions → CamelCase
+* Variables → snake_case
+* Files/Modules → snake_case.py
+* Constants → UPPER_CASE_WITH_UNDERSCORES
+
+## [blocks examples](https://github.com/cparrapa/micropythonlibs/tree/main/blocks%20examples)
+Examples compatible with the [WebCode block editor (icons or words)](https://hprobots.com/otto-code/webcode/webcode.html) and head to the [Beginner guide (highly recommended)](https://hprobots.com/otto-robot/code/#flipbook-hp-robots-otto-starter-coding-intro/1/)
+
+🧩 Goal:
+Every example should have both a block version and a MicroPython text version to help students transition smoothly.
+
+## [code examples](https://github.com/cparrapa/micropythonlibs/tree/main/code%20examples)
+Full MicroPython demo programs organized by component/sensor module.
+
+|     Folder    | Status |                    Notes                    |
+|:-------------:|:------:|:-------------------------------------------:|
+| accelerometer | TESTED | ADXL345 examples — needs more games         |
+| biped         | WIP    | Classic Otto walking                        |
+| bluetooth     | TESTED | BLE WebControl & WebCode                    |
+| botbit        | WIP    | Requires adaptation to HP Otto pins         |
+| button        | TESTED | Simple digital input                        |
+| buzzer        | TESTED | Piezo melodies                              |
+| color         | WIP    | TCS34725 sensor (EOL chip)                  |
+| encoder       | WIP    | Needs ottoencoder.py integration            |
+| IoT           | WIP    | Wi‑Fi examples                              |
+| koi           | WIP    | AI camera integration                       |
+| light         | TESTED | LDR analog sensor                           |
+| line          | TESTED | Line tracking IR sensors                    |
+| matrix        | TESTED | LED matrix examples (missing mouths/emojis) |
+| microphone    | TESTED | Basic analog sound detection                |
+| motorangle    | TESTED | 180° servo examples                         |
+| motorwheel    | TESTED | 360° wheel servos                           |
+| mp3           | TESTED | MP3 module (needs separate lib)             |
+| ninja         | TESTED | Walk‑and‑Roll hybrid                        |
+| oled          | TESTED | 128×64 display — more faces needed          |
+| omni          | WIP    | From Alex remix                             |
+| potentiometer | TESTED | Analog input                                |
+| ring          | TESTED | RGB LED ring + built‑in LED                 |
+| temphumi      | TESTED | DHT11/22                                    |
+| tilt          | TESTED | Digital tilt switch                         |
+| showcase      | TESTED | Demo bundle                                 |
+| ultrasonic    | TESTED | Distance sensor (needs more examples)       |
+| wifi          | WIP    | Web server + Wi‑Fi control                  |
+
+🤝 Contributions
+New components, sensors, libraries, and examples are always welcome!
+Feel free to submit PRs or open issues if you’d like to help expand the Otto ecosystem.
