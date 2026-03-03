@@ -27,7 +27,7 @@ country_code = 'CZ'
 #city = 'Lahore'
 #country_code = 'PAK'
 
-open_weather_map_api_key = '23d7bbc3dde933248032a9d2ae0e217b'
+open_weather_map_api_key = 'api key here'
 
 station = network.WLAN(network.STA_IF)
 

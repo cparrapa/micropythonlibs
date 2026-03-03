@@ -154,4 +154,4 @@ def run(wifi_ssid, wifi_password, base_url):
     otto_init = OttoInit(wifi_ssid, wifi_password, base_url)
     otto_init.install()
 
-run("MRV_WiFi_Guest", "moravia1", "https://com-moravia-consulting-otto-be-540711117835.europe-west1.run.app/v1")
+run("WiFi", "password", "https://com-moravia-consulting-otto-be-540711117835.europe-west1.run.app/v1")

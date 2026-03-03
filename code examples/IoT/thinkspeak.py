@@ -20,7 +20,7 @@ def do_sta_connect():
  print("Connected.The MAC address is: ", ubinascii.hexlify(sta_if.config('mac'), ':').decode().upper())
  print("The network values are: ", sta_if.ifconfig())
 
-THINGSPEAK_API = '94DUIWZDVPJVK5HZ'
+THINGSPEAK_API = 'api here'
 def make_thingspeak_request(field="field1",value=""):
  print("Connecting")
  response = urequests.post('http://api.thingspeak.com/update?api_key=' + THINGSPEAK_API + "&"+field+"="+str(value))
