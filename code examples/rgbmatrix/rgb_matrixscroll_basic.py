@@ -48,7 +48,7 @@ FONT = {
 }
 
 ROWS = 8
-COLS = 32
+COLS = 16
 NUM_PIXELS = ROWS * COLS
 matrix = NeoPixel(Pin(22), NUM_PIXELS)
 
@@ -108,9 +108,6 @@ def scroll_text(message, speed=100, color=(0, 0, 50), rotate=0, flip_h=False, fl
         utime.sleep_ms
         
         # Example usage
-
-# Normal scrolling
-scroll_text("HELLO!", speed=100)
 
 # Upside down
 scroll_text("Rot180!", rotate=180)

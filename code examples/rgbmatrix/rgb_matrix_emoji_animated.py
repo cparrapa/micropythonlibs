@@ -18,7 +18,7 @@ from machine import Pin, ADC, PWM #importing Pin, ADC and PWM classes
 from ottoneopixel import OttoRGBMatrix
 
 class OttoRGBMatrixIcon:
-    def __init__(self, connector = 3):
+    def __init__(self, connector = 0):
         connectorPin = [None,18,16,22] #GPIO pins for the 4pin connectors (1 to 3)
         brightm = 0.5 # brightness variable for lights
         nm = 64       # total number of pixels in the self.matrix
