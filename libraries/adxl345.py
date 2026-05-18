@@ -1,15 +1,5 @@
-'''
-adxl345.py v1.0 28/06/24
-a library for the Analog Devices ADXL345 Digital Accelerometer
-Datasheet:
-https://www.analog.com/media/en/technical-documentation/data-sheets/adxl345.pdf
-based on information from
-https://howtomechatronics.com/tutorials/arduino/how-to-track-orientation-with-arduino-and-adxl345-accelerometer/
-v0, v1.0  Alex Etchells
-'''
-
+# adxl345.py v0.1.1 18.5.26 new app
 from machine import Pin, SoftI2C
-import math
 from time import sleep
 
 # ADXL-345 Registers 
@@ -77,8 +67,8 @@ class ADXL345:
             errZ += z
         #divide by 200         
         errX = errX/200
-        errY = errX/200
-        errZ = errX/200        
+        errY = errY/200
+        errZ = errZ/200
         # x should be 0, y should be 0  z should be 1g (255)
         # calculate offset and divide by 4
         errX = int((0 - errX)/4)

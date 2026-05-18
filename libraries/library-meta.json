@@ -1,0 +1,95 @@
+{
+  "version": "0.1.2",
+  "files": [
+    {
+      "file": "adxl345.py",
+      "version": "0.1.1",
+      "description": "ADXL345 accelerometer driver for motion and orientation detection",
+      "required": true
+    },
+    {
+      "file": "main.py",
+      "version": "0.1.3",
+      "description": "The entrypoint of Otto, taking care of bluetooth connection and command executing",
+      "required": true
+    },
+    {
+      "file": "ottobuzzer.py",
+      "version": "0.1.1",
+      "description": "Buzzer control module for sound and tone generation",
+      "required": true
+    },
+    {
+      "file": "ottomotor.py",
+      "version": "0.1.1",
+      "description": "Motor control interface for Otto's movement and servo operations",
+      "required": true
+    },
+    {
+      "file": "ottoneopixel.py",
+      "version": "0.1.1",
+      "description": "NeoPixel LED control for visual feedback and animations",
+      "required": true
+    },
+    {
+      "file": "ottooled.py",
+      "version": "0.1.1",
+      "description": "OLED display driver for visual output and status information",
+      "required": true
+    },
+    {
+      "file": "ottosensors.py",
+      "version": "0.1.1",
+      "description": "Sensor integration module for reading and processing sensor data",
+      "required": true
+    },
+    {
+      "file": "ottowalkroll.py",
+      "version": "0.1.1",
+      "description": "Walking and rolling movement patterns for Otto's locomotion",
+      "required": true
+    },
+    {
+      "file": "rc.py",
+      "version": "0.1.5",
+      "description": "Remote control module mapping user events to actions on Otto",
+      "required": true
+    },
+    {
+      "file": "util.py",
+      "version": "0.1.1",
+      "description": "General utility functions shared across Otto modules",
+      "required": true
+    },
+    {
+      "file": "config.py",
+      "version": "0.1.1",
+      "description": "Configuration management for Otto system settings",
+      "required": true
+    },
+    {
+      "file": "boot.py",
+      "version": "0.1.1",
+      "description": "Boot sequence initialization and startup configuration",
+      "required": true
+    },
+    {
+      "file": "ssd1306.py",
+      "version": "0.1.1",
+      "description": "SSD1306 OLED display driver library",
+      "required": true
+    },
+    {
+      "file": "wifi_manager.py",
+      "version": "0.1.1",
+      "description": "WiFi connection and network management utilities",
+      "required": true
+    },
+    {
+      "file": "update_library.py",
+      "version": "0.1.1",
+      "description": "Firmware update and library management functionality",
+      "required": true
+    }
+  ]
+}

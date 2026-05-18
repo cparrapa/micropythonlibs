@@ -1,4 +1,4 @@
-# ottowalkroll v2.1 27.02.2025
+# ottowalkroll.py v0.1.1 18.5.2026 new app
 from time import sleep               #importing sleep class
 from machine import Pin, PWM
 from ottomotor import Servo

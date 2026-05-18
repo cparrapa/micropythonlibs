@@ -1,7 +1,5 @@
-#ssd1306 default 11.03.2024
-import time, math, framebuf
-from time import sleep
-from machine import Pin, PWM, I2C
+#ssd1306.py v0.1.1 18.5.2026 new app
+import framebuf
 from micropython import const
 
 ########## OLED Library ##########

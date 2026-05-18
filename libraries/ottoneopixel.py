@@ -1,30 +1,46 @@
-# ottoneopixel v2.3 01.09.2024
-
-# v2.1 07.08.2024 Alex Etchells: addition of colorHSV, set_pixel_line_gradient,  rotate_left, rotate_right
-# v2.2 30.08.2024 Alex Etchells: Additon of 4x4 Matrix Functions
-# setMatrixPixel, setMatrixRow, setMatrixCol, drawLine, drawTriangle, drawRectangle, drawRectangleFill, drawCircle
-# v2.3 01.09.2024 Alex Etchells: Additon of 4x4 Matrix Functions
-# Created OttoRGBMatrix subclass
-
-import neopixel, machine, utime, time
+# ottoneopixel.py v0.1.1 18.5.2026 new app
+import neopixel, machine, time
 from machine import Pin
 
+def clamp_brightness(brightness: float) -> float:
+    if brightness > 1:
+        return 1
+    elif brightness < 0:
+        return 0
+    return brightness
+
+def do_magic_with_rgb(r: int, g: int, b: int, brightness: float) -> (int, int, int):
+    if r == g and g == b:
+        return(int(r * brightness), int(g * brightness), int(b * brightness))
+
+    floor = min(r, g, b)
+    r -= floor
+    g -= floor
+    b -= floor
+
+    max_val = max(r, g, b)
+    r = int(r * brightness)
+    g = int(g * brightness)
+    b = int(b * brightness)
+
+    return (r, g, b)
+
 class OttoNeoPixel:
-    
-    _brightness = 0.8
-    
+
+    _brightness = 1
+
     def __init__(self, pin, ledcount):
         self._ledcount = ledcount
         self.pixels = neopixel.NeoPixel(Pin(pin), ledcount)
         self.pixValues = [(0, 0, 0),(0, 0, 0),(0, 0, 0),(0, 0, 0),(0, 0, 0),(0, 0, 0),(0, 0, 0),(0, 0, 0),(0, 0, 0),(0, 0, 0),(0, 0, 0),(0, 0, 0),(0, 0, 0)]
-        
+
     def setBrightness(self, brightness):
-        self._brightness = brightness
+        self._brightness = clamp_brightness(brightness)
 
     def fillRGBRing(self, colour1, colour2, colour3, colour4, colour5, colour6, colour7, colour8, colour9, colour10, colour11, colour12, colour13):
         self.pixels[0] = self.HexColorToRGB(colour1)
         self.pixels[1] = self.HexColorToRGB(colour2)
-        self.pixels[2] = self.HexColorToRGB(colour3) 
+        self.pixels[2] = self.HexColorToRGB(colour3)
         self.pixels[3] = self.HexColorToRGB(colour4)
         self.pixels[4] = self.HexColorToRGB(colour5)
         self.pixels[5] = self.HexColorToRGB(colour6)
@@ -36,7 +52,7 @@ class OttoNeoPixel:
         self.pixels[11] = self.HexColorToRGB(colour12)
         self.pixels[12] = self.HexColorToRGB(colour13)
         self.pixels.write()
-    
+
     def fillAllRGBRing(self, colourValue):
         for count in range(self._ledcount):
             self.pixels[count] = self.HexColorToRGB(colourValue)
@@ -64,12 +80,12 @@ class OttoNeoPixel:
         hexRed = colourValue[0:2]
         hexGreen = colourValue[2:4]
         hexBlue = colourValue[4:6]
-        
+
         red = int(hexRed, 16)
         green = int(hexGreen, 16)
         blue = int(hexBlue, 16)
 
-        return (int(red * self._brightness), int(green * self._brightness), int(blue * self._brightness))
+        return do_magic_with_rgb(red, green, blue, self._brightness)
 
     def bounce(self, n, r, g, b, wait):
         for i in range(2 * n):
@@ -77,17 +93,17 @@ class OttoNeoPixel:
                 self.pixels[j] = (r, g, b)
             if (i / n) % 2 == 0:
                 self.pixels[i % n] = (0, 0, 0)
-            else: 
+            else:
                 self.pixels[n - 1 - (i % n)] = (0, 0, 0)
             self.pixels.write()
             time.sleep_ms(wait)
 
-    def cycle(self, n, r, g, b, wait): 
-       for i in range(n): 
-           for j in range(n): 
-               self.pixels[j] = (0, 0, 0) 
-           self.pixels[i % n] = (r, g, b) 
-           self.pixels.write() 
+    def cycle(self, n, r, g, b, wait):
+       for i in range(n):
+           for j in range(n):
+               self.pixels[j] = (0, 0, 0)
+           self.pixels[i % n] = (r, g, b)
+           self.pixels.write()
            time.sleep_ms(wait)
 
     def wheel(self, pos):
@@ -100,7 +116,7 @@ class OttoNeoPixel:
            return (0, 255 - pos * 3, pos * 3)
        pos -= 170
        return (pos * 3, 0, 255 - pos * 3)
-    
+
     def rainbow_cycle(self, n, wait):
        for j in range(255):
            for i in range(n):
@@ -177,7 +193,7 @@ class OttoNeoPixel:
         :param pixel1: Index of starting pixel (inclusive)
         :param pixel2: Index of ending pixel (inclusive)
         :param left_rgb: Tuple of form (r, g, b) representing starting color
-        :param right_rgb: Tuple of form (r, g, b)  ending color        
+        :param right_rgb: Tuple of form (r, g, b)  ending color
         :return: None
         """
         if pixel2 - pixel1 == 0:
@@ -242,19 +258,19 @@ class OttoNeoPixel:
                 newIndex -= n
             self.pixels[newIndex] = self.pixValues[i]
         self.pixels.write()
-        
+
     """  8x8 RGB matrix functions   """
 class OttoRGBMatrix(OttoNeoPixel):
-    
+
     def __init__(self, pin, ledcount):
-        super().__init__(pin, ledcount)       
-        
+        super().__init__(pin, ledcount)
+
     def setMatrixPixel(self,x,y,r,g,b):
         if x>7 or x<0 or y>7 or y<0:
-            return        
+            return
         r = int(r  * self._brightness)
         g = int(g  * self._brightness)
-        b = int(b  * self._brightness)        
+        b = int(b  * self._brightness)
         pixelPos = x + (y*8)
         self.pixels[pixelPos] = (r,g,b)
         self.pixels.write()
@@ -263,9 +279,9 @@ class OttoRGBMatrix(OttoNeoPixel):
         for i in range(8):
             r = int(rgb[i][0]  * self._brightness)
             g = int(rgb[i][1]  * self._brightness)
-            b = int(rgb[i][2]  * self._brightness)         
+            b = int(rgb[i][2]  * self._brightness)
             pixelPos = i + (row*8)
-            self.pixels[pixelPos] = (r,g,b) 
+            self.pixels[pixelPos] = (r,g,b)
         if drawNow:
             self.pixels.write()
 
@@ -273,9 +289,9 @@ class OttoRGBMatrix(OttoNeoPixel):
         for i in range(8):
             r = int(rgb[i][0]  * self._brightness)
             g = int(rgb[i][1]  * self._brightness)
-            b = int(rgb[i][2]  * self._brightness)         
+            b = int(rgb[i][2]  * self._brightness)
             pixelPos = col + (i*8)
-            self.pixels[pixelPos] = (r,g,b) 
+            self.pixels[pixelPos] = (r,g,b)
         if drawNow:
             self.pixels.write()
 
@@ -285,17 +301,17 @@ class OttoRGBMatrix(OttoNeoPixel):
         draws a line from x0,y0 to x1,y1 of colour r,g,b
         """
         steep = abs(y1-y0) > abs(x1-x0)
-        
+
         if steep:
             # Swap x/y
             tmp = x0
             x0 = y0
             y0 = tmp
-            
+
             tmp = y1
             y1 = x1
             x1 = tmp
-        
+
         if x0 > x1:
             # Swap start/end
             tmp = x0
@@ -304,17 +320,17 @@ class OttoRGBMatrix(OttoNeoPixel):
             tmp = y0
             y0 = y1
             y1 = tmp
-        
+
         dx = x1 - x0;
         dy = int(abs(y1-y0))
-        
+
         err = dx >> 1 # Divide by 2
-        
+
         if(y0 < y1):
             ystep = 1
         else:
             ystep = -1
-            
+
         while x0 <= x1:
             if steep:
                 self.setMatrixPixel(y0, x0, r,g,b)
@@ -341,7 +357,7 @@ class OttoRGBMatrix(OttoNeoPixel):
         self.drawLine(x0, y0, x1, y1, r,g,b)
         self.drawLine(x1, y1, x2, y2, r,g,b)
         self.drawLine(x2, y2, x0, y0, r,g,b)
-     
+
     def drawRectangle(self, x0, y0, x1, y1, r,g,b):
         """
         Draws a rectangle with upper-left corner (x0,y0) and lower right corner (x1, y1). All edge lines are drawn with the specified r,g,b.
@@ -357,13 +373,13 @@ class OttoRGBMatrix(OttoNeoPixel):
         self.drawLine(x1, y0, x1, y1, r,g,b)
         self.drawLine(x1, y1, x0, y1, r,g,b)
         self.drawLine(x0, y1, x0, y0, r,g,b)
-        
+
 
 
     def drawRectangleFill(self, x0: int, y0: int, x1: int, y1: int, r,g,b):
         """
         Draws a rectangle with upper-left corner (x0,y0) and lower right corner (x1, y1). The rectangle is then filled to form a solid block of the specified r,g,b.
-        
+
         :param x0 The x coordinate of the upper left corner
         :param y0 The y coordinate of the upper left corner
         :param x1 The x coordinate of the lower right corner
@@ -378,7 +394,7 @@ class OttoRGBMatrix(OttoNeoPixel):
     def drawCircle(self, x0, y0, rad, r,g,b):
         """
         Draws a circle with center (self, x0,y0) and radius rad. The circle outline is drawn in the specified r,g,b. Pixels inside the circle are not modified.
-         
+
         :param x0 The x coordinate of the circle center
         :param y0 The y coordinate of the circle center
         :params r,g,b  rgb values
@@ -392,9 +408,9 @@ class OttoRGBMatrix(OttoNeoPixel):
         self.setMatrixPixel(x0, y0 - rad, r,g,b)
         self.setMatrixPixel(x0 + rad, y0, r,g,b)
         self.setMatrixPixel(x0 - rad, y0, r,g,b)
-        
+
         while x < y:
-            if f >= 0: 
+            if f >= 0:
                 y -= 1
                 ddf_y += 2
                 f += ddf_y
@@ -411,7 +427,7 @@ class OttoRGBMatrix(OttoNeoPixel):
             self.setMatrixPixel(x0 - y, y0 - x, r,g,b)
 
 class OttoUltrasonic:
-    
+
     _brightness = 1
     _io = 0
     distance = 0
@@ -419,10 +435,10 @@ class OttoUltrasonic:
     def __init__(self, rgb, io):
         self.pixels = neopixel.NeoPixel(Pin(rgb), 6)
         self._io = io
-    
+
     def setBrightness(self, brightness):
-        self._brightness = brightness
-        
+        self._brightness = min(brightness)
+
     def ultrasonicRGB1(self, colourLeft, colourRight):
         self.pixels[0] = self.HexColorToRGB(colourLeft)
         self.pixels[1] = self.HexColorToRGB(colourLeft)
@@ -431,16 +447,18 @@ class OttoUltrasonic:
         self.pixels[4] = self.HexColorToRGB(colourRight)
         self.pixels[5] = self.HexColorToRGB(colourRight)
         self.pixels.write()
-    
+
     def ultrasonicRGB2(self, red, green, blue):
-        self.pixels[0] = (int(red * self._brightness), int(green * self._brightness), int(blue * self._brightness))
-        self.pixels[1] = (int(red * self._brightness), int(green * self._brightness), int(blue * self._brightness))
-        self.pixels[2] = (int(red * self._brightness), int(green * self._brightness), int(blue * self._brightness))
-        self.pixels[3] = (int(red * self._brightness), int(green * self._brightness), int(blue * self._brightness))
-        self.pixels[4] = (int(red * self._brightness), int(green * self._brightness), int(blue * self._brightness))
-        self.pixels[5] = (int(red * self._brightness), int(green * self._brightness), int(blue * self._brightness))
+        r, g, b = do_magic_with_rgb(red, green, blue, self._brightness)
+
+        self.pixels[0] = (int(r * self._brightness), int(g * self._brightness), int(b * self._brightness))
+        self.pixels[1] = (int(r * self._brightness), int(g * self._brightness), int(b * self._brightness))
+        self.pixels[2] = (int(r * self._brightness), int(g * self._brightness), int(b * self._brightness))
+        self.pixels[3] = (int(r * self._brightness), int(g * self._brightness), int(b * self._brightness))
+        self.pixels[4] = (int(r * self._brightness), int(g * self._brightness), int(b * self._brightness))
+        self.pixels[5] = (int(r * self._brightness), int(g * self._brightness), int(b * self._brightness))
         self.pixels.write()
-    
+
     def setultrasonicRGBEye(self, red, green, blue, eyenumber):
         if(eyenumber == 0):
             self.pixels[0] = (int(red * self._brightness), int(green * self._brightness), int(blue * self._brightness))
@@ -451,15 +469,15 @@ class OttoUltrasonic:
             self.pixels[4] = (int(red * self._brightness), int(green * self._brightness), int(blue * self._brightness))
             self.pixels[5] = (int(red * self._brightness), int(green * self._brightness), int(blue * self._brightness))
         self.pixels.write()
-                
+
     def setultrasonicRGBLed1(self, colour, lednumber):
         self.pixels[lednumber] = self.HexColorToRGB(colour)
         self.pixels.write()
-        
+
     def setultrasonicRGBLed2(self, red, green, blue, lednumber):
         self.pixels[lednumber] = (int(red * self._brightness), int(green * self._brightness), int(blue * self._brightness))
         self.pixels.write()
-        
+
     def clearultrasonicRGB(self):
         for count in range(6):
             self.pixels[count] = (0, 0, 0)
@@ -469,23 +487,23 @@ class OttoUltrasonic:
         hexRed = colourValue[0:2]
         hexGreen = colourValue[2:4]
         hexBlue = colourValue[4:6]
-        
+
         red = int(hexRed, 16)
         green = int(hexGreen, 16)
         blue = int(hexBlue, 16)
 
-        return (int(red * self._brightness), int(green * self._brightness), int(blue * self._brightness))
-            
+        return do_magic_with_rgb(red, green, blue, self._brightness)
+
     def readultrasonicRGBBasic(self, unit):
         io_pin = Pin(self._io, Pin.OUT)
         io_pin.off()
-        utime.sleep_us(2)
+        time.sleep_us(2)
         io_pin.on()
-        utime.sleep_us(20)
+        time.sleep_us(20)
         io_pin.off()
         io_pin = Pin(self._io, Pin.IN)
         pulse_duration = machine.time_pulse_us(io_pin, 1)
-        
+
         if ((pulse_duration < 60000) and (pulse_duration > 1)):
             if (unit == 0):
                 self.distance = pulse_duration / 147.32
@@ -497,13 +515,13 @@ class OttoUltrasonic:
     def readultrasonicRGB(self, unit):
         io_pin = Pin(self._io, Pin.OUT)
         io_pin.off()
-        utime.sleep_us(2)
+        time.sleep_us(2)
         io_pin.on()
-        utime.sleep_us(20)
+        time.sleep_us(20)
         io_pin.off()
         io_pin = Pin(self._io, Pin.IN)
-        pulse_duration = machine.time_pulse_us(io_pin, 1)
-        
+        pulse_duration = machine.time_pulse_us(io_pin, 1, 60001)
+
         if ((pulse_duration < 60000) and (pulse_duration > 1)):
             if (unit == 0):
                 self.distance = pulse_duration / 147.32

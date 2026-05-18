@@ -67,7 +67,6 @@ Core Modules
 | ottomp3.py (v1.0)      | MP3 module control                        |
 | ottoble.py (v2.1)      | Deprecated BLE communication              |
 | ottoiot.py (v1.0)      | Wi‑Fi IoT features                        |
-| directory.py           | Index file                                |
 | wifi                   | WIP                                       |
 
 ### Naming Conventions
@@ -77,12 +76,6 @@ To maintain consistency:
 * Variables → snake_case
 * Files/Modules → snake_case.py
 * Constants → UPPER_CASE_WITH_UNDERSCORES
-
-## [blocks examples](https://github.com/cparrapa/micropythonlibs/tree/main/blocks%20examples)
-Examples compatible with the [WebCode block editor (icons or words)](https://hprobots.com/otto-code/webcode/webcode.html) and head to the [Beginner guide (highly recommended)](https://hprobots.com/otto-robot/code/#flipbook-hp-robots-otto-starter-coding-intro/1/)
-
-🧩 Goal:
-Every example should have both a block version and a MicroPython text version to help students transition smoothly.
 
 ## [code examples](https://github.com/cparrapa/micropythonlibs/tree/main/code%20examples)
 Full MicroPython demo programs organized by component/sensor module.
