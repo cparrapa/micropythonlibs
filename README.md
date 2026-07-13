@@ -37,7 +37,8 @@ Always verify that the pins used in your code match the connector you are using:
 
 ## [libraries](https://github.com/cparrapa/micropythonlibs/tree/main/libraries)
 MicroPython modules organized by functionality.
-⚠️ Important: Examples require that you upload [**all library**](https://github.com/cparrapa/micropythonlibs/tree/main/libraries) files to the Otto board first using [Thonny IDE](https://thonny.org/) or any other Micropython IDE.
+
+⚠️ Important: Examples require that you upload [**all library**](https://github.com/cparrapa/micropythonlibs/tree/main/libraries) files to the Otto board first using [Thonny IDE](https://thonny.org/) or any other Micropython IDE, or using [`mip`](https://docs.micropython.org/en/latest/reference/packages.html) (`mpremote mip install github:cparrapa/micropythonlibs/libraries`).
 
 Core Modules
 |          File          |                Description                |
