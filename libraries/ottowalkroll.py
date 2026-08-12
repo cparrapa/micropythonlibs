@@ -3,6 +3,12 @@ from time import sleep               #importing sleep class
 from machine import Pin, PWM
 from ottomotor import Servo
 
+def _validate_motion(direction, speed):
+    if direction not in (-1, 1):
+        raise ValueError("Invalid direction")
+    if speed not in (1, 2, 3):
+        raise ValueError("Invalid speed")
+
 class Ninja:
     def __init__(self, LL, RL, LF, RF): #(Left leg), (Right leg), (Left foot), (Right foot)
         self.leftlegServo=Servo()
@@ -20,6 +26,7 @@ class Ninja:
         sleep(0.2)
         
     def roll(self, direction, speed):
+        _validate_motion(direction, speed)
         if(direction == -1): #backward
             if(speed == 1): #slow
                 leftSpeed = 60
@@ -46,6 +53,8 @@ class Ninja:
         self.rightfootServo.write(rightSpeed)
         
     def rollrotate(self, turn):
+        if turn not in (-1, 1):
+            raise ValueError("Invalid turn")
         if(turn == -1): #left
             leftSpeed = 0
             rightSpeed = 0
@@ -71,6 +80,7 @@ class Ninja:
         sleep(0.2)
         
     def walk(self, direction, speed):
+        _validate_motion(direction, speed)
         if(direction == -1): #backward
             if(speed == 1):
                 leftSpeed = 70
@@ -138,35 +148,26 @@ class Arms:
         self.rightarm.attach(RA)
         
     def move(self, turn, direction):
-        if(turn == "left"):
-            if(direction == "up"):
-                leftAngle = 0
-            elif(direction == "center"):
-                leftAngle = 60
-            elif(direction == "down"):
-                leftAngle = 120
+        if direction == "up":
+            leftAngle = 0
+            rightAngle = 120
+        elif direction == "center":
+            leftAngle = 60
+            rightAngle = 60
+        elif direction == "down":
+            leftAngle = 120
+            rightAngle = 0
+        else:
+            raise ValueError("Invalid arm direction")
 
-        elif(turn == "right"):
-            if(direction == "up"):
-                rightAngle = 120
-            elif(direction == "center"):
-                rightAngle = 60
-            elif(direction == "down"):
-                rightAngle = 0
-            
-        elif(turn == "both"):
-            if(direction == "up"):
-                leftAngle = 0
-                rightAngle = 120
-            elif(direction == "center"):
-                leftAngle = 60
-                rightAngle = 60
-            elif(direction == "down"):
-                leftAngle = 120
-                rightAngle = 0
-            
+        if turn not in ("left", "right", "both"):
+            raise ValueError("Invalid arm selection")
+
         sleep(0.3)
-        self.leftarm.write(leftAngle)
-        sleep(0.1)
-        self.rightarm.write(rightAngle)
+        if turn in ("left", "both"):
+            self.leftarm.write(leftAngle)
+        if turn == "both":
+            sleep(0.1)
+        if turn in ("right", "both"):
+            self.rightarm.write(rightAngle)
         sleep(0.3)
