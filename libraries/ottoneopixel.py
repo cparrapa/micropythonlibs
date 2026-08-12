@@ -10,20 +10,12 @@ def clamp_brightness(brightness: float) -> float:
     return brightness
 
 def do_magic_with_rgb(r: int, g: int, b: int, brightness: float) -> (int, int, int):
-    if r == g and g == b:
-        return(int(r * brightness), int(g * brightness), int(b * brightness))
-
-    floor = min(r, g, b)
-    r -= floor
-    g -= floor
-    b -= floor
-
-    max_val = max(r, g, b)
-    r = int(r * brightness)
-    g = int(g * brightness)
-    b = int(b * brightness)
-
-    return (r, g, b)
+    brightness = clamp_brightness(brightness)
+    return (
+        int(r * brightness),
+        int(g * brightness),
+        int(b * brightness),
+    )
 
 class OttoNeoPixel:
 
@@ -32,7 +24,7 @@ class OttoNeoPixel:
     def __init__(self, pin, ledcount):
         self._ledcount = ledcount
         self.pixels = neopixel.NeoPixel(Pin(pin), ledcount)
-        self.pixValues = [(0, 0, 0),(0, 0, 0),(0, 0, 0),(0, 0, 0),(0, 0, 0),(0, 0, 0),(0, 0, 0),(0, 0, 0),(0, 0, 0),(0, 0, 0),(0, 0, 0),(0, 0, 0),(0, 0, 0)]
+        self.pixValues = [(0, 0, 0)] * ledcount
 
     def setBrightness(self, brightness):
         self._brightness = clamp_brightness(brightness)
@@ -197,6 +189,7 @@ class OttoNeoPixel:
         :return: None
         """
         if pixel2 - pixel1 == 0:
+            self.setRGBLed(*left_rgb, pixel1)
             return
         right_pixel = max(pixel1, pixel2)
         left_pixel = min(pixel1, pixel2)
@@ -437,7 +430,7 @@ class OttoUltrasonic:
         self._io = io
 
     def setBrightness(self, brightness):
-        self._brightness = min(brightness)
+        self._brightness = clamp_brightness(brightness)
 
     def ultrasonicRGB1(self, colourLeft, colourRight):
         self.pixels[0] = self.HexColorToRGB(colourLeft)
@@ -449,14 +442,9 @@ class OttoUltrasonic:
         self.pixels.write()
 
     def ultrasonicRGB2(self, red, green, blue):
-        r, g, b = do_magic_with_rgb(red, green, blue, self._brightness)
-
-        self.pixels[0] = (int(r * self._brightness), int(g * self._brightness), int(b * self._brightness))
-        self.pixels[1] = (int(r * self._brightness), int(g * self._brightness), int(b * self._brightness))
-        self.pixels[2] = (int(r * self._brightness), int(g * self._brightness), int(b * self._brightness))
-        self.pixels[3] = (int(r * self._brightness), int(g * self._brightness), int(b * self._brightness))
-        self.pixels[4] = (int(r * self._brightness), int(g * self._brightness), int(b * self._brightness))
-        self.pixels[5] = (int(r * self._brightness), int(g * self._brightness), int(b * self._brightness))
+        colour = do_magic_with_rgb(red, green, blue, self._brightness)
+        for index in range(6):
+            self.pixels[index] = colour
         self.pixels.write()
 
     def setultrasonicRGBEye(self, red, green, blue, eyenumber):
@@ -509,6 +497,8 @@ class OttoUltrasonic:
                 self.distance = pulse_duration / 147.32
             else:
                 self.distance = pulse_duration / 58.00
+        else:
+            self.distance = -1
         print("D#" + str(self.distance) + "$")
         return self.distance
 
@@ -527,4 +517,6 @@ class OttoUltrasonic:
                 self.distance = pulse_duration / 147.32
             else:
                 self.distance = pulse_duration / 58.00
+        else:
+            self.distance = -1
         return self.distance
