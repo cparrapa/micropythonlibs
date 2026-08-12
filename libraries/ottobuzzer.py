@@ -578,8 +578,8 @@ class Player:
         self._volume -= 1
         self.cmd(0x05)
 
-    def volume(self, volume=False):
-        if volume:
+    def volume(self, volume=None):
+        if volume is not None:
             self._volume = int(sorted([0, volume, self._max_volume])[1])
             self.cmd(0x06, self._volume)
 
