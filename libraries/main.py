@@ -229,17 +229,18 @@ class CommandRouter:
         self._serial_command_set.extend(line.encode("utf-8"))
 
     def _route_command(self, command, output_fn, output_fn_async):
-        if command.strip() == "#close#":
+        stripped_command = command.strip()
+        if stripped_command == "#close#":
             output_fn("Execution stopped")
-        elif "update_firmware" in command:
+        elif stripped_command.startswith("update_firmware("):
             self._handle_update_firmware(command, output_fn)
-        elif "update(" in command:
+        elif stripped_command.startswith("update("):
             self._handle_update(command, output_fn)
-        elif "usercode_save(" in command:
+        elif stripped_command.startswith("usercode_save("):
             self._handle_usercode_save(command, output_fn)
-        elif "usercode_remove" in command:
+        elif stripped_command == "usercode_remove":
             self._handle_usercode_remove(output_fn)
-        elif "set_ble_name" in command:
+        elif stripped_command.startswith("set_ble_name("):
             self._handle_set_ble_name(command, output_fn)
         else:
             self._handle_exec(command, output_fn, output_fn_async)
@@ -293,8 +294,13 @@ class CommandRouter:
 
         try:
             rc = __import__("rc")
+
+            def exec_print(*args, **kwargs):
+                separator = kwargs.get("sep", " ")
+                output_fn_async("b:" + separator.join(map(str, args)))
+
             exec_globals = {
-                'print': lambda x: output_fn_async(f"b:{x}"),
+                'print': exec_print,
                 'rc': rc,
                 'stop_flag': lambda: self.stop_flag
             }
