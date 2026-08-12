@@ -1,5 +1,6 @@
 # ottosensors.py v0.1.1 18.5.2026
 import machine, dht
+import micropython
 from machine import Pin, ADC
 
 class FollowLine:
@@ -32,18 +33,18 @@ class DHT:
             self.d.measure()
             temp=self.d.temperature()
             return (temp)
-        except OSError as e:
+        except OSError:
             print('Failed to read temp sensor.')
-            return "0"
+            return 0
 
     def humidity(self):
         try:
             self.d.measure()
             hum=self.d.humidity()
             return (hum)
-        except OSError as e:
+        except OSError:
             print('Failed to read temp sensor.')
-            return "0"
+            return 0
 
 class Percentage:
     def __init__(self, connector=5):
@@ -219,7 +220,7 @@ class Rotary(object):
 
         try:
             if old_value != self._value and len(self._listener) != 0:
-                _trigger(self)
+                micropython.schedule(_trigger, self)
         except:
             pass
 

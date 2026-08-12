@@ -1,5 +1,6 @@
 # adxl345.py v0.1.1 18.5.26 new app
-from machine import Pin, SoftI2C
+import math
+from micropython import const
 from time import sleep
 
 # ADXL-345 Registers 
@@ -69,30 +70,30 @@ class ADXL345:
         errX = errX/200
         errY = errY/200
         errZ = errZ/200
-        # x should be 0, y should be 0  z should be 1g (255)
+        # x should be 0, y should be 0, and z should be 1g (256)
         # calculate offset and divide by 4
         errX = int((0 - errX)/4)
         errY = int((0- errY)/4)
-        errZ = int(255 - errZ/4)
+        errZ = int((256 - errZ)/4)
         # write these to the calibration registers
         #X-axis        
         self.i2c.start()
-        self.i2c.writeto(self.address, bytearray([_X_CAL, errX]))
+        self.i2c.writeto(self.address, bytearray([_X_CAL, errX & 0xFF]))
         self.i2c.stop()
         sleep(0.1)
         #Y-axis        
         self.i2c.start()
-        self.i2c.writeto(self.address, bytearray([_Y_CAL, errY]))
+        self.i2c.writeto(self.address, bytearray([_Y_CAL, errY & 0xFF]))
         self.i2c.stop()
         sleep(0.1)
         #Z-axis        
         self.i2c.start()
-        self.i2c.writeto(self.address, bytearray([_Z_CAL, errZ]))
+        self.i2c.writeto(self.address, bytearray([_Z_CAL, errZ & 0xFF]))
         self.i2c.stop()
         sleep(0.1)
         
     def read_axes(self):
-        data = self.i2c.readfrom_mem(self.addr, 0x32, 6)
+        data = self.i2c.readfrom_mem(self.address, 0x32, 6)
 
         def to_signed(val):
             return val - 65536 if val > 32767 else val
@@ -103,4 +104,3 @@ class ADXL345:
 
         return x, y, z
                 
-
