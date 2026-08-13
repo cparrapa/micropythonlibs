@@ -21,6 +21,7 @@ class OttoMotor: #used in web code blocks lacks of calibration offset
         self.rightServo.freq(50)
 
     def Move(self, direction, step, speed):
+        self._validate_motion(direction, speed)
         if(direction == -1):
             if(speed == 1):
                 leftSpeed = 60
@@ -59,6 +60,7 @@ class OttoMotor: #used in web code blocks lacks of calibration offset
         self.leftServo.duty(0)
 
     def Moveloop(self, direction, speed):
+        self._validate_motion(direction, speed)
         if(direction == -1):
             if(speed == 1):
                 leftSpeed = 60
@@ -94,6 +96,8 @@ class OttoMotor: #used in web code blocks lacks of calibration offset
         self.leftServo.duty(leftSpeed)
 
     def Rotate(self, turn):
+        if turn not in (0, 1, 2):
+            raise ValueError("Invalid turn")
         if(turn == 0):
             rightSpeed = 45
             leftSpeed = 45
@@ -116,6 +120,7 @@ class OttoMotor: #used in web code blocks lacks of calibration offset
         self.leftServo.duty(0)
 
     def Moveleft(self, direction, step, speed):
+        self._validate_motion(direction, speed)
         if(direction == -1):
             if(speed == 1):
                 leftSpeed = 60
@@ -138,6 +143,7 @@ class OttoMotor: #used in web code blocks lacks of calibration offset
         self.leftServo.duty(0)
 
     def Moveleftloop(self, direction, speed):
+        self._validate_motion(direction, speed)
         if(direction == -1):
             if(speed == 1):
                 leftSpeed = 60
@@ -156,6 +162,7 @@ class OttoMotor: #used in web code blocks lacks of calibration offset
         self.leftServo.duty(leftSpeed)
 
     def Moveright(self, direction, step, speed):
+        self._validate_motion(direction, speed)
         if(direction == -1):
             if(speed == 1):
                 rightSpeed = 130
@@ -178,6 +185,7 @@ class OttoMotor: #used in web code blocks lacks of calibration offset
         self.rightServo.duty(0)
 
     def Moverightloop(self, direction, speed):
+        self._validate_motion(direction, speed)
         if(direction == -1):
             if(speed == 1):
                 rightSpeed = 130
@@ -205,6 +213,13 @@ class OttoMotor: #used in web code blocks lacks of calibration offset
             self.leftServo.duty(0)
         elif(motor ==  3):
             self.rightServo.duty(0)
+
+    @staticmethod
+    def _validate_motion(direction, speed):
+        if direction not in (-1, 1):
+            raise ValueError("Invalid direction")
+        if speed not in (1, 2, 3):
+            raise ValueError("Invalid speed")
 
 class Servo: #used in web control main lacks of calibration offset. min_us=500, max_us=2500,
     def __init__(self, freq=50, min_us=1000, max_us=2000, max_ang=180):
@@ -252,11 +267,7 @@ class Servo: #used in web control main lacks of calibration offset. min_us=500, 
 
     def write(self, degrees):
         """Move to the specified angle in ``degrees``."""
-        degrees = degrees % 360
-        if degrees < 0:
-            degrees += 360
-        if degrees > 180:
-            degrees = 180
+        degrees = max(0, min(self.max_ang, degrees))
         total_range = self.max_us - self.min_us
         us = self.min_us + total_range * degrees // self.max_ang
         self.write_us(us)
