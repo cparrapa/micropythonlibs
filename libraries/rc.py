@@ -108,7 +108,7 @@ def handle_movement_settings(command: str):
 
     key = command[2:]
 
-    if key[0] == 's':
+    if len(key) >= 7 and key[0] == 's':
         global sliderL
         global sliderR
         sliderL = int(key[1:4])
@@ -120,8 +120,13 @@ def handle_tones(command: str):
         return
 
     key = command[1:]
-    if command[1] == ":":
-        freq = float(command[2:])
+    if not key:
+        return
+    if key[0] == ":":
+        try:
+            freq = float(command[2:])
+        except ValueError:
+            return
         buzzer.tone_on(freq)
         return
 
@@ -146,12 +151,7 @@ def handle_tones(command: str):
 
 
 def convert_joystick_degrees(deg: int) -> int:
-    rounded = round(deg / 10) * 10
-
-    if rounded == 360:
-        rounded = 0
-
-    return rounded
+    return (round((deg % 360) / 10) * 10) % 360
 
 def interpolate_motor_value(mid: int, target: int, speed: int) -> int:
     if speed < 1:
@@ -188,13 +188,20 @@ def handle_joystick(command: str):
         return
 
     joystick_value = command[1:]
+    if not joystick_value:
+        return
     if joystick_value == 'X':
         motor.Stop(1)
         return
 
     args = joystick_value.split("#")
-    deg = int(args[0])
-    speed = int(args[1])
+    if len(args) != 2:
+        return
+    try:
+        deg = int(args[0])
+        speed = int(args[1])
+    except ValueError:
+        return
 
     if speed == 0:
         motor.Stop(1)
@@ -232,9 +239,9 @@ def handle_tools(command: str, exec_running: bool, ble_print):
             machine_reset()
         else:
             ble_print("r:f") # as in restarting - false
-    elif "sex" in key: # as in Set EXtension ;)
+    elif key.startswith("sex:"): # as in Set EXtension ;)
         # Command looks like Tsex:sense, Tsex:interact, ...
-        extension = key.split(':')[1]
+        extension = key.split(':', 1)[1]
         available_extensions = [util.EXTENSION_SENSE, util.EXTENSION_INTERACT, util.EXTENSION_INVENT, util.EXTENSION_EMOTE]
 
         if extension in available_extensions:
@@ -281,6 +288,8 @@ def handle_ultrasonic_color(command: str):
         return
 
     key = command[2:]
+    if not key:
+        return
 
     if key == '!':
         ultrasonic.clearultrasonicRGB()
@@ -290,6 +299,8 @@ def handle_ultrasonic_color(command: str):
         ultrasonic.ultrasonicRGB1(ultrasonic_sensors_colors[0], ultrasonic_sensors_colors[1])
         return
 
+    if len(key) != 12:
+        return
     left_color = key[0:6]
     right_color = key[6:]
     ultrasonic_sensors_colors = (left_color, right_color)
@@ -304,6 +315,8 @@ def handle_color_ring(command: str):
         return
 
     key = command[1:]
+    if not key:
+        return
 
     if key == '!':
         ring.clearRGB()
@@ -314,7 +327,14 @@ def handle_color_ring(command: str):
         return
 
     if key[0] == '#':
-        led_index = int(key[1:3])
+        if len(key) != 9:
+            return
+        try:
+            led_index = int(key[1:3])
+        except ValueError:
+            return
+        if led_index < 0 or led_index >= len(color_ring_values):
+            return
         hex_color = key[3:9]
         color_ring_values[led_index] = hex_color
         ring.setRGBring(led_index, hex_color)
@@ -333,6 +353,9 @@ def handle_color_ring(command: str):
     color10 = decode_color(key[10:11])
     color11 = decode_color(key[11:12])
     color12 = decode_color(key[12:13])
+    if None in (color1, color2, color3, color4, color5, color6, color7,
+                color8, color9, color10, color11, color12, color13):
+        return
     color_ring_values = [color1, color2, color3, color4, color5,
         color6, color7, color8, color9, color10, color11,
         color12, color13]
@@ -399,22 +422,7 @@ async def transmit_library_versions(ble_print):
             gc.collect()
             lib_info = libraries[library]
 
-            # Frozen libraries can't be read or tampered with
-            if lib_info.get("frozen", False):
-                tampered_with = False
-            else:
-                # Filesystem library - verify checksum
-                try:
-                    with open(library, "rb") as f:
-                        content = f.read()
-                        sha256 = uhashlib.sha256()
-                        sha256.update(content)
-                        checksum = sha256.digest()
-                        checksum_hex = ''.join('{:02x}'.format(b) for b in checksum)
-                        tampered_with = checksum_hex != lib_info["digest"]
-                except OSError:
-                    # File missing from filesystem
-                    tampered_with = True
+            tampered_with = library_is_tampered(library, lib_info)
 
             await asyncio.sleep(0)
             ble_print(format_library_version_message(library, lib_info["version"], tampered_with))
@@ -447,20 +455,46 @@ def format_sensor_message(sensor, value):
     return f's:{sensor}:{value}'
 
 
+def library_is_tampered(library: str, lib_info: dict) -> bool:
+    try:
+        os.stat(library)
+    except OSError:
+        return not lib_info.get("frozen", False)
+
+    try:
+        with open(library, "rb") as source:
+            sha256 = uhashlib.sha256()
+            sha256.update(source.read())
+        checksum = sha256.digest()
+        checksum_hex = ''.join('{:02x}'.format(value) for value in checksum)
+        return checksum_hex != lib_info["digest"]
+    except (OSError, KeyError):
+        return True
+
+
 def handle_modes(command: str):
     if command[0] != 'X':
         return
 
+    if len(command) < 2:
+        return
+
     global active_mode
-    mode = int(command[1])
+    try:
+        mode = int(command[1])
+    except ValueError:
+        return
 
     if mode == 0:
         active_mode = 0
     elif mode == 1 and active_mode != 1:
+        active_mode = 1
         asyncio.create_task(start_mode_1())
     elif mode == 2 and active_mode != 2:
+        active_mode = 2
         asyncio.create_task(start_mode_2())
     elif mode == 3 and active_mode != 3:
+        active_mode = 3
         asyncio.create_task(start_mode_3())
 
 
@@ -468,22 +502,30 @@ def handle_sensors(command: str, ble_print):
     if command[0] != 'R':
         return
 
+    if len(command) < 4:
+        return
 
     global distance_sensor_enabled
     global line_sensors_enabled
 
-    sensor = int(command[1:3])
-    status = int(command[3])
+    try:
+        sensor = int(command[1:3])
+        status = int(command[3])
+        period = float(command[4:]) if status == 1 else None
+    except ValueError:
+        return
+    if status == 1 and (period is None or period <= 0):
+        return
 
     if sensor == 0:
         if status == 1 and not distance_sensor_enabled:
-            period = float(command[4:])
+            distance_sensor_enabled = True
             asyncio.create_task(start_ultrasonic_sensor(ble_print, period))
         else:
             distance_sensor_enabled = False
     elif sensor == 1:
         if status == 1 and not line_sensors_enabled:
-            period = float(command[4:])
+            line_sensors_enabled = True
             asyncio.create_task(start_line_sensors(ble_print, period))
         else:
             line_sensors_enabled = False
