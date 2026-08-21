@@ -25,6 +25,9 @@ class UpdateLibraryManager:
 
     def __init__(self, log = print):
         self.log = log
+        self.session_files = []
+        self.session_files_full = []
+        self.files_without_backup = []
 
     # Configure Otto parameters
     def configure(self, wifi_ssid: str, wifi_password: str, session_id: str, base_url: str) -> None:
@@ -159,6 +162,17 @@ class UpdateLibraryManager:
             # self.play_buzzer_emoji("happy")
             self.send_device_event(config.EVENT_FILES_REPLACE_SUCCESS)
 
+        # Update the version lock while backups are still available. A lock
+        # failure means that the installed files and their recorded versions
+        # would disagree, so restore the previous files instead.
+        if not self.update_version_lock():
+            self.log("Failed updating lock.json. Rolling back installed files")
+            self.send_device_event(config.EVENT_FILES_ROLLBACK_START)
+            if not self.rollback_files():
+                self.send_device_event(config.EVENT_FILES_ROLLBACK_FAILED)
+            else:
+                self.send_device_event(config.EVENT_FILES_ROLLBACK_SUCCESS)
+            return self.cleanup(True)
 
         # Delete existing backup files. Can fail, no problem
         self.send_device_event(config.EVENT_FILES_BACKUP_DELETE_START)
@@ -168,8 +182,6 @@ class UpdateLibraryManager:
         else:
             # self.play_buzzer_emoji("happy")
             self.send_device_event(config.EVENT_FILES_BACKUP_DELETE_SUCCESS)
-
-        self.update_version_lock()
 
         self.send_device_event(config.EVENT_SUCCESS)
         # self.play_buzzer_emoji("superhappy")
@@ -187,7 +199,7 @@ class UpdateLibraryManager:
 
             files = os.listdir()
             for file in files:
-                if "temp_" in file or "bck_" in file:
+                if file.startswith("temp_") or file.startswith("bck_"):
                     try:
                         os.remove(file)
                     except OSError:
@@ -209,7 +221,7 @@ class UpdateLibraryManager:
         base_url = util.get_nvs_value(config.NVS_BASE_URL)
         session_id = util.get_nvs_value(config.NVS_UPDATE_SESSION_ID)
 
-        if not wifi_ssid or not wifi_password or not base_url or not session_id:
+        if not wifi_ssid or wifi_password is None or not base_url or not session_id:
             return False
 
 
@@ -264,7 +276,14 @@ class UpdateLibraryManager:
                 try:
                     os.stat(backup_name)
                 except OSError:
-                    self.log(f"Backup for {file}/{backup_name} not found. Skipping")
+                    if file in self.files_without_backup:
+                        try:
+                            os.remove(file)
+                        except OSError:
+                            pass
+                        continue
+                    self.log(f"Backup for {file}/{backup_name} not found")
+                    success = False
                     continue
 
                 try:
@@ -272,7 +291,6 @@ class UpdateLibraryManager:
                 except OSError as e:
                     self.log(e)
                     self.log("Failed deleting new file, maybe it doesn't exist. No problem")
-                    continue
 
                 try:
                     os.rename(backup_name, file)
@@ -289,12 +307,14 @@ class UpdateLibraryManager:
 
     # Create a backup of files that are being downloaded
     def backup_files(self) -> bool:
+        self.files_without_backup = []
         for file in self.session_files:
             try:
                 try:
                     os.stat(file)
                 except OSError:
                     self.log(f"File {file} does not exist yet. Not backing up")
+                    self.files_without_backup.append(file)
                     continue
 
                 backup_name = f"bck_{file}"
@@ -365,6 +385,7 @@ class UpdateLibraryManager:
 
     # Download file from server and mark it as temp_ for rollback
     def download_file(self, file: str) -> bool:
+        response = None
         try:
             gc.collect()
 
@@ -378,11 +399,13 @@ class UpdateLibraryManager:
             with open(f"temp_{file}", 'wb') as f:
                 f.write(response.content)
 
-            response.close()
             return True
         except Exception as e:
             self.log(f"Error downloading file: {e}")
             return False
+        finally:
+            if response:
+                response.close()
 
     # Get downloaded file SHA256 hex digest for verification
     def get_downloaded_file_digest(self, file: str, temp: bool) -> str | None:
@@ -414,15 +437,17 @@ class UpdateLibraryManager:
         body = json.dumps(body_data)
         headers = {'Content-Type': 'application/json'}
 
+        response = None
         try:
             response = urequests.post(self.__file_verify_ep(), data = body, headers = headers)
             is_verified = response.text == 'true'
-            response.close()
-
             return is_verified
         except Exception as e:
             self.log("Failed file verification")
             return False
+        finally:
+            if response:
+                response.close()
 
     # Send device event
     def send_device_event(self, type: str) -> bool:
@@ -435,13 +460,16 @@ class UpdateLibraryManager:
         body = json.dumps(body_data)
         headers = {'Content-Type': 'application/json'}
 
+        response = None
         try:
             response = urequests.post(self.__send_device_event_ep(), data = body, headers = headers)
-            response.close()
             return True
         except Exception:
             self.log("Failed sending device event")
             return False
+        finally:
+            if response:
+                response.close()
 
     # Update lock.json with new libraries and their digests
     def update_version_lock(self) -> bool:
@@ -464,30 +492,56 @@ class UpdateLibraryManager:
 
             data['libraries'][file["file"]] = {"version": file["version"], "digest": digest}
 
+        had_lock = True
         try:
-            with open("lock.json", "w") as f:
+            os.stat("lock.json")
+        except OSError:
+            had_lock = False
+
+        try:
+            with open("temp_lock.json", "w") as f:
                 json.dump(data, f)
-                self.log("lock.json updated successfully")
-                return True
+            try:
+                os.remove("bck_lock.json")
+            except OSError:
+                pass
+            if had_lock:
+                os.rename("lock.json", "bck_lock.json")
+            os.rename("temp_lock.json", "lock.json")
+            self.log("lock.json updated successfully")
+            return True
         except Exception as e:
             self.log(e)
             self.log("Failed updating lock.json")
+            if had_lock:
+                try:
+                    os.remove("lock.json")
+                except OSError:
+                    pass
+                try:
+                    os.rename("bck_lock.json", "lock.json")
+                except OSError:
+                    pass
             return False
 
     # Get session configuration - files from server
     def get_session_configuration(self):
         gc.collect()
 
+        response = None
         try:
             response = urequests.get(self.__session_config_ep(False))
-            self.session_files = [x["file"] for x in response.json()["files"]]
-            self.session_files_full = response.json()["files"]
-            response.close()
+            files = response.json()["files"]
+            self.session_files = [x["file"] for x in files]
+            self.session_files_full = files
             return True
         except Exception as e:
             self.log("Failed loading session config")
             self.log(e)
             return False
+        finally:
+            if response:
+                response.close()
 
 
     # Get endpoint URL for getting session config and testing connection
