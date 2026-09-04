@@ -1,5 +1,6 @@
-# ottobuzzer.py v0.1.1 18.5.2026 new app
+# ottobuzzer.py v0.1.2 4.9.2026 Allow the MP3 player volume to reach zero
 import time
+import machine
 from machine import PWM, UART, Pin, Timer
 
 IDLE = 0
@@ -99,7 +100,7 @@ DS9 = 4978
 P = 0
 
 class OttoBuzzer:
-    buzzer: PWM
+    buzzer: PWM | None = None
     NOTE_C0 = 16.35
     NOTE_Db0 = 17.32
     NOTE_D0 = 18.35
@@ -247,35 +248,40 @@ class OttoBuzzer:
 
     def __init__(self, pin):
         self._pin = Pin(pin)
-        # One PWM object for the buzzer's lifetime, remaining deinitialized while not in use.
-        self.buzzer = PWM(self._pin, duty_u16=0)
-        self.buzzer.deinit()
+
+    def __get_buzzer(self) -> PWM:
+        if not self.buzzer:
+            self.buzzer = PWM(self._pin)
+            return self.buzzer
+        return self.buzzer
+
 
     def playNote(self, freq, interval):
         if freq > 0:
-            self.tone_on(freq)
+            buzz = self.__get_buzzer()
+            buzz.freq(freq)
+            buzz.duty(512)
             time.sleep(interval / 1000)
-            self.tone_off()
-        else:
-            time.sleep(interval / 1000)
+            buzz.duty(0)
 
     def tone_on(self, freq):
-        # Re-init the LEDC channel of the PWM buzzer instead of mutating freq()/ duty() on a live
-        # channel, which on the ESP32 intermittently fails, resulting in skipped notes.
-        self.buzzer.deinit()
-        self.buzzer.init(freq=int(freq), duty_u16=32768)
+        buzz = self.__get_buzzer()
+        buzz.freq(int(freq))
+        buzz.duty(512)
 
     def tone_off(self):
-        self.buzzer.deinit()
-        self._pin.init(Pin.OUT)
-        self._pin.value(0)
+        buzz = self.__get_buzzer()
+        buzz.duty(0)
 
     def tone(self, freq, noteDuration, silentDuration):
         if freq > 0:
-            self.tone_on(freq)
+            buzz = self.__get_buzzer()
+            buzz.freq(int(freq))
+            buzz.duty(512)
             time.sleep(noteDuration / 1000)
-            self.tone_off()
             time.sleep(silentDuration / 1000)
+            buzz.duty(0)
+
 
     def playEmoji(self, emoji):
         old_emoji_map = {
@@ -487,7 +493,12 @@ class OttoBuzzer:
             self.playNote(freqc, msec)
 
     def clear_buzzer(self):
-        self.tone_off()
+        if self.buzzer:
+            self.buzzer.deinit()
+            self.buzzer = None
+
+        self._pin.init(Pin.OUT)
+        self._pin.value(0)
 
 class Player:
     def __init__(self, pin_TX, pin_RX):

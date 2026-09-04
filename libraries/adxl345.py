@@ -1,4 +1,4 @@
-# adxl345.py v0.1.1 18.5.26 new app
+# adxl345.py v0.1.2 4.9.26 Fix accelerometer and sensor error handling
 import math
 from micropython import const
 from time import sleep

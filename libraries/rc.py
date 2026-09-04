@@ -1,4 +1,4 @@
-# rc v0.1.5 18.5.2026
+# rc v0.1.6 4.9.2026 Harden command routing and remote control
 import asyncio
 import gc
 import json
@@ -241,8 +241,8 @@ def handle_tools(command: str, exec_running: bool, ble_print):
             ble_print("r:f") # as in restarting - false
     elif key.startswith("sex:"): # as in Set EXtension ;)
         # Command looks like Tsex:sense, Tsex:interact, ...
-        extension = key.split(':', 1)[1]
-        available_extensions = [util.EXTENSION_SENSE, util.EXTENSION_INTERACT, util.EXTENSION_INVENT, util.EXTENSION_EMOTE]
+        extension = key.split(':')[1]
+        available_extensions = [util.EXTENSION_SENSE, util.EXTENSION_INTERACT, util.EXTENSION_INVENT, util.EXTENSION_EMOTE, util.EXTENSION_STARTER, util.EXTENSION_ALL]
 
         if extension in available_extensions:
             util.set_nvs_value(util.EXTENSION_NVS_KEY, extension)
@@ -433,7 +433,7 @@ async def transmit_library_versions(ble_print):
 
     # Get installed extension from NVS or return default
     nvs_extension = util.get_nvs_value(util.EXTENSION_NVS_KEY)
-    extension = util.EXTENSION_NONE
+    extension = util.EXTENSION_STARTER
 
     if nvs_extension:
         extension = nvs_extension

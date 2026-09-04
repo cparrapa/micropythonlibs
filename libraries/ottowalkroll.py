@@ -1,4 +1,4 @@
-# ottowalkroll.py v0.1.1 18.5.2026 new app
+# ottowalkroll.py v0.1.2 4.9.2026 Validate motion inputs and clamp servo angles
 from time import sleep               #importing sleep class
 from machine import Pin, PWM
 from ottomotor import Servo

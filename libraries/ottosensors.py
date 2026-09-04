@@ -1,4 +1,4 @@
-# ottosensors.py v0.1.1 18.5.2026
+# ottosensors.py v0.1.2 4.9.2026 Fix accelerometer and sensor error handling
 import machine, dht
 import micropython
 from machine import Pin, ADC

@@ -1,4 +1,4 @@
-# update_library.py v0.1.1 18.5.2026 new app
+# update_library.py v0.1.2 4.9.2026 Make library updates transaction-safe
 from wifi_manager import WiFiManager
 from machine import Pin, PWM
 import config

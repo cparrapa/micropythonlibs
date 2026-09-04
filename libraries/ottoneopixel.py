@@ -1,4 +1,4 @@
-# ottoneopixel.py v0.1.1 18.5.2026 new app
+# ottoneopixel.py v0.1.2 4.9.2026 Fix NeoPixel and ultrasonic state handling
 import neopixel, machine, time
 from machine import Pin
 

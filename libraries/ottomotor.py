@@ -1,4 +1,4 @@
-# ottomotor.py v0.1.1 18.5.2026 new app
+# ottomotor.py v0.1.2 4.9.2026 new app
 import time
 from machine import Pin, PWM
 

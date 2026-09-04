@@ -1,33 +1,33 @@
 {
-  "version": "0.1.2",
+  "version": "0.1.5",
   "files": [
     {
       "file": "adxl345.py",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "description": "ADXL345 accelerometer driver for motion and orientation detection",
       "required": true
     },
     {
       "file": "main.py",
-      "version": "0.1.3",
+      "version": "0.1.5",
       "description": "The entrypoint of Otto, taking care of bluetooth connection and command executing",
       "required": true
     },
     {
       "file": "ottobuzzer.py",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "description": "Buzzer control module for sound and tone generation",
       "required": true
     },
     {
       "file": "ottomotor.py",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "description": "Motor control interface for Otto's movement and servo operations",
       "required": true
     },
     {
       "file": "ottoneopixel.py",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "description": "NeoPixel LED control for visual feedback and animations",
       "required": true
     },
@@ -39,13 +39,13 @@
     },
     {
       "file": "ottosensors.py",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "description": "Sensor integration module for reading and processing sensor data",
       "required": true
     },
     {
       "file": "ottowalkroll.py",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "description": "Walking and rolling movement patterns for Otto's locomotion",
       "required": true
     },
@@ -57,7 +57,7 @@
     },
     {
       "file": "util.py",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "description": "General utility functions shared across Otto modules",
       "required": true
     },
@@ -87,7 +87,7 @@
     },
     {
       "file": "update_library.py",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "description": "Firmware update and library management functionality",
       "required": true
     }

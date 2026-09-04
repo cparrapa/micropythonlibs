@@ -1,4 +1,4 @@
-# main.py v0.1.3 18.5.26 new app
+# main.py v0.1.5 4.9.26 added intro animation
 import gc
 import os
 import sys
@@ -6,12 +6,35 @@ from binascii import a2b_base64
 from time import sleep_ms
 
 import machine
+from machine import Pin
 import uasyncio as asyncio
 import ubinascii
 import ubluetooth
 import ujson
+import uselect
 import util
 from ottobuzzer import OttoBuzzer
+from neopixel import NeoPixel
+ring = NeoPixel(Pin(4), 13)  #Connector 5
+# Bytes that signal a standard MicroPython REPL client (e.g. Thonny, mpremote)
+# is trying to talk to us. The Otto protocol never sends these.
+#   0x01 = Ctrl+A (raw REPL)
+#   0x02 = Ctrl+B (friendly REPL)
+#   0x04 = Ctrl+D (soft reset)
+#   0x05 = Ctrl+E (paste mode)
+_REPL_HANDSHAKE_BYTES = (0x01, 0x02, 0x04, 0x05)
+
+
+def _poll_for_repl_handshake(timeout_ms):
+    try:
+        poll = uselect.poll()
+        poll.register(sys.stdin, uselect.POLLIN)
+        if not poll.poll(timeout_ms):
+            return False
+        first = sys.stdin.read(1)
+        return bool(first) and ord(first) in _REPL_HANDSHAKE_BYTES
+    except Exception:
+        return False
 
 _buzzer = None
 
@@ -31,13 +54,15 @@ def _restore_motors():
     except (KeyError, AttributeError):
         pass
 
-
 class BLE:
     def __init__(self):
         self.name = util.get_ble_name()
         self.ble = ubluetooth.BLE()
         self.ble.active(True)
-        self.ble.config(gap_name=self.name[:26]) # Set GAP_NAME (ak PLATFORM NAME)
+
+        self._advertising_animation = None
+        self._connected = False
+        self.ble.config(gap_name=self.name[:26])  # Set GAP_NAME (ak PLATFORM NAME)
         self._write_callback = None
         self._code_stopper = None
         self.rx = None
@@ -46,8 +71,56 @@ class BLE:
         self.advertiser()
         self.ble.irq(self.ble_irq)
 
+    async def _waiting_animation(self):
+        """Breathing blue ring while waiting for BLE connection."""
+        brightness = 0
+        direction = 10
+
+        while not self._connected:
+            for i in range(13):
+                ring[i] = (0, 0, brightness)
+
+            ring.write()
+
+            brightness += direction
+
+            if brightness >= 80:
+                brightness = 80
+                direction = -10
+            elif brightness <= 0:
+                brightness = 0
+                direction = 10
+
+            await asyncio.sleep_ms(50)
+
+        ring.fill((0, 0, 0))
+        ring.write()
+
+    def _start_waiting_animation(self):
+        if self._advertising_animation is None:
+            self._connected = False
+            buzzer = _get_buzzer()
+            buzzer.play_emoji("button")
+            buzzer.clear_buzzer()
+            ring.fill((255, 0, 0))
+            ring.write()
+            sleep_ms(500)
+            ring.fill((0, 255, 0))
+            ring.write()
+            sleep_ms(500)
+            self._advertising_animation = asyncio.create_task(
+                self._waiting_animation()
+            )
+
+    def _stop_waiting_animation(self):
+        self._connected = True
+        ring.fill((0,255,0))
+        ring.write()
+        self._advertising_animation = None
+        
     def connected(self):
         # Turn off advertisting after successfull connect
+        self._stop_waiting_animation()
         self.ble.gap_advertise(None)
         asyncio.create_task(self._buzz_connect())
 
@@ -101,6 +174,8 @@ class BLE:
             self.ble.gap_advertise(None)
         except:
             pass
+
+        self._start_waiting_animation()
 
         name = bytes(self.name, 'UTF-8')
         # Take only first 26 bytes of name, if it is longer
@@ -349,12 +424,27 @@ class CommandRouter:
 
 
 async def serial_reader_task(router):
+    # Read one char at a time so we can detect REPL handshake bytes
+    # (Ctrl+A/B/D/E) and hand the serial channel back to MicroPython's
+    # built-in REPL when a tool like Thonny connects.
+    # Note: on MicroPython sys.stdin is a text stream, so reads return str.
     sreader = asyncio.StreamReader(sys.stdin)
+    buf = []
     while True:
-        line = await sreader.readline()
-        if line:
-            line_str = line.decode("utf-8").rstrip("\r\n")
-            router.on_serial_line(line_str)
+        chunk = await sreader.read(1)
+        if not chunk:
+            continue
+        ch = chunk[0]
+        b = ord(ch)
+        if b in _REPL_HANDSHAKE_BYTES:
+            return
+        if b == 0x0D:
+            continue
+        if b == 0x0A:
+            router.on_serial_line("".join(buf))
+            buf = []
+        else:
+            buf.append(ch)
 
 
 async def ble_operation_task(ble=None):
@@ -362,7 +452,7 @@ async def ble_operation_task(ble=None):
         ble = BLE()
     router = CommandRouter(ble)
     ble.on_write(router.on_rx)
-    asyncio.create_task(serial_reader_task(router))
+    serial_task = asyncio.create_task(serial_reader_task(router))
 
     # Check if this boot follows a block reset (Ctrl+C interrupt)
     try:
@@ -379,7 +469,11 @@ async def ble_operation_task(ble=None):
         pass
 
     while True:
-        await asyncio.sleep(1)
+        await asyncio.sleep_ms(200)
+        # serial_reader_task returns when it detects a REPL handshake byte
+        # (Ctrl+A/B/D/E). Unwind so main() exits and the built-in REPL runs.
+        if serial_task.done():
+            return
 
 
 async def main():
@@ -405,6 +499,8 @@ def _clear_hardware():
 while True:
     try:
         asyncio.run(main())
+        # main() returned cleanly because the serial reader saw a
+        # REPL handshake byte. Drop out and let MicroPython's REPL take over.
         break
     except KeyboardInterrupt:
         _clear_hardware()
@@ -415,3 +511,8 @@ while True:
                 f.write("1")
         except:
             pass
+        # Thonny opens with Ctrl+C before its Ctrl+B handshake. If a REPL
+        # handshake byte arrives right after the interrupt, exit to REPL
+        # instead of looping back into the Otto protocol.
+        if _poll_for_repl_handshake(300):
+            break

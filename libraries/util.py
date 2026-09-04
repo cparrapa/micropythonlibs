@@ -1,4 +1,4 @@
-# util.py v0.1.1 18.5.2026 new app
+# util.py v0.1.2 19.5.26 Updated extensions
 import esp32
 import machine
 import hashlib
@@ -8,11 +8,12 @@ BLE_NAME_NVS_KEY = 'ble_name'
 BLE_DEFAULT_NAME = "otto"
 
 EXTENSION_NVS_KEY = "extension"
-EXTENSION_NONE = "none" # Not stored in NVS
+EXTENSION_STARTER = "starter"
 EXTENSION_SENSE = "sense"
 EXTENSION_INTERACT = "interact"
 EXTENSION_INVENT = "invent"
 EXTENSION_EMOTE = "emote"
+EXTENSION_ALL = "all"
 
 
 def get_nvs_value(key: str) -> str | None:
