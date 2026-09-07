@@ -1,124 +1,207 @@
-# ottooled.py v0.1.2 4.9.2026 unified oled
+# ottooled.py v0.1.3 7.9.2026 fixed faces
+
+import time
 import framebuf
 import array
-import time
+
 from machine import I2C, Pin
 from ssd1306 import SSD1306_I2C
+
 
 class OttoOled:
 
     WIDTH = 128
     HEIGHT = 64
 
-    def __init__(self, sda, scl):
-        self.i2c = I2C(sda=Pin(sda), scl=Pin(scl))
+    # Face geometry
+    EYE_LEFT_X = 32
+    EYE_RIGHT_X = 96
+    EYE_Y = 16
+    EYE_SIZE = 16
+    PUPIL_SIZE = 10
+
+    def __init__(self, sda, scl, width=128, height=64):
+        self.width = width
+        self.height = height
+
+        self.i2c = I2C(
+            sda=Pin(sda),
+            scl=Pin(scl)
+        )
+
         self.display = SSD1306_I2C(
-            self.WIDTH,
-            self.HEIGHT,
+            width,
+            height,
             self.i2c
         )
 
-    # --------------------------------------------------
-    # BASIC DISPLAY
-    # --------------------------------------------------
+    # =========================================================
+    # DISPLAY
+    # =========================================================
 
-    def showDisplay(self):
+    def show(self):
+        """Send the current framebuffer to the OLED."""
         self.display.show()
 
-    def clearDisplay(self):
+    def clear(self):
+        """Clear the entire display."""
         self.display.fill(0)
 
-    def pixelDisplay(self, xPos, yPos, value=1):
-        self.display.pixel(xPos, yPos, value)
+    def fill(self, value=0):
+        """Fill the entire display with 0 or 1."""
+        self.display.fill(value)
 
-    def lineDisplay(self, xPos1, yPos1, xPos2, yPos2):
+    # =========================================================
+    # BASIC DRAWING
+    # =========================================================
+
+    def pixel(self, x, y, value=1):
+        self.display.pixel(x, y, value)
+
+    def line(self, x1, y1, x2, y2, value=1):
         self.display.line(
-            xPos1, yPos1,
-            xPos2, yPos2,
-            1
+            x1, y1,
+            x2, y2,
+            value
         )
 
-    def writeTextDisplay(self, writeValue, xPos, yPos):
-        self.display.text(
-            "{}".format(writeValue),
-            xPos,
-            yPos,
-            1
-        )
+    def rect(self, x, y, width, height, value=1, fill=False):
+        self.display.rect(x, y,width, height,value,fill)
 
-    # --------------------------------------------------
-    # SHAPES
-    # --------------------------------------------------
-
-    def squareDisplay(self, x, y, width, height):
-        self.display.rect(
-            x, y, width, height, 1
-        )
-
-    def squareBlackDisplay(self, x, y, width, height):
-        self.display.rect(
-            x, y, width, height, 0
-        )
-
-    def squareFillDisplay(self, x, y, width, height, value):
+    def fillRect(self, x, y, width, height, value=1):
         self.display.fill_rect(
-            x, y, width, height, value
+            x, y,
+            width, height,
+            value
         )
 
-    def drawCircle(self, x, y, width, height, color=1, fill=1):
+    def ellipse(self, x, y, width, height, value=1, fill=False):
         self.display.ellipse(
             x, y,
             width, height,
-            color,
+            value,
             fill
         )
 
-    # Compatibility with old API
-    def circleDisplay(self, x, y, r):
-        self.drawCircle(x, y, r, r, 1, 1)
+    # =========================================================
+    # TEXT
+    # =========================================================
 
-    def circleBlackDisplay(self, x, y, r):
-        self.drawCircle(x, y, r, r, 0, 1)
+    def text(self, value, x, y, color=1):
+        self.display.text(
+            str(value),
+            x,
+            y,
+            color
+        )
 
-    def ringDisplay(self, x, y, r):
-        self.drawCircle(x, y, r, r, 1, 0)
-
-    # --------------------------------------------------
+    # =========================================================
     # POLYGONS
-    # --------------------------------------------------
+    # =========================================================
 
-    def polygonDisplay(self, points, color=1, fill=True):
+    def polygon(self, points, value=1, fill=True):
         """
-        Draw polygon from:
-        [(x1,y1), (x2,y2), (x3,y3), ...]
+        Draw a polygon.
+
+        Example:
+            oled.polygon([
+                (10, 10),
+                (30, 10),
+                (20, 30)
+            ])
         """
 
-        data = []
+        data = array.array('i')
 
         for x, y in points:
             data.append(x)
             data.append(y)
 
-        polygon = array.array('I', data)
-
         self.display.poly(
             0,
             0,
-            polygon,
-            color,
+            data,
+            value,
             fill
         )
 
-    # --------------------------------------------------
-    # ICON
-    # --------------------------------------------------
+    # =========================================================
+    # BITMAPS
+    # =========================================================
 
-    def ShowIcon(self, icono, x, y, w, h):
+    def bitmap(self, cells, cols=16, cell=8,
+               x=0, y=0, value=1, show=True):
+        """
+        Draw a bitmap made from square cells.
+
+        '1' = filled cell
+        '0' = empty cell
+
+        Example:
+            oled.bitmap(
+                "00111100"
+                "01111110"
+                "11111111"
+                "11111111",
+                cols=8,
+                cell=1
+            )
+        """
+
+        for i, bit in enumerate(cells):
+
+            if bit == '1':
+
+                px = x + (i % cols) * cell
+                py = y + (i // cols) * cell
+
+                self.fillRect(
+                    px,
+                    py,
+                    cell,
+                    cell,
+                    value
+                )
+
+        if show:
+            self.show()
+
+    def pixels(self, cells, cols=128,
+               x=0, y=0, value=1, show=True):
+        """
+        Draw a 1-bit pixel bitmap.
+
+        Example:
+            oled.pixels("010101...")
+        """
+
+        for i, bit in enumerate(cells):
+
+            if bit == '1':
+
+                px = x + (i % cols)
+                py = y + (i // cols)
+
+                self.pixel(
+                    px,
+                    py,
+                    value
+                )
+
+        if show:
+            self.show()
+
+    def icon(self, data, x, y, width, height,
+             format=framebuf.MONO_HLSB, show=True):
+        """
+        Draw a raw framebuf bitmap.
+        """
+
         fb = framebuf.FrameBuffer(
-            icono,
-            w,
-            h,
-            framebuf.MONO_HLSB
+            data,
+            width,
+            height,
+            format
         )
 
         self.display.blit(
@@ -127,441 +210,391 @@ class OttoOled:
             y
         )
 
-    # ==================================================
-    # OTTO FACE
-    # ==================================================
+        if show:
+            self.show()
 
-    # --------------------------------------------------
-    # FACE CLEARING
-    # --------------------------------------------------
+    # =========================================================
+    # FACE HELPERS
+    # =========================================================
 
     def _clearEyes(self):
-        self.display.fill_rect(
-            16, 0,
-            96, 33,
-            0
-        )
+        """Clear the normal eye area."""
+        self.fillRect(16, 0,96, 33,0)
 
-    def _clearFace(self):
-        self.display.fill_rect(
-            0, 0,
-            128, 64,
-            0
-        )
+    def _eye(self, x, y, pupil_x=0, pupil_y=0):
+        """
+        Draw one eye.
+        x/y = top-left of eye.
+        pupil_x/y = pupil offset inside eye.
+        """
+        self.ellipse(x,y,self.EYE_SIZE,self.EYE_SIZE,1,True)
+        self.ellipse(x + pupil_x,y + pupil_y,self.PUPIL_SIZE,self.PUPIL_SIZE,0,True)
 
-    # --------------------------------------------------
-    # EYES
-    # --------------------------------------------------
+    def _eyes(self, y, pupil_y=0):
+        """Draw both eyes."""
+        self._clearEyes()
+        self._eye(self.EYE_LEFT_X ,self.EYE_Y,0,pupil_y)
+        self._eye(self.EYE_RIGHT_X ,self.EYE_Y,0,pupil_y)
+
+    # =========================================================
+    # EYE EXPRESSIONS
+    # =========================================================
 
     def eyes(self):
-        """
-        Normal Otto eyes
-        """
-
-        self._clearEyes()
-
-        self.display.ellipse(
-            32, 16,
-            16, 16,
-            1,
-            1
-        )
-
-        self.display.ellipse(
-            32, 16,
-            10, 10,
-            0,
-            1
-        )
-
-        self.display.ellipse(
-            96, 16,
-            16, 16,
-            1,
-            1
-        )
-
-        self.display.ellipse(
-            96, 16,
-            10, 10,
-            0,
-            1
-        )
+        """Normal eyes."""
+        self._eyes(16,0)
 
     def eyesClosed(self):
-        """
-        Closed eyes
-        """
-
+        """Closed eyes."""
         self._clearEyes()
 
-        self.display.fill_rect(
+        self.fillRect(
             16, 16,
             32, 6,
             1
         )
 
-        self.display.fill_rect(
+        self.fillRect(
             80, 16,
             32, 6,
             1
         )
 
     def eyesUp(self):
-        self.eyes()
+        """Eyes looking upward."""
+        self._eyes(16, 0)
 
-        self.display.fill_rect(
+        self.fillRect(
             0, 16,
             128, 17,
             0
         )
-
+        
     def eyesUp2(self):
-        self._clearEyes()
-
-        self.display.ellipse(
-            32, 32,
-            16, 16,
-            1,
-            1
-        )
-
-        self.display.ellipse(
-            32, 32,
-            10, 10,
-            0,
-            1
-        )
-
-        self.display.ellipse(
-            96, 32,
-            16, 16,
-            1,
-            1
-        )
-
-        self.display.ellipse(
-            96, 32,
-            10, 10,
-            0,
-            1
-        )
-
-        self.display.fill_rect(
-            0, 32,
-            128, 17,
-            0
-        )
+        self.rect(16,0,96,33,0,True)
+        self.ellipse(32,32,16,16,1,1)  
+        self.ellipse(32,32,10,10,0,1)  
+        self.ellipse(96,32,16,16,1,1) 
+        self.ellipse(96,32,10,10,0,1)  
+        self.rect(0,32,128,17,0,True)
 
     def eyesDown(self):
-        self.eyes()
-
-        self.display.fill_rect(
-            0, 0,
-            128, 16,
-            0
-        )
-
+        """Eyes looking downward."""
+        self._eyes(0, 0)
+        self.fillRect(0, 0,128, 16,0)
+        
     def eyesDown2(self):
-        self._clearEyes()
-
-        self.display.ellipse(
-            32, 0,
-            16, 16,
-            1,
-            1
-        )
-
-        self.display.ellipse(
-            32, 0,
-            10, 10,
-            0,
-            1
-        )
-
-        self.display.ellipse(
-            96, 0,
-            16, 16,
-            1,
-            1
-        )
-
-        self.display.ellipse(
-            96, 0,
-            10, 10,
-            0,
-            1
-        )
-
-    # --------------------------------------------------
-    # WINKS
-    # --------------------------------------------------
+        self.ellipse(32,0,16,16,1,1) 
+        self.ellipse(32,0,10,10,0,1) 
+        self.ellipse(96,0,16,16,1,1)  
+        self.ellipse(96,0,10,10,0,1)  
 
     def eyesWinkLeft(self):
         self.eyes()
-
-        self.display.fill_rect(
-            64, 0,
-            64, 16,
-            0
-        )
+        self.rect(64,0,128,16,0,True)
 
     def eyesWinkRight(self):
         self.eyes()
-
-        self.display.fill_rect(
-            0, 0,
-            64, 16,
-            0
-        )
-
-    # --------------------------------------------------
-    # EMOTIONS
-    # --------------------------------------------------
+        self.rect(0,0,64,16,0,True)
 
     def eyesAngry(self):
+        """Angry eyebrows / eye shape."""
         self.eyes()
 
-        self.polygonDisplay([
+        self.polygon([
             (16, 0),
             (48, 0),
             (48, 32)
         ], 0, True)
 
-        self.polygonDisplay([
+        self.polygon([
             (80, 0),
             (112, 0),
             (80, 32)
         ], 0, True)
 
     def eyesWorry(self):
+        """Worried eye shape."""
         self.eyes()
 
-        self.polygonDisplay([
+        self.polygon([
             (16, 0),
             (48, 0),
             (16, 32)
         ], 0, True)
 
-        self.polygonDisplay([
+        self.polygon([
             (80, 0),
             (112, 0),
             (112, 32)
         ], 0, True)
 
-    # ==================================================
-    # MOUTH
-    # ==================================================
+    # =========================================================
+    # MOUTHS
+    # =========================================================
 
-    def mouth1(self):
-        self.display.ellipse(
-            64, 50,
-            14, 14,
-            1,
-            1
-        )
+    def mouthClosed(self):
+        self.rect(32,32,64,32,0,True)
+        self.rect(32,42,64,6,1,True)
 
-        self.display.ellipse(
-            64, 50,
-            10, 10,
-            0,
-            1
-        )
+    def mouth(self):
+        self.rect(32,32,64,32,0,True)
+        self.ellipse(64,48,16,16,1,1) 
+        self.ellipse(64,48,10,10,0,1)
+        
+    def mouthSmile(self):
+        self.mouth()
+        self.rect(48,32,33,16,0,True)
+        
+    def mouthUp(self):
+        self.rect(32,32,64,32,0,True)
+        self.ellipse(64,32,16,16,1,1) 
+        self.ellipse(64,32,10,10,0,1)
+        self.rect(48,16,33,16,0,True)
+        
+    def mouthSad(self):
+        self.mouth()
+        self.rect(48,48,33,16,0,True)
 
-        self.display.fill_rect(
-            0, 36,
-            128, 14,
-            0
-        )
+    def mouthDown(self):
+        self.rect(32,32,64,32,0,True)
+        self.ellipse(64,64,16,16,1,1) 
+        self.ellipse(64,64,10,10,0,1)
+        
+    def mouthLeft(self):
+        self.mouthClosed()
+        self.ellipse(80,53,15,11,1,1)
+        self.rect(64,48,32,5,1,True)
+        
+    def mouthRight(self):
+        self.mouthClosed()
+        self.ellipse(48,53,15,11,1,1)
+        self.rect(32,48,32,5,1,True)
+        
+    def mouthHappy(self):
+        self.rect(32,32,64,32,0,True)
+        self.ellipse(64,48,15,15,1,1)
+        self.rect(48,32,32,16,1,True)
+        
+    def mouthWorry(self):
+        self.rect(32,32,64,32,0,True)
+        self.ellipse(64,48,15,10,1,1)
 
-    def mouth2(self):
-        self.display.ellipse(
-            64, 50,
-            14, 14,
-            1,
-            1
-        )
 
-    def mouth3(self):
-        self.display.ellipse(
-            64, 60,
-            20, 20,
-            1,
-            1
-        )
+    # =========================================================
+    # COMPLETE FACES
+    # =========================================================
 
-    def mouth4(self):
-        self.display.fill_rect(
-            39, 54,
-            50, 7,
-            1
-        )
-
-    def mouth5(self):
-        self.display.fill_rect(
-            44, 44,
-            50, 7,
-            1
-        )
-
-        self.display.ellipse(
-            84, 54,
-            10, 10,
-            1,
-            1
-        )
-
-    def mouth6(self):
-        self.display.fill_rect(
-            44, 44,
-            50, 7,
-            1
-        )
-
-        self.display.ellipse(
-            53, 54,
-            10, 10,
-            1,
-            1
-        )
-
-    # ==================================================
-    # SIMPLE ANIMATIONS
-    # ==================================================
-
-    def blink(self, speed=0.08):
+    def face(self, expression):
         """
-        Blink animation.
+        Draw a complete named Otto face.
+
+        Available:
+            neutral
+            happy
+            surprised
+            sleepy
+            angry
+            worried
+            wink_left
+            wink_right
         """
 
-        self.eyes()
-        self.showDisplay()
+        self.clear()
 
-        time.sleep(speed)
+        if expression == "neutral":
+            self.eyes()
+            self.mouth()
 
-        self.eyesClosed()
-        self.showDisplay()
+        elif expression == "happy":
+            self.eyes()
+            self.mouthSmile()
 
-        time.sleep(speed)
+        elif expression == "surprised":
+            self.eyes()
+            self.mouth()
 
-        self.eyes()
-        self.showDisplay()
+        elif expression == "sleepy":
+            self.eyesClosed()
+            self.mouth()
 
-    def winkLeft(self, speed=0.15):
-        self.eyesWinkLeft()
-        self.showDisplay()
+        elif expression == "angry":
+            self.eyesAngry()
+            self.mouth()
 
-        time.sleep(speed)
+        elif expression == "worried":
+            self.eyesWorry()
+            self.mouth()
 
-        self.eyes()
-        self.showDisplay()
+        elif expression == "wink_left":
+            self.eyesWinkLeft()
+            self.mouthSmile()
 
-    def winkRight(self, speed=0.15):
-        self.eyesWinkRight()
-        self.showDisplay()
+        elif expression == "wink_right":
+            self.eyesWinkRight()
+            self.mouthSmile()
 
-        time.sleep(speed)
+        else:
+            raise ValueError(
+                "Unknown face: " + str(expression)
+            )
 
-        self.eyes()
-        self.showDisplay()
+    # =========================================================
+    # ANIMATIONS
+    # =========================================================
 
-    def lookUp(self, speed=0.08):
-        self.eyesUp2()
-        self.showDisplay()
+    def animate(self, animation, speed=0.1,
+                repeat=1, show=True):
+        """
+        Play a named animation.
 
-        time.sleep(speed)
+        Available:
+            blink
+            wink_left
+            wink_right
+            look_up
+            look_down
+            surprise
+            happy
+        """
 
-        self.eyesUp()
-        self.showDisplay()
+        for _ in range(repeat):
 
-    def lookDown(self, speed=0.08):
-        self.eyesDown2()
-        self.showDisplay()
+            if animation == "blink":
 
-        time.sleep(speed)
+                self.eyes()
+                if show:
+                    self.show()
 
-        self.eyesDown()
-        self.showDisplay()
+                time.sleep(speed)
 
-    # ==================================================
-    # OLD COMPATIBILITY API
-    # ==================================================
+                self.eyesClosed()
+                if show:
+                    self.show()
 
-    def Draw2Eyes(self):
-        self.circleDisplay(30, 17, 17)
-        self.circleBlackDisplay(30, 14, 10)
+                time.sleep(speed)
 
-        self.circleDisplay(98, 17, 17)
-        self.circleBlackDisplay(98, 14, 10)
+                self.eyes()
+                if show:
+                    self.show()
 
-    def Eyes1Draw(self):
-        self.Draw2Eyes()
+            elif animation == "wink_left":
 
-    def Eyes2Draw(self):
-        self.Draw2Eyes()
+                self.eyesWinkLeft()
+                if show:
+                    self.show()
 
-        self.display.fill_rect(
-            0, 17,
-            128, 17,
-            0
-        )
+                time.sleep(speed)
 
-    def Eyes3Draw(self):
-        self.Draw2Eyes()
+                self.eyes()
+                if show:
+                    self.show()
 
-        self.display.fill_rect(
-            0, 0,
-            128, 17,
-            0
-        )
+            elif animation == "wink_right":
 
-    def Eyes4Draw(self):
-        self.Draw2Eyes()
+                self.eyesWinkRight()
+                if show:
+                    self.show()
 
-        self.display.fill_rect(
-            0, 0,
-            64, 17,
-            0
-        )
+                time.sleep(speed)
 
-    def Eyes5Draw(self):
-        self.Draw2Eyes()
+                self.eyes()
+                if show:
+                    self.show()
 
-        self.display.fill_rect(
-            0, 0,
-            36, 17,
-            0
-        )
+            elif animation == "look_up":
 
-        self.display.fill_rect(
-            92, 0,
-            36, 20,
-            0
-        )
+                self.eyesDown()
+                if show:
+                    self.show()
 
-    def Eyes6Draw(self):
-        self.Draw2Eyes()
+                time.sleep(speed)
 
-        self.display.fill_rect(
-            24, 0,
-            74, 20,
-            0
-        )
+                self.eyesUp()
+                if show:
+                    self.show()
 
-    def Mouth1Draw(self):
-        self.mouth1()
+                time.sleep(speed)
 
-    def Mouth2Draw(self):
-        self.mouth2()
+                self.eyes()
+                if show:
+                    self.show()
 
-    def Mouth3Draw(self):
-        self.mouth3()
+            elif animation == "look_down":
 
-    def Mouth4Draw(self):
-        self.mouth4()
+                self.eyesUp()
+                if show:
+                    self.show()
 
-    def Mouth5Draw(self):
-        self.mouth5()
+                time.sleep(speed)
 
-    def Mouth6Draw(self):
-        self.mouth6()
+                self.eyesDown()
+                if show:
+                    self.show()
+
+                time.sleep(speed)
+
+                self.eyes()
+                if show:
+                    self.show()
+
+            elif animation == "surprise":
+
+                self.face("neutral")
+                if show:
+                    self.show()
+
+                time.sleep(speed)
+
+                self.face("surprised")
+                if show:
+                    self.show()
+
+                time.sleep(speed * 2)
+
+                self.face("neutral")
+                if show:
+                    self.show()
+
+            elif animation == "happy":
+
+                self.face("happy")
+                if show:
+                    self.show()
+
+                time.sleep(speed)
+
+                self.face("neutral")
+                if show:
+                    self.show()
+
+            else:
+                raise ValueError(
+                    "Unknown animation: " + str(animation)
+                )
+
+    # =========================================================
+    # FRAME CONTROL
+    # =========================================================
+
+    def frame(self, draw_function, show=True):
+        """
+        Helper for creating a frame.
+
+        Example:
+
+            oled.frame(
+                lambda: oled.face("happy")
+            )
+        """
+
+        self.clear()
+        draw_function()
+
+        if show:
+            self.show()
+
+
+
+
+
