@@ -59,21 +59,13 @@ class OttoOled:
         self.display.pixel(x, y, value)
 
     def line(self, x1, y1, x2, y2, value=1):
-        self.display.line(
-            x1, y1,
-            x2, y2,
-            value
-        )
+        self.display.line(x1, y1,x2, y2,value)
 
     def rect(self, x, y, width, height, value=1, fill=False):
         self.display.rect(x, y,width, height,value,fill)
 
     def fillRect(self, x, y, width, height, value=1):
-        self.display.fill_rect(
-            x, y,
-            width, height,
-            value
-        )
+        self.display.fill_rect(x, y,width, height,value)
 
     def ellipse(self, x, y, width, height, value=1, fill=False):
         self.display.ellipse(
@@ -83,17 +75,7 @@ class OttoOled:
             fill
         )
 
-    # =========================================================
-    # TEXT
-    # =========================================================
 
-    def text(self, value, x, y, color=1):
-        self.display.text(
-            str(value),
-            x,
-            y,
-            color
-        )
 
     # =========================================================
     # POLYGONS
@@ -213,6 +195,114 @@ class OttoOled:
         if show:
             self.show()
 
+    # ========================================================
+    # TEXT
+    # ========================================================
+     
+    def text(self,value,x,y,size=1,value_color=1,align="left"
+    ):
+        """
+        Draw text using the MicroPython 8x8 font.
+
+        size=1 -> normal 8x8 font
+        size=2 -> 16x16 characters
+        size=3 -> 24x24 characters
+
+        align:
+            left
+            center
+            right
+        """
+
+        value = str(value)
+
+        if size < 1:
+            size = 1
+
+        if align != "center" and align != "right":
+            align = "left"
+
+        char_width = 8 * size
+        text_width = len(value) * char_width
+
+        if align == "center":
+            x -= text_width // 2
+
+        elif align == "right":
+            x -= text_width
+
+        if size == 1:
+
+            self.display.text(
+                value,
+                x,
+                y,
+                value_color
+            )
+
+            return
+
+        for char_index, char in enumerate(value):
+
+            buffer = bytearray(8)
+
+            temp = framebuf.FrameBuffer(
+                buffer,
+                8,
+                8,
+                framebuf.MONO_HLSB
+            )
+
+            temp.fill(0)
+
+            temp.text(
+                char,
+                0,
+                0,
+                value_color
+            )
+
+            char_x = x + char_index * char_width
+
+            for py in range(8):
+
+                for px in range(8):
+
+                    if temp.pixel(px, py):
+
+                        self.display.fill_rect(
+                            char_x + px * size,
+                            y + py * size,
+                            size,
+                            size,
+                            value_color
+                        )
+
+    def textBox(
+        self,
+        value,
+        x,
+        y,
+        size=1,
+        value_color=1,
+        align="left",
+        line_spacing=0
+    ):
+        """Draw multiline text using \\n."""
+
+        lines = str(value).split("\n")
+        line_height = (8 * size) + line_spacing
+
+        for index, line in enumerate(lines):
+
+            self.text(
+                line,
+                x,
+                y + index * line_height,
+                size=size,
+                value_color=value_color,
+                align=align
+            )
     # =========================================================
     # FACE HELPERS
     # =========================================================
@@ -271,12 +361,12 @@ class OttoOled:
         )
         
     def eyesUp2(self):
-        self.rect(16,0,96,33,0,True)
+        self.fillRect(16,0,96,33,0)
         self.ellipse(32,32,16,16,1,1)  
         self.ellipse(32,32,10,10,0,1)  
         self.ellipse(96,32,16,16,1,1) 
-        self.ellipse(96,32,10,10,0,1)  
-        self.rect(0,32,128,17,0,True)
+        self.ellipse(96,32,10,10,0,1)
+        self.fillRect(0,32,128,17,0)
 
     def eyesDown(self):
         """Eyes looking downward."""
@@ -284,6 +374,7 @@ class OttoOled:
         self.fillRect(0, 0,128, 16,0)
         
     def eyesDown2(self):
+        self.rect(16,0,97,33,0,True)
         self.ellipse(32,0,16,16,1,1) 
         self.ellipse(32,0,10,10,0,1) 
         self.ellipse(96,0,16,16,1,1)  
@@ -380,12 +471,11 @@ class OttoOled:
         self.rect(32,32,64,32,0,True)
         self.ellipse(64,48,15,10,1,1)
 
-
     # =========================================================
     # COMPLETE FACES
     # =========================================================
 
-    def face(self, expression):
+    def face(self, expression="neutral"):
         """
         Draw a complete named Otto face.
 
@@ -393,11 +483,19 @@ class OttoOled:
             neutral
             happy
             surprised
+            excited
             sleepy
             angry
             worried
             wink_left
             wink_right
+            surprised
+            cool
+            wink
+            love
+            confused
+            sad
+            robot
         """
 
         self.clear()
@@ -593,8 +691,4 @@ class OttoOled:
 
         if show:
             self.show()
-
-
-
-
 
