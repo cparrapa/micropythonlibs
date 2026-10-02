@@ -13,7 +13,7 @@ class SERVO:
         self.pwm.duty(map(angle, 0, 180, 23, 124))
         
 
-servo = SERVO(signal_pin=13)
+servo = SERVO(signal_pin=15)
 
 # The following lines of codes can be tested using the REPL:
 # # To rotate the servo motor to 0 degrees

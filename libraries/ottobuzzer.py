@@ -1,4 +1,4 @@
-# ottobuzzer.py v0.1.2 4.9.2026 Allow the MP3 player volume to reach zero
+# ottobuzzer.py v0.1.3 2.10.2026 Bring back the pauses fix
 import time
 import machine
 from machine import PWM, UART, Pin, Timer
@@ -99,6 +99,7 @@ D9  = 4699
 DS9 = 4978
 P = 0
 
+        
 class OttoBuzzer:
     buzzer: PWM | None = None
     NOTE_C0 = 16.35
@@ -248,39 +249,35 @@ class OttoBuzzer:
 
     def __init__(self, pin):
         self._pin = Pin(pin)
-
-    def __get_buzzer(self) -> PWM:
-        if not self.buzzer:
-            self.buzzer = PWM(self._pin)
-            return self.buzzer
-        return self.buzzer
-
+        # One PWM object for the buzzer's lifetime, remaining deinitialized while not in use.
+        self.buzzer = PWM(self._pin, duty_u16=0)
+        self.buzzer.deinit()
 
     def playNote(self, freq, interval):
         if freq > 0:
-            buzz = self.__get_buzzer()
-            buzz.freq(freq)
-            buzz.duty(512)
+            self.tone_on(freq)
             time.sleep(interval / 1000)
-            buzz.duty(0)
+            self.tone_off()
+        else:
+            time.sleep(interval / 1000)
 
     def tone_on(self, freq):
-        buzz = self.__get_buzzer()
-        buzz.freq(int(freq))
-        buzz.duty(512)
+        # Re-init the LEDC channel of the PWM buzzer instead of mutating freq()/ duty() on a live
+        # channel, which on the ESP32 intermittently fails, resulting in skipped notes.
+        self.buzzer.deinit()
+        self.buzzer.init(freq=int(freq), duty_u16=32768)
 
     def tone_off(self):
-        buzz = self.__get_buzzer()
-        buzz.duty(0)
+        self.buzzer.deinit()
+        self._pin.init(Pin.OUT)
+        self._pin.value(0)
 
     def tone(self, freq, noteDuration, silentDuration):
         if freq > 0:
-            buzz = self.__get_buzzer()
-            buzz.freq(int(freq))
-            buzz.duty(512)
+            self.tone_on(freq)
             time.sleep(noteDuration / 1000)
+            self.tone_off()
             time.sleep(silentDuration / 1000)
-            buzz.duty(0)
 
 
     def playEmoji(self, emoji):
@@ -491,14 +488,57 @@ class OttoBuzzer:
         tune = self.RTTTL_notes(songRTTTL)
         for freqc, msec in tune:
             self.playNote(freqc, msec)
+            
+    def RTTTL(self,text):
+        try:
+            title, defaults, song = text.split(':')
+            d, o, b = defaults.split(',')
+            d = int(d.split('=')[1])
+            o = int(o.split('=')[1])
+            b = int(b.split('=')[1])
+            whole = (60000/b)*4
+            noteList = song.split(',')
+        except:
+            return 'Please enter a valid RTTTL string.'
+        notes = 'abcdefgp'
+        outList = []
+        for note in noteList:
+            index = 0
+            for i in note:
+                if i in notes:
+                    index = note.find(i)
+                    break
+            length = note[0:index]
+            value = note[index:].replace('#','s').replace('.','')
+            if not any(char.isdigit() for char in value):
+                value += str(o)
+            if 'p' in value:
+                value = 'p'
+            if length == '':
+                length = d
+            else:
+                length = int(length)
+            length = whole/length
+            if '.' in note:
+                length += length/2
+            outList.append((eval(value.upper()), length))
+        return outList
+
+    def play(self,tune):
+        tune = self.RTTTL_notes(tune)
+        if type(tune) is not list:
+            return tune
+        for freqc, msec in tune:
+            msec = msec * 0.001
+            if freqc > 0:
+                pwm0 = PWM(Pin(self._pin), freq=freqc, duty=512)
+            time.sleep(msec*0.9)
+            if freqc > 0:
+                pwm0.deinit()
+            time.sleep(msec*0.1)
 
     def clear_buzzer(self):
-        if self.buzzer:
-            self.buzzer.deinit()
-            self.buzzer = None
-
-        self._pin.init(Pin.OUT)
-        self._pin.value(0)
+        self.tone_off()
 
 class Player:
     def __init__(self, pin_TX, pin_RX):
@@ -606,3 +646,4 @@ class Player:
 
     def module_reset(self):
         self.cmd(0x0C)
+

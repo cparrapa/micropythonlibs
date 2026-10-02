@@ -2,9 +2,9 @@ from machine import Pin, PWM
 import time
 
 # Initialize PWM on GPIO 15
-servo = PWM(Pin(1))
+servo = PWM(Pin(13))
 servo.freq(50)
-led = Pin(25, Pin.OUT)
+led = Pin(2, Pin.OUT)
 
 def clockwise():
     servo.duty_u16(8000)  # Forward (adjust value based on your servo)

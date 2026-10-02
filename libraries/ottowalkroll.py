@@ -51,6 +51,9 @@ class Ninja:
                 
         self.leftfootServo.write(leftSpeed)
         self.rightfootServo.write(rightSpeed)
+        sleep(delay)
+        self.leftfootServo.write(90)
+        self.rightfootServo.write(90)
         
     def rollrotate(self, turn):
         if turn not in (-1, 1):
@@ -76,6 +79,7 @@ class Ninja:
         
     def walkset(self):
         self.leftlegServo.write(90)
+        sleep(0.2)
         self.rightlegServo.write(90)
         sleep(0.2)
         

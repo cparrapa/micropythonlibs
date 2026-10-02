@@ -1,3 +1,5 @@
+# manually update libraries on the device by downloading them from the server and saving them to the device's filesystem. This is useful for updating libraries without having to reflash the entire firmware.
+# put your wifi credentials in the last line of the code before running it. The code will connect to the wifi, download the required libraries from the server, and save them to the device's filesystem. It will also create a lock.json file that contains the version and digest of each downloaded library.
 import gc
 import time
 import network

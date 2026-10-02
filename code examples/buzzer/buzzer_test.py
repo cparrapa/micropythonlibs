@@ -1,6 +1,8 @@
 from ottobuzzer import OttoBuzzer
+from ottomotor import OttoMotor
 
-buzzer = OttoBuzzer(25)      # Built in Buzzer
+buzzer = OttoBuzzer(25)               # Built in Buzzer
+motor = OttoMotor(13, 14)             # Connectors 10 & 11
 
 buzzer.playNote(261, 125)
 buzzer.playNote(293, 125)
