@@ -1,0 +1,17 @@
+{
+  "name": "MicroPython 1.26.1",
+  "version": "2025.09.11",
+  "home_assistant_domain": "esphome",
+  "builds": [
+    {
+      "chipFamily": "ESP32",
+      "parts": [
+        { "path": "ESP32_GENERIC-20250911-v1.26.1.bin", "offset": 4096 }
+      ]
+    },
+    {
+      "chipFamily": "ESP8266",
+      "parts": [{ "path": "esp8266-1m-20230426-v1.20.0.bin", "offset": 0 }]
+    }
+  ]
+}

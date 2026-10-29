@@ -1,18 +1,16 @@
 # Load the machine module for GPIO and PWM
-# Control servo motor with MicroPython
-# Author: George Bantique, TechToTinker
-# Date: September 15, 2020
+# Control servo motor with MicroPython Author: George Bantique, TechToTinker September 15, 2020
 import machine
-from machine import Pin, ADC, PWM 
 import time # Load the time module for the delays
+from machine import Pin, ADC, PWM 
 
 adc_32 = ADC(26)
-adc_32.width(ADC.WIDTH_10BIT)
+adc_32.width(ADC.WIDTH_12BIT)
 
-p23 = machine.Pin(32, machine.Pin.OUT) # Create a regular p23 GPIO object
+p23 = Pin(27, Pin.OUT) # Cronnector 8
 # Create another object named pwm by
 # attaching the pwm driver to the pin
-pwm = machine.PWM(p23)
+pwm = PWM(p23)
 
 pwm.freq(50) # Set the pulse every 20ms
 pwm.duty(0)# Set initial duty to 0 to turn off the pulse

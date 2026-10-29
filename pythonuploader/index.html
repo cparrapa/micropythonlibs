@@ -1,0 +1,369 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HP Robots Example Codes</title>
+    <style>
+        body {
+            font-family: "Forma DJR Text", "Forma DJR Banner", "Forma DJR Micro", sans-serif;
+            margin: 0;
+            padding: 10px;
+            background-color: #f5f5f5;
+            background-image: url('data:image/svg+xml;utf8,<svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg"><text x="10" y="40" font-size="32" fill="gray" fill-opacity="0.07">{ }</text><rect x="50" y="20" width="20" height="4" rx="2" fill="gray" fill-opacity="0.07"/><rect x="50" y="30" width="12" height="4" rx="2" fill="gray" fill-opacity="0.07"/><rect x="50" y="40" width="16" height="4" rx="2" fill="gray" fill-opacity="0.07"/></svg>');
+            background-repeat: repeat;
+            background-size: 80px 80px;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 12px;
+            background: linear-gradient(90deg, #0088ff 0%, #0082d9 100%);
+            color: #fff;
+            padding: 12px 22px;
+            border-radius: 14px;
+            margin-bottom: 18px;
+            box-shadow: 0 2px 8px rgba(0,136,255,0.07);
+        }
+
+        .title {
+            color: #fff;
+            font-size: 1.3rem;
+            margin: 0;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        #help {
+            color: #fff;
+            background: #d99f00;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-left: 8px;
+            cursor: pointer;
+            box-shadow: 0 1px 4px rgba(50,217,0,0.10);
+            transition: background 0.2s;
+        }
+        #help:hover {
+            background: #ff8800;
+        }
+
+        .search-container {
+            flex-grow: 1;
+            max-width: 600px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: #0088ff;
+        }
+
+        .board-select {
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 16px;
+            margin-top: 10px;
+            padding-bottom: 80px;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 10px 10px 10px 10px; /* reduced padding */
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 160px; 
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+
+        .card:hover {
+            box-shadow: 0 6px 24px rgba(0,136,255,0.13);
+            transform: translateY(-3px) scale(1.02);
+        }
+
+        .card-icon {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 5px;
+            object-fit: contain;
+            border-radius: 4px;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            margin: 0 0 8px 0;
+            color: #0088ff;
+            text-align: center;
+        }
+
+        .card-description {
+            color: #444;
+            margin: 0 0 14px 0;
+            font-size: 0.98rem;
+            text-align: center;
+        }
+
+        .upload-button {
+            background: linear-gradient(90deg, #03ace0 0%, #0088ff 100%);
+            color: #fff;
+            border: none;
+            padding: 8px 22px;
+            border-radius: 20px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: auto;
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+
+        .upload-button:hover {
+            background: linear-gradient(90deg, #0088ff 0%, #03ace0 100%);
+            box-shadow: 0 2px 8px rgba(0,136,255,0.13);
+        }
+
+        .footer {
+            width: 100%;
+            position: fixed;
+            bottom: 0;
+            text-align: center;
+            color: #666;
+            padding: 1rem 0;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 10px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        h6 { 
+            font-size: 16px;
+            margin: 10px 0;
+        }
+
+        ol { margin: 0; padding: 0 20px; }
+
+        a {
+            color: #0082d9;
+            text-decoration: none;
+        }
+
+        a:hover { text-decoration: underline; }
+
+        .otto-logo {
+            width: 180px;
+            object-fit: fill;
+        }
+    </style>
+</head>
+
+<script module>
+    import(
+      // In development we import locally.
+      "https://unpkg.com/esp-web-tools@6.1.1/dist/web/install-button.js?module"
+    );
+  </script>
+
+<body>
+    <div class="header">
+        <img src="https://hprobots.com/otto-code/webcode/images/ottologo.png" alt="Otto Logo" class="otto-logo">
+        <h1 class="title">Example Codes <span id="help">?</span></h1>
+    </div>
+    <div class="card-grid" id="cardGrid">
+        
+    <div class="card" data-keywords="firmware micropython esptools">
+        <img class="card-icon" src="https://hprobots.com/wp-content/uploads/2024/05/starteriso.png" alt="Firmware updater">
+        <h2 class="card-title">🐍 Firmware Update</h2>
+        <p class="card-description">MicroPython Installer version 1.26.1 | publish date: 2025.09.11</p>
+        <div style="padding:1rem">
+            <esp-web-install-button manifest="manifest.json">
+                <i slot="unsupported">The demo is not available because your browser does not support Web Serial.</i>
+            </esp-web-install-button>
+        </div>
+    </div>
+
+         <!-- uploading multiple codes as actual libraries -->
+        <div class="card" data-keywords="micropython libraries">
+            <img class="card-icon" src="https://hprobots.com/wp-content/uploads/2024/05/starteriso.png" alt="Libraries updater">
+            <h2 class="card-title">📚 Libraries Update</h2>
+            <p class="card-description">Otto code Libraries pack | publish date: 2026.07.21</p>
+            <button type="button" class="upload-button" onclick="connectSerialMultiple(['adxl345.py', 'config.py', 'directory.py', 'main.py', 'ottobuzzer.py', 'ottomotor.py', 'ottoneopixel.py', 'ottooled.py', 'ottosensors.py', 'ottowalkroll.py', 'rc.py', 'ssd1306.py', 'update_library.py', 'util.py', 'wifi_manager.py'], this)" >
+                Update <span class="upload-progress"></span></button>
+        </div>
+        <!-- 
+        <div class="card" data-keywords="web app control connect starter bluetooth">
+            <img class="card-icon" src="https://hprobots.com/otto-code/webcode/images/otto.png" alt="Web Bluetooth Control example">
+            <h2 class="card-title">🎮 Web Bluetooth Control</h2>
+            <p class="card-description">Remote control with <a href="https://hprobots.com/otto-code/webcontrol/" target="_blank">Web control</a>.</p>
+            <button type="button" class="upload-button" onclick="connectSerial('webcontrol.py', this)" >Upload <span class="upload-progress"></span></button>
+        </div>
+        <div class="card" data-keywords="web app programming starter bluetooth">
+            <img class="card-icon" src="https://hprobots.com/otto-code/webcode/images/otto.png" alt="Web BLE Programming example">
+            <h2 class="card-title">📶 Web BLE Programming</h2>
+            <p class="card-description">Wireless coding with <a href="https://hprobots.com/otto-code/webcode/webcode.html" target="_blank">Webcode Words</a>.</p>
+            <button type="button" class="upload-button" onclick="connectSerial('blemain.py', this)" >Upload <span class="upload-progress"></span></button>
+        </div>
+        -->
+        <div class="card" >
+            <img class="card-icon" src="https://hprobots.com/otto-code/webcode/images/otto.png" alt="Starter Sumo white">
+            <h2 class="card-title">🤼 Starter Sumo white</h2>
+            <p class="card-description">Simple Sumo for white field  </p>
+            <button type="button" class="upload-button" onclick="connectSerial('sumowhite.py', this)" >Upload <span class="upload-progress"></span></button>
+        </div>
+        <div class="card" >
+            <img class="card-icon" src="https://hprobots.com/otto-code/webcode/images/otto.png" alt="Starter Sumo black">
+            <h2 class="card-title">🤼 Starter Sumo black</h2>
+            <p class="card-description">Simple Sumo for black field  </p>
+            <button type="button" class="upload-button" onclick="connectSerial('sumoblack.py', this)" >Upload <span class="upload-progress"></span></button>
+        </div>
+        <div class="card" >
+            <img class="card-icon" src="https://hprobots.com/otto-code/webcode/images/otto.png" alt="Starter Dance example">
+            <h2 class="card-title">🚩 Starter showcase </h2>
+            <p class="card-description">Demo to test all starter components.</p>
+            <button type="button" class="upload-button" onclick="connectSerial('starter_factorymain.py', this)" >Upload <span class="upload-progress"></span></button>
+        </div>
+        <div class="card">
+            <img class="card-icon" src="https://hprobots.com/otto-code/webcode/images/otto.png" alt="Starter Dance example">
+            <h2 class="card-title">🦇 Starter Avoid obstacles </h2>
+            <p class="card-description">Distance sensor prevents crash.</p>
+            <button type="button" class="upload-button" onclick="connectSerial('ultrasonic_avoid.py', this)" >Upload <span class="upload-progress"></span></button>
+        </div>
+        <div class="card">
+            <img class="card-icon" src="https://hprobots.com/otto-code/webcode/images/otto.png" alt="Line following example">
+            <h2 class="card-title">🚗 Starter Line following</h2>
+            <p class="card-description">Infrared sensors follow black line map.</p>
+            <button type="button" class="upload-button" onclick="connectSerial('linefollowanalog.py', this)" >Upload <span class="upload-progress"></span></button>
+        </div>
+        <div class="card">
+            <img class="card-icon" src="https://shop.moravia.education/media/catalog/product/cache/78af1dffb02b2e09845a16da04941475/s/t/starter_builder1024_2.png" alt="Christmas example">
+            <h2 class="card-title">🎅🏻 Santa Otto </h2>
+            <p class="card-description">Christmas special edition.</p>
+            <button type="button" class="upload-button" onclick="connectSerial('xmas.py', this)" >Upload <span class="upload-progress"></span></button>
+        </div>
+        <div class="card">
+            <img class="card-icon" src="https://hprobots.com/wp-content/uploads/2024/07/sense-temp.png" alt="Otto Dance example">
+            <h2 class="card-title">🌡️ Sense showcase</h2>
+            <p class="card-description">Requires sense expansion.</p>
+            <button type="button" class="upload-button" onclick="connectSerial('sense_showcase.py', this)" >Upload <span class="upload-progress"></span></button>
+        </div>
+        <div class="card">
+            <img class="card-icon" src="https://hprobots.com/wp-content/uploads/2024/07/interact-temp.png" alt="Otto Dance example">
+            <h2 class="card-title">🎛️ Interact showcase</h2>
+            <p class="card-description">Requires interact expansion.</p>
+            <button type="button" class="upload-button" onclick="connectSerial('interact_showcase.py', this)" >Upload <span class="upload-progress"></span></button>
+        </div>
+                <div class="card">
+            <img class="card-icon" src="https://hprobots.com/wp-content/uploads/2024/07/emote-temp.png" alt="Emote example">
+            <h2 class="card-title">🤩 Emote showcase </h2>
+            <p class="card-description">Requires Emote expansion.</p>
+            <button type="button" class="upload-button" onclick="connectSerial('emote_showhpmainenglish.py', this)" >Upload <span class="upload-progress"></span></button>
+        </div>
+        <div class="card">
+            <img class="card-icon" src="https://hprobots.com/wp-content/uploads/2025/01/invent-768x768.png" alt="Otto Dance example">
+            <h2 class="card-title">🐱‍👤 Walk & Roll</h2>
+            <p class="card-description">Requires Invent to transform like a Ninja.</p>
+            <button type="button" class="upload-button" onclick="connectSerial('ninja_demo.py', this)" >Upload <span class="upload-progress"></span></button>
+        </div>
+    </div>
+
+    <footer class="footer">
+    </footer>
+
+    <div id="ottoModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Quickly upload example codes to Otto!</h2>
+            <p>Start using your <a href="https://hprobots.com" target="_blank">HP Robots Otto</a> right away by directly saving code</p>
+            <h6>Make sure you have updated Firmware and Libraries!</h6>
+            <ol>
+                <li>Plug your Otto to your computer via USB-Serial</li>
+                <li>Click on the [Upload] button of the code you want</li>
+                <li>Select "USB-Serial (COM#)"</li>
+                <li>Click in [Connect] button </li>
+                <li>Wait until "Upload done!" appears in the button</li>
+            </ol>
+        </div>
+    </div>
+    <script src="./script.js"></script>
+    <script>
+        const modal = document.getElementById("ottoModal");
+        const btn = document.getElementById("help");
+        const span = document.getElementsByClassName("close")[0];
+        btn.onclick = function() {
+            modal.style.display = "block";
+        }
+        span.onclick = function() {
+            modal.style.display = "none";
+        }
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+        // Show modal on page load
+        window.onload = function() {
+            if (!localStorage.getItem('ottoModalShown')) {
+                modal.style.display = "block";
+                localStorage.setItem('ottoModalShown', 'yes');
+            }
+        }
+    </script>
+</body>
+</html>
