@@ -1,0 +1,5 @@
+{
+    "servo_trims": [-3, -8, 0, -3, 2, 0],
+    "timestamp": 1710672000000,
+    "description": "Default servo trim configuration for OttoNinjaPA robot"
+}

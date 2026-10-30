@@ -16,7 +16,7 @@ Welcome to the official repo for Code Libraries, Example programs & Diagrams for
 * A full collection of MicroPython libraries for HP Robots Otto
 * Example code for every sensor, expansion, and robot behavior
 * Wiring diagrams & pinouts
-* Basic coding Guides for both MicroPython with Thonny IDE or C++ with Arduino IDE
+* Basic [Coding Guides](https://github.com/cparrapa/micropythonlibs/tree/main/guides) for both MicroPython with Thonny IDE or C++ with Arduino IDE
 
 ## 🚀 Quick Start
 1. Use the Quick Flasher to install [MicroPython firmware with all  Core libraries](https://hprobots.com/app/)
@@ -35,7 +35,7 @@ Pin references and wiring diagrams. Circuit diagrams and “default wiring” re
 Always verify that the number of the GPIO used in your code match the connector you are using:
 | Connector| GPIO | Main Purpose |
 |----------|------|----------|
-| #1 | 18 & 19 | Ultrasonic sensor + 6 RGB LEDs / OLED Display |
+| #1 | 18 & 19 | Ultrasonic with 6 RGB LEDs / OLED Display |
 | #2 | 16 & 17 | MP3 Player / Digital Encoder |
 | #3 | 22 SCL & 21 SDA | RGB Matrix (64 LEDs) / Accelerometer / or other I²C |
 | #4 | 26 | Tilt sensor / Button (Encoder) |
@@ -89,14 +89,14 @@ Below is the full list of current [libraries](https://github.com/cparrapa/microp
 ## 🧪 MicroPython Code Examples  
 Organized by component, sensors, motors, displays & more.  [all here](https://github.com/cparrapa/micropythonlibs/tree/main/code%20examples)
 > ⚠️ **Reminder:** Make sure  ALL files in `/libraries/` are in the circuit board before running examples.
-✅ Tested  
-🛠 Work in Progress  
+
+✅ Tested   🛠 Work in Progress  
 
 | Component | Folder | Status |
 |----------|--------|--------|
 | Buzzer        | `/buzzer` | ✅ Piezo melodies          |
-| RGB Ring | `/rgbring` | ✅RGB LED ring + built LED   |
-| RGB Matrix      | `/rgbmatrix`, `/games` | ✅ LED matrix examples |
+| RGB Ring | `/rgbring` | ✅ RGB LED ring + built LED   |
+| RGB Matrix      | `/rgbmatrix` | ✅ LED matrix examples |
 | Motor Angle    | `/motorangle` | ✅ 180° servo examples|
 | Motor Wheel    | `/motorwheel` | ✅ 360° wheel servos|
 | MP3           | `/mp3` | ✅ MP3 module|
@@ -107,16 +107,16 @@ Organized by component, sensors, motors, displays & more.  [all here](https://gi
 
 | Sensor | Folder | Status |
 |----------|--------|--------|
-| Accelerometer | `/sensors/accelerometer` | ✅  games will be nice  |
+| Accelerometer | `/sensors/accelerometer` | ✅ Games will be nice  |
 | Button        | `/sensors/button` | ✅ Simple digital input     |
-| Encoder       | `/sensors/encoder`| 🛠  ottoencoder.py |
+| Encoder       | `/sensors/encoder`| 🛠 ottoencoder.py |
 | Light        | `/sensors/light` | ✅ LDR analog sensor|
 | Line  | `/sensors/line` | ✅ Tracking InfraRed sensors  |
-| Microphone    | `/sensors/microphone` | ✅ Basic  sound detection|
+| Microphone    | `/sensors/microphone` | ✅ Basic sound detection|
 | Potentiometer | `/sensors/light` | ✅ Analog input|
 | Tempeature & Humidity      | `/sensors/temphumi` | ✅ DHT11/22|
 | Tilt          | `/sensors/tilt` | ✅ Digital position switch|
-| Ultrasonic    | `/sensors/ultrasonic` | ✅ Distance sensor      |
+| Ultrasonic    | `/sensors/ultrasonic` | ✅ Distance sensor|
 
 ---
 ## ❤️ Contribute
